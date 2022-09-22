@@ -14,12 +14,13 @@ db.connect((err) => {
 	const sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
 	username VARCHAR(50),\
 	email VARCHAR(50),\
-	password VARCHAR(13));";
+	password VARCHAR(250),\
+	registration_date DATETIME DEFAULT NOW());";
 	db.query(sql, (err, result) => {
 		if (err) throw err;
-		console.log('Table created');
+		console.log('Connected to MySQL server');
 	});
-
 });
+
 
 module.exports = db;

@@ -1,10 +1,20 @@
-import LoginForm from "./components/LoginForm";
+import { Routes, Route } from 'react-router-dom'
+import { Login } from './pages/login'
+import { Register } from './pages/register'
+
 
 const App = () => {
+
 	return (
-	<div className="App">
-		<LoginForm />
-	</div>
+		<>
+			<nav>
+				
+			</nav>
+			<Routes>
+				<Route path="/" element={<Login />} />
+				<Route path="/register" element={<Register />} />
+			</Routes>
+		</>
 	);
 }
 
