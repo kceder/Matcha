@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import {Link} from 'react-router-dom';
 import { loginUser } from '../services/login';
-import { cookieProvider } from 'react-cookie';
+import { cookieProvider, Cookies } from 'react-cookie';
 
 const LoginForm = () => {
 	const [email, setEmail] = useState('apemajer@gmail.com');
@@ -20,8 +20,10 @@ const LoginForm = () => {
 				setError('User not found');
 			else if (response.data === 'wrong password')
 				setError('Wrong password');
-			else if (response.status === 200)
-				console.log(response.data.accessToken);
+			else if (response.status === 202) { // the cookie has been set in the backend and the user is authenticated
+				console.log(response);
+				
+			}
 		});
 
 	}
