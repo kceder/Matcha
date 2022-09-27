@@ -16,7 +16,7 @@ const requestLogger = (request, response, next) => {
 	console.log('Path:  ', request.path)
 	console.log('Body:  ', request.body)
 	console.log('---')
-	next()
+	next();
 }
 
 app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
@@ -49,7 +49,6 @@ app.post('/api/login', (request, response) => {
 					if (compare === true) {
 						const user = { name : result[0].username , id : result[0].id }
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-						sendMail(email);
 						response.status(202).cookie('token', accessToken,
 							{ 
 								samesite: 'strict',
@@ -66,6 +65,12 @@ app.post('/api/login', (request, response) => {
 			else 
 				response.send('user not found');
 		})
+})
+
+app.post('/api/set-up-user', (request, response) => {
+
+	console.log(request.body);
+
 })
 
 app.post('/api/register', (request, response) => {

@@ -15,11 +15,17 @@ db.connect((err) => {
 	username VARCHAR(50),\
 	email VARCHAR(50),\
 	password VARCHAR(250),\
+	gender VARCHAR(7),\
+	bio VARCHAR(500),\
+	birthday VARCHAR(11),\
+	preference VARCHAR(13),\
 	registration_date DATETIME DEFAULT NOW());";
+	
 	db.query(sql, (err, result) => {
 		if (err) throw err;
 		console.log('Connected to MySQL server');
 	});
+
 });
 
 

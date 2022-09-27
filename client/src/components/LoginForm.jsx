@@ -3,11 +3,13 @@ import { useState } from 'react';
 import {Link} from 'react-router-dom';
 import { loginUser } from '../services/login';
 import { cookieProvider, Cookies } from 'react-cookie';
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = () => {
-	const [email, setEmail] = useState('apemajer@gmail.com');
+	const [email, setEmail] = useState('amajer69@proton.me');
 	const [password, setPassword] = useState('Amedeo11');
 	const [error, setError] = useState();
+	const Navigate = useNavigate();
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -22,7 +24,18 @@ const LoginForm = () => {
 				setError('Wrong password');
 			else if (response.status === 202) { // the cookie has been set in the backend and the user is authenticated
 				console.log(response);
-				
+				// Navigate('../completeaccount');
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition((position) => {
+						const userLocation = {
+							lat: position.coords.latitude,
+							lon: position.coords.longitude
+						}
+						console.log(userLocation);
+					});
+				} else {
+					console.log('Geolocation is not supported by this browser.');
+				}
 			}
 		});
 
