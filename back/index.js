@@ -5,6 +5,10 @@ const cors = require('cors');
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const { sendMail } = require('./utils/sendEmail');
+
+
 require('dotenv').config();
 
 const requestLogger = (request, response, next) => {
@@ -12,12 +16,13 @@ const requestLogger = (request, response, next) => {
 	console.log('Path:  ', request.path)
 	console.log('Body:  ', request.body)
 	console.log('---')
-	next()
+	next();
 }
 
+app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
 app.use(express.json());
+app.use(cookieParser())
 app.use(requestLogger);
-app.use(cors());
 app.use(express.static('build'));
 
 app.get('/api/users', (request, response) => {
@@ -44,7 +49,14 @@ app.post('/api/login', (request, response) => {
 					if (compare === true) {
 						const user = { name : result[0].username , id : result[0].id }
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-						response.status(200).json({ accessToken : accessToken })
+						response.status(202).cookie('token', accessToken,
+							{ 
+								samesite: 'strict',
+								path: '/',
+								httpOnly: true,
+								secure: true
+							}).send('cookie initialized');
+						
 					} else {
 						response.send('wrong password')
 					}
@@ -53,6 +65,12 @@ app.post('/api/login', (request, response) => {
 			else 
 				response.send('user not found');
 		})
+})
+
+app.post('/api/set-up-user', (request, response) => {
+
+	console.log(request.body);
+
 })
 
 app.post('/api/register', (request, response) => {
