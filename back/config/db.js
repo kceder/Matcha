@@ -19,6 +19,9 @@ db.connect((err) => {
 	bio VARCHAR(500),\
 	birthday VARCHAR(11),\
 	preference VARCHAR(13),\
+	acti_stat BOOLEAN default 0,\
+	notif_stat BOOLEAN default 1,\
+	activation_token VARCHAR(250),\
 	registration_date DATETIME DEFAULT NOW());";
 	
 	db.query(sql, (err, result) => {

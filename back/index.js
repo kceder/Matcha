@@ -19,7 +19,8 @@ const requestLogger = (request, response, next) => {
 	next();
 }
 
-app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
+// app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser())
 app.use(requestLogger);
@@ -31,6 +32,41 @@ app.get('/api/users', (request, response) => {
 		function (error, result) {
 			if (error) throw error
 			response.send(result);
+		})
+})
+
+app.get('/api/activate-account/:activationToken', (request, response) => {
+	console.log(request, request.params)
+})
+
+app.post('/api/login', (request, response) => {
+	const sql = 'SELECT * FROM users WHERE email = ?';
+	const email = request.body.email;
+	const password = request.body.password;
+	db.query(sql, [email],
+		function (error, result) {
+			if (error) throw error;
+			if (result.length > 0) {
+				bcrypt.compare(password,  result[0].password, function(err, compare) {
+					if (err)
+						console.log(err);
+					console.log(compare)
+					if (compare === true) {
+						const user = { name : result[0].username , id : result[0].id }
+						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+						response.status(202).cookie('token', accessToken,
+							{ 
+								path: '/',
+								httpOnly: true
+							}).send('cookie initialized');
+						
+					} else {
+						response.send('wrong password')
+					}
+				});
+			}
+			else 
+				response.send('user not found');
 		})
 })
 
@@ -51,10 +87,8 @@ app.post('/api/login', (request, response) => {
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						response.status(202).cookie('token', accessToken,
 							{ 
-								samesite: 'strict',
 								path: '/',
-								httpOnly: true,
-								secure: true
+								httpOnly: true
 							}).send('cookie initialized');
 						
 					} else {
@@ -68,9 +102,7 @@ app.post('/api/login', (request, response) => {
 })
 
 app.post('/api/set-up-user', (request, response) => {
-
-	console.log(request.body);
-
+	console.log(request.cookies);
 })
 
 app.post('/api/register', (request, response) => {
@@ -86,17 +118,23 @@ app.post('/api/register', (request, response) => {
 				response.status(228).send('Email already in use');
 			} else {
 				const hash = bcrypt.hashSync(password, 10);
+				const activationToken = bcrypt.hashSync(email, 10);
 				const sql = `INSERT INTO users \
-				(username, email, password) \
+				(username, email, password, activation_token) \
 				VALUES \
-				(?, ?, ?)`;
-				db.query(sql,[ name, email, hash ], 
+				(?, ?, ?, ?)`;
+				db.query(sql,[ name, email, hash, activationToken ], 
 					function (error, results) {
 						if (error) throw error;
 						else 
 							console.log('row added');
 					}
 				);
+				const infoForEmail = {
+					email,
+					activationToken
+				}
+				sendMail(infoForEmail);
 				response.status(201).json({
 					name: name,
 					email: email,

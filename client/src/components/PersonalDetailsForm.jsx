@@ -8,7 +8,7 @@ const PersonalDetailsForm = () => {
 	const [birthday, setBirthday] = useState('');
 	const [age, setAge] = useState('');
 	const [preference, setPreference] = useState('');
-	const [interests, setInterests] = useState('');
+	const [interests, setInterests] = useState([]);
 	const [error, setError] = useState('');
 
 
@@ -36,9 +36,17 @@ const PersonalDetailsForm = () => {
 		setAge(Math.floor(ageMS / 31536000000));
 	}
 
-	const handleInterestsChange = (event) => {
-		setInterests(event);
-		console.log(event);
+	const handleInterestsChange = (interest) => {
+		if (!interests.includes(interest)) {
+			let array = interests.concat(interest)
+			setInterests(array);
+		} else {
+			let array = interests.filter(element => {
+				return interest !== element
+			})
+			setInterests(array);
+		}
+		console.log(interests);
 	}
 
 	const handleSubmit = (event) => {
@@ -85,9 +93,39 @@ const PersonalDetailsForm = () => {
 					<option value="homosexual">Homosexual</option>
 					<option value="bisexual">Bisexual</option>
 				</select>
-				<label htmlFor="interests">Interests
-				<input id="interests" className='form-control' type="text" value={interests} onChange={(e) => handleInterestsChange(e.target.value)} required/>
-				</label>
+				<label htmlFor="interests">Interests</label>
+				<fieldset className='d-flex flex-row flex-wrap'>
+					<legend>Choose your interests:</legend>
+					<div className='p-1'>
+						<input type="checkbox" id="anime-manga" name="anime-manga" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="anime-manga">Anime and Manga</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="technology" name="technology" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="technology">Technology</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="music" name="music" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="music">Music</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="sports" name="sports" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="sports">Sports</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="nature" name="nature" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="nature">Nature</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="conspiracy" name="conspiracy" onChange={event => handleInterestsChange(event.target.id)} />
+						<label htmlFor="conspiracy">Flat Earth "Theories"</label>
+					</div>
+					<div className='p-1'>
+						<input type="checkbox" id="cinema" name="cinema" onChange={event => handleInterestsChange(event.target.id)}/>
+						<label htmlFor="cinema">Cinema</label>
+					</div>
+				</fieldset>
+				
 				<button className="btn btn-outline-warning" type='submit' onClick={(e) => handleSubmit(e)}>Submit</button>
 			</form>
 			<small className='text-danger'>{error}</small>
