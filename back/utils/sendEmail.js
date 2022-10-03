@@ -13,6 +13,7 @@ let sendMail = (userInfo) => {
 			pass: "7ab8f4e35d1948"
 		}
 	});
+
 	const html = `
 				<html>
 					<head>
@@ -22,12 +23,11 @@ let sendMail = (userInfo) => {
 					</head>
 					<body>
 						<h1>Activate your Account</h1>
-						<p>Thank you for registering with us, here is a <a href="http://localhost:3000/activate/${userInfo.activationToken}">link</a> to verify your email address and activate your</p>
+						<p>Thank you for registering with us, here is a <a href="http://localhost:5000/api/activate/${userInfo.activationToken}">link</a> to verify your email address and activate your</p>
 					</body>
 				</html>
 				`
 
-	
 	var mailOptions = {
 		from: '"Matcha" <activate@matcha.com>',
 		to: receiver,
@@ -35,7 +35,7 @@ let sendMail = (userInfo) => {
 		html: html,
 		text: 'thank you for signing up, follow the link to ctivate your account :)'
 		};
-	
+
 	transport.sendMail(mailOptions, function(error, info){
 		if (error) {
 			console.log(error);

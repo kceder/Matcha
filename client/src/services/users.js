@@ -1,6 +1,10 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:5000/api/users';
+const baseUrl = '/api/users';
 
 export const getAllUsers = () => {
 	return axios.get(baseUrl);
+}
+
+export const activateUser = (token) => {
+	return axios.post(`${baseUrl}/activate`, token);
 }

@@ -19,8 +19,8 @@ const requestLogger = (request, response, next) => {
 	next();
 }
 
-// app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
-app.use(cors());
+//app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
+//app.use(cors());
 app.use(express.json());
 app.use(cookieParser())
 app.use(requestLogger);
@@ -35,8 +35,23 @@ app.get('/api/users', (request, response) => {
 		})
 })
 
-app.get('/api/activate-account/:activationToken', (request, response) => {
-	console.log(request, request.params)
+app.post('/api/users/activate', (request, response) => {
+	const sql = 'SELECT * FROM users WHERE activation_token = ?';
+	
+	const token = request.body.token;
+	console.log(request.body)
+	db.query(sql, [token], function(error, result) {
+		if (error) throw error;
+		if (result.length > 0) {
+			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
+			db.query(sql, [result[0].id], function (error, result) {
+				if (error) throw error;
+				response.status(202).send('user activated :)');
+			})
+		} else {
+			response.send('user not found');
+		}
+	})
 })
 
 app.post('/api/login', (request, response) => {
@@ -118,7 +133,7 @@ app.post('/api/register', (request, response) => {
 				response.status(228).send('Email already in use');
 			} else {
 				const hash = bcrypt.hashSync(password, 10);
-				const activationToken = bcrypt.hashSync(email, 10);
+				const activationToken = bcrypt.hashSync(email, 10).replace(/\//g,'_').replace(/\+/g,'-');;
 				const sql = `INSERT INTO users \
 				(username, email, password, activation_token) \
 				VALUES \
