@@ -7,6 +7,7 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const { sendMail } = require('./utils/sendEmail');
+const e = require('express');
 
 
 require('dotenv').config();
@@ -85,6 +86,8 @@ app.post('/api/login', (request, response) => {
 		})
 })
 
+// send wether actistat is at 1 or 2 to front end, if at 1 redirect to personal info form otherwise login to main page
+
 app.post('/api/login', (request, response) => {
 	const sql = 'SELECT * FROM users WHERE email = ?';
 	const email = request.body.email;
@@ -100,11 +103,20 @@ app.post('/api/login', (request, response) => {
 					if (compare === true) {
 						const user = { name : result[0].username , id : result[0].id }
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-						response.status(202).cookie('token', accessToken,
+						if(result[0].acti_stat === 1) {
+							response.status(202).cookie('token', accessToken,
 							{ 
 								path: '/',
 								httpOnly: true
-							}).send('cookie initialized');
+							}).send('fill profile');
+						} else {
+							response.status(202).cookie('token', accessToken,
+							{ 
+								path: '/',
+								httpOnly: true
+							}).send('login');
+						}
+						
 						
 					} else {
 						response.send('wrong password')
