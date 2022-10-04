@@ -23,7 +23,7 @@ let sendMail = (userInfo) => {
 					</head>
 					<body>
 						<h1>Activate your Account</h1>
-						<p>Thank you for registering with us, here is a <a href="http://localhost:5000/api/activate/${userInfo.activationToken}">link</a> to verify your email address and activate your</p>
+						<p>Thank you for registering with us, here is a <a href="http://localhost:3000/activateaccount/token=${userInfo.activationToken}">link</a> to verify your email address and activate your</p>
 					</body>
 				</html>
 				`
