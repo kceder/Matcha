@@ -1,16 +1,15 @@
 const express = require('express');
-const db = require('./config/db.js');
+// const db = require('./config/db.js');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
+// const bcrypt = require("bcrypt");
+// const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const { sendMail } = require('./utils/sendEmail');
-const e = require('express');
-
-
+// const { sendMail } = require('./utils/sendEmail');
+const userRouter = require('./routers/userRouter.js')
 require('dotenv').config();
+
 
 const requestLogger = (request, response, next) => {
 	console.log('Method:', request.method)
@@ -21,7 +20,8 @@ const requestLogger = (request, response, next) => {
 }
 
 //app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
-//app.use(cors());
+app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser())
 app.use(requestLogger);
@@ -55,37 +55,6 @@ app.post('/api/users/activate', (request, response) => {
 	})
 })
 
-app.post('/api/login', (request, response) => {
-	const sql = 'SELECT * FROM users WHERE email = ?';
-	const email = request.body.email;
-	const password = request.body.password;
-	db.query(sql, [email],
-		function (error, result) {
-			if (error) throw error;
-			if (result.length > 0) {
-				bcrypt.compare(password,  result[0].password, function(err, compare) {
-					if (err)
-						console.log(err);
-					console.log(compare)
-					if (compare === true) {
-						const user = { name : result[0].username , id : result[0].id }
-						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-						response.status(202).cookie('token', accessToken,
-							{ 
-								path: '/',
-								httpOnly: true
-							}).send('cookie initialized');
-						
-					} else {
-						response.send('wrong password')
-					}
-				});
-			}
-			else 
-				response.send('user not found');
-		})
-})
-
 // send wether actistat is at 1 or 2 to front end, if at 1 redirect to personal info form otherwise login to main page
 
 app.post('/api/login', (request, response) => {
@@ -94,22 +63,28 @@ app.post('/api/login', (request, response) => {
 	const password = request.body.password;
 	db.query(sql, [email],
 		function (error, result) {
+			console.log('cdsvds', result)
 			if (error) throw error;
 			if (result.length > 0) {
 				bcrypt.compare(password,  result[0].password, function(err, compare) {
-					if (err)
-						console.log(err);
-					console.log(compare)
-					if (compare === true) {
+					if (err) throw err
+					console.log(compare) // this is printed
+					if (compare == true) {
+						console.log(result)
 						const user = { name : result[0].username , id : result[0].id }
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						if(result[0].acti_stat === 1) {
+							console.log('acti_1')
 							response.status(202).cookie('token', accessToken,
 							{ 
 								path: '/',
 								httpOnly: true
 							}).send('fill profile');
-						} else {
+						} else if (result[0].acti_stat === 0){
+							console.log('acti_0')
+							response.status(202).send('account not verified');
+						} else if (result[0].acti_stat === 2) {
+							console.log('acti_2')
 							response.status(202).cookie('token', accessToken,
 							{ 
 								path: '/',

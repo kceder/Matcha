@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 const LoginForm = () => {
 
 	
-	const [email, setEmail] = useState("amajer69@proton.me");
+	const [email, setEmail] = useState("totocalcio@italia.email");
 	const [password, setPassword] = useState("Amedeo11");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
@@ -30,24 +30,31 @@ const LoginForm = () => {
 		password: password,
 		};
 		loginUser(userObject).then((response) => {
-			console.log(response.data)
+		console.log(response.data)
 		if (response.data === "user not found") setError("User not found");
 		else if (response.data === "wrong password") setError("Wrong password");
 		else if (response.status === 202) {
 			// the cookie has been set in the backend and the user is authenticated
-			console.log(response);
-			// Navigate('../completeaccount');
+			console.log(response, 'fbhjekrbfvjdebfvvehkvbhjdsbfvrkbjkdrrbkj');
+			
 			if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((position) => {
 				const userLocation = {
-				lat: position.coords.latitude,
-				lon: position.coords.longitude,
+					lat: position.coords.latitude,
+					lon: position.coords.longitude,
 				};
 				console.log(userLocation);
 			});
 			} else {
 			console.log("Geolocation is not supported by this browser.");
 			}
+
+			if (response.data === "fill profile") {
+				Navigate('../completeaccount');
+			}
+			// if (response.data === "login") {
+			// 	Navigate('')
+			// }  NAVIGATE TO HOMEPAGE
 		}
 		});
 	};
