@@ -51,23 +51,23 @@ const PersonalDetailsForm = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(age)
 		if (!bio || !gender || !birthday || !preference || !interests) {
 			setError('Please fill in all fields');
 		}
 		else if (age < 18) {
 			setError('You must be 18 years old to use this website');
+		} else {
+			const userObject = {
+				gender,
+				bio,
+				birthday,
+				preference,
+				interests,
+			};
+			setUpUser(userObject).then((response) => {
+				console.log(response);
+			})
 		}
-		const userObject = {
-			gender,
-			bio,
-			birthday,
-			preference,
-			interests,
-		};
-		setUpUser(userObject).then((response) => {
-			console.log(response);
-		})
 	}
 
 	return (

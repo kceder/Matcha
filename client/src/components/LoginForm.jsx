@@ -35,7 +35,6 @@ const LoginForm = () => {
 		else if (response.data === "wrong password") setError("Wrong password");
 		else if (response.status === 202) {
 			// the cookie has been set in the backend and the user is authenticated
-			console.log(response, 'fbhjekrbfvjdebfvvehkvbhjdsbfvrkbjkdrrbkj');
 			
 			if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition((position) => {

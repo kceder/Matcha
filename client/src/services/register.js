@@ -7,5 +7,5 @@ export const createUser = (newObject) => {
 }
 
 export const setUpUser = (newObject) => {
-	return axios.post(`${baseUrl}set-up-user`, newObject);
+	return axios.post(`${baseUrl}/users/complete-account`, newObject);
 }

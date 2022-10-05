@@ -7,6 +7,7 @@ const userRouter = require('./routers/userRouter.js')
 require('dotenv').config();
 
 
+
 const requestLogger = (request, response, next) => {
 	console.log('Method:', request.method)
 	console.log('Path:  ', request.path)
@@ -23,7 +24,6 @@ app.use(requestLogger);
 app.use(express.static('build'));
 app.use(userRouter);
 
-
 const port = process.env.PORT || 5000;
-
+console.log('											')
 app.listen(port, () => console.log(`Listening on port ${port}`))
