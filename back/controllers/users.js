@@ -51,18 +51,27 @@ const login = (request, response) => {
 	const password = request.body.password;
 	db.query(sql, [email],
 		function (error, result) {
-			console.log('cdsvds', result)
+			
 			if (error) throw error;
 			if (result.length > 0) {
 				bcrypt.compare(password,  result[0].password, function(err, compare) {
 					if (err) throw err
-					console.log(compare) // this is printed
+					console.log('59', compare)
 					if (compare == true) {
-						console.log(result)
+						console.log('61', result)
+						const updateLocation = "UPDATE users SET location = POINT(?, ?) WHERE email = ?";
+						
+						db.query(updateLocation, [request.body.location.lat, request.body.location.lon, email],
+							function (error, result) {
+								if (error) 
+									console.log('67' ,error);
+									console.log('68' ,result)
+						})
 						const user = { 
 							name : result[0].username , 
 							id : result[0].id 
 						}
+
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						if(result[0].acti_stat === 1) {
 							console.log('acti_1')
@@ -82,8 +91,8 @@ const login = (request, response) => {
 								httpOnly: true
 							}).send('login');
 						}
-						
-						
+					
+					
 					} else {
 						response.send('wrong password')
 					}
@@ -130,7 +139,6 @@ const completeAccount = (request, response) => {
 	console.log(myJSON)
 	console.log(typeof(myJSON))
 
-	
 	const sql = "UPDATE users SET gender = ?, bio = ?, birthday = ?, preference = ?, interests = ? WHERE id = ?;";
 
 
@@ -158,16 +166,10 @@ const  getAllUsers = (request, response) => {
 
 
 
-
-
-
-
-
-
 module.exports = {
 	register,
 	login,
 	activateUser,
 	completeAccount,
-	getAllUsers,
+	getAllUsers
 }

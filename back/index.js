@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routers/userRouter.js')
+const envRouter = require('./routers/envRouter.js')
 require('dotenv').config();
 
 
@@ -23,6 +24,7 @@ app.use(cookieParser())
 app.use(requestLogger);
 app.use(express.static('build'));
 app.use(userRouter);
+app.use(envRouter);
 
 const port = process.env.PORT || 5000;
 console.log('											')

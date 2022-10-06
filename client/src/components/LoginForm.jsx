@@ -2,32 +2,53 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { loginUser } from "../services/login";
-import { cookieProvider, Cookies } from "react-cookie";
-import { useNavigate } from "react-router-dom";
+import { geoApiKey } from "../services/env";
+// import { cookieProvider, Cookies } from "react-cookie";
+// import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+// import axios from 'axios'
 
 const LoginForm = () => {
-
 	
-	const [email, setEmail] = useState("totocalcio@italia.email");
+	const [email, setEmail] = useState("amedeo@majer.it");
 	const [password, setPassword] = useState("Amedeo11");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
-	const Navigate = useNavigate();
-	
+	const [location, setLocation] = useState({});
+
+	// const Navigate = useNavigate();
+
 	const param = useParams().message;
+
+	useEffect(() => {
+		geoApiKey().then((response) => {
+			const locationAPI = `https://ipgeolocation.abstractapi.com/v1/?api_key=${response.data}`;
+			axios.get(locationAPI)
+				.then(response => {
+					console.log(response.data)
+					const position = {
+						lon: response.data.longitude,
+						lat: response.data.latitude,
+					}
+					setLocation(position);
+				})
+		})
+	}, []);
+
 	useEffect(() => {
 		if (param !== undefined && param === 'acccount_on') {
 			setMessage('Account activated, you can now login!')
 		}
-	});
+	}, [param]);
 	
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const userObject = {
-		email: email,
-		password: password,
+		email,
+		password,
+		location,
 		};
 		loginUser(userObject).then((response) => {
 		console.log(response.data)
@@ -45,12 +66,13 @@ const LoginForm = () => {
 				console.log(userLocation);
 			});
 			} else {
-			console.log("Geolocation is not supported by this browser.");
+				console.log('gps location unavailable')
 			}
+			
 
-			if (response.data === "fill profile") {
-				Navigate('../completeaccount');
-			}
+			// if (response.data === "fill profile") {
+			// 	Navigate('../completeaccount');
+			// }
 			// if (response.data === "login") {
 			// 	Navigate('')
 			// }  NAVIGATE TO HOMEPAGE
