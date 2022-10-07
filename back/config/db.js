@@ -22,7 +22,7 @@ con.connect((err) => {
 		console.log("\x1b[35m", "Using to matcha db");
 	});
 
-	const sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	let sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
 	username VARCHAR(50),\
 	email VARCHAR(50),\
 	password VARCHAR(250),\
@@ -36,6 +36,7 @@ con.connect((err) => {
 	notif_stat BOOLEAN default 1,\
 	activation_token VARCHAR(250),\
 	registration_date DATETIME DEFAULT NOW());";
+
 	
 	con.query(sql, (err, result) => {
 		if (err) throw err;
@@ -43,6 +44,39 @@ con.connect((err) => {
 			console.log('\x1b[36m%s\x1b[0m', "users table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "users tale created");
+	});
+
+	sql = "CREATE TABLE IF NOT EXISTS user_pictures \
+	(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	user_id INT(11) UNIQUE,\
+	pic_1 VARCHAR(60),\
+	pic_2 VARCHAR(60),\
+	pic_3 VARCHAR(60),\
+	pic_4 VARCHAR(60),\
+	pic_5 VARCHAR(60));";
+
+	
+	con.query(sql, (err, result) => {
+		if (err) throw err;
+		if (result.affectedRows === 0)
+			console.log('\x1b[36m%s\x1b[0m', "user_picture table already exists");
+		else
+			console.log('\x1b[36m%s\x1b[0m', "user_pictures tale created");
+	});
+
+	sql = "CREATE TABLE IF NOT EXISTS notifications \
+	(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	user_id INT(11),\
+	content VARCHAR(60),\
+	time DATETIME DEFAULT NOW());";
+
+	
+	con.query(sql, (err, result) => {
+		if (err) throw err;
+		if (result.affectedRows === 0)
+			console.log('\x1b[36m%s\x1b[0m', "notifications table already exists");
+		else
+			console.log('\x1b[36m%s\x1b[0m', "notifications tale created");
 	});
 
 });
