@@ -5,6 +5,7 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routers/userRouter.js')
 const envRouter = require('./routers/envRouter.js')
+const locationRouter = require('./routers/locationRouter.js')
 require('dotenv').config();
 
 
@@ -25,6 +26,7 @@ app.use(requestLogger);
 app.use(express.static('build'));
 app.use(userRouter);
 app.use(envRouter);
+app.use(locationRouter);
 
 const port = process.env.PORT || 5000;
 console.log('											')

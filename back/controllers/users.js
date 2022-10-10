@@ -58,20 +58,10 @@ const login = (request, response) => {
 					if (err) throw err
 					console.log('59', compare)
 					if (compare == true) {
-						console.log('61', result)
-						const updateLocation = "UPDATE users SET location = POINT(?, ?) WHERE email = ?";
-						
-						db.query(updateLocation, [request.body.location.lat, request.body.location.lon, email],
-							function (error, result) {
-								if (error) 
-									console.log('67' ,error);
-									console.log('68' ,result)
-						})
 						const user = { 
 							name : result[0].username , 
-							id : result[0].id 
+							id : result[0].id
 						}
-
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						if(result[0].acti_stat === 1) {
 							console.log('acti_1')
@@ -139,17 +129,14 @@ const completeAccount = (request, response) => {
 	console.log(myJSON)
 	console.log(typeof(myJSON))
 
-	const sql = "UPDATE users SET gender = ?, bio = ?, birthday = ?, preference = ?, interests = ? WHERE id = ?;";
+	const sql = "UPDATE users SET gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
 
-
-	// UPDATE Customers
-	// SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
-	// WHERE CustomerID = 1;
-	db.query(sql, [gender, bio, birthday, preference, myJSON, userId],
+	db.query(sql, [gender, bio, birthday, preference, myJSON, 2, userId],
 	function (error, result) {
 		if (error) 
 			console.log(error);
-			console.log(result)
+		else
+			response.send(result)
 	})
 
 

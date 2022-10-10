@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { setUpUser } from '../services/register';
+import { setUpUser } from '../../services/register';
 
 const PersonalDetailsForm = () => {
 
@@ -65,7 +65,9 @@ const PersonalDetailsForm = () => {
 				interests,
 			};
 			setUpUser(userObject).then((response) => {
-				console.log(response);
+				if(response.status === 200) {
+					
+				}
 			})
 		}
 	}
