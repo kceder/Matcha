@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const userRouter = require('./routers/userRouter.js')
 const envRouter = require('./routers/envRouter.js')
 const locationRouter = require('./routers/locationRouter.js')
+const settingsRouter = require('./routers/settingsRouter')
+
 require('dotenv').config();
 
 
@@ -21,12 +23,13 @@ const requestLogger = (request, response, next) => {
 app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
 app.use(bodyParser.json());
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(requestLogger);
 app.use(express.static('build'));
 app.use(userRouter);
 app.use(envRouter);
 app.use(locationRouter);
+app.use(settingsRouter);
 
 const port = process.env.PORT || 5000;
 console.log('											')

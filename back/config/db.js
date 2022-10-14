@@ -23,12 +23,14 @@ con.connect((err) => {
 	});
 
 	let sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	name VARCHAR(20),\
+	lastName VARCHAR(20),\
 	username VARCHAR(50),\
 	email VARCHAR(50),\
 	password VARCHAR(250),\
 	gender VARCHAR(7),\
 	bio VARCHAR(500),\
-	birthday VARCHAR(11),\
+	birthday DATE,\
 	preference VARCHAR(13),\
 	interests JSON,\
 	location POINT,\

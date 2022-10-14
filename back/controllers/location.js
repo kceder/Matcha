@@ -11,7 +11,7 @@ const updateLocation = (request, response) => {
 	console.log(decodedToken.id);
 	
 	const sql = "UPDATE users SET location = POINT(?, ?) WHERE id = ?";
-	
+	console.log(request.body)
 	db.query(sql, [request.body.lat, request.body.lon, decodedToken.id],
 		function (error, result) {
 			if (error) {
