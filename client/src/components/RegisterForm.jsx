@@ -15,9 +15,10 @@ const RegisterForm = () => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const userObject = {
-			name: name + ' ' + lastName,
-			email: email,
-			password: password
+			name,
+			lastName,
+			email,
+			password
 		}
 		createUser(userObject).then((response) => {
 			console.log(response.status)

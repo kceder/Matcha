@@ -26,20 +26,18 @@ con.connect((err) => {
 	name VARCHAR(20),\
 	lastName VARCHAR(20),\
 	username VARCHAR(50),\
-	email VARCHAR(50),\
+	email VARCHAR(200),\
 	password VARCHAR(250),\
 	gender VARCHAR(7),\
 	bio VARCHAR(500),\
 	birthday DATE,\
 	preference VARCHAR(13),\
 	interests JSON,\
-	location POINT,\
 	acti_stat INT (11) default 0,\
 	notif_stat BOOLEAN default 1,\
 	activation_token VARCHAR(250),\
 	registration_date DATETIME DEFAULT NOW());";
 
-	
 	con.query(sql, (err, result) => {
 		if (err) throw err;
 		if (result.affectedRows === 0)
@@ -64,6 +62,22 @@ con.connect((err) => {
 			console.log('\x1b[36m%s\x1b[0m', "user_picture table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "user_pictures tale created");
+	});
+
+	sql = "CREATE TABLE IF NOT EXISTS locations \
+	(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	user_id INT(11) UNIQUE,\
+	gps_location POINT,\
+	ip_location POINT,\
+	user_set_location POINT);";
+
+	
+	con.query(sql, (err, result) => {
+		if (err) throw err;
+		if (result.affectedRows === 0)
+			console.log('\x1b[36m%s\x1b[0m', "locations table already exists");
+		else
+			console.log('\x1b[36m%s\x1b[0m', "locations tale created");
 	});
 
 	sql = "CREATE TABLE IF NOT EXISTS notifications \

@@ -9,3 +9,8 @@ export const createUser = (newObject) => {
 export const setUpUser = (newObject) => {
 	return axios.post(`${baseUrl}/users/complete-account`, newObject);
 }
+
+export const setUpPictures = (newObject) => {
+	console.log(newObject)
+	return axios.post(`${baseUrl}/users/complete-account/pictures`, newObject);
+}

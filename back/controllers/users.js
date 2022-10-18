@@ -56,6 +56,7 @@ const register = (request, response) => {
 					activationToken
 				}
 				sendMail(infoForEmail);
+				db.query(initialize_location_tab_sql, [])
 				response.status(201).json({
 					name: name,
 					email: email,
@@ -123,10 +124,17 @@ const activateUser = (request, response) => {
 		if (result.length > 0) {
 			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
 			db.query(sql, [result[0].id], function (error, result) {
-				console.log('result ---->', result)
+				// console.log('result ---->', result)
 				if (error) throw error;
 				response.status(202).send('user activated :)');
+			});
+			console.log(result[0].id)
+			const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)";
+			db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
+				if (error) throw error
+				console.log(result);
 			})
+			
 		} else {
 			response.send('user not found');
 		}

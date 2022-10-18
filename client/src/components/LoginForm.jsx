@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { loginUser } from "../services/login";
-import { updateLocation } from "../services/location";
+import { updateGpsLocation, updateIpLocation } from "../services/location";
 import { geoApiKey } from "../services/env";
 // import { cookieProvider, Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -11,8 +11,8 @@ import axios from "axios";
 
 const LoginForm = () => {
 	
-	const [email, setEmail] = useState("amedeo@majer.it");
-	const [password, setPassword] = useState("Amedeo11");
+	const [email, setEmail] = useState("amajer69@proton.me");
+	const [password, setPassword] = useState("Malibu11");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
 	const [location, setLocation] = useState({});
@@ -39,40 +39,45 @@ const LoginForm = () => {
 			if (response.data === "user not found") setError("User not found");
 			else if (response.data === "wrong password") setError("Wrong password");
 			else if (response.status === 202) {
-				// the cookie has been set in the backend and the user is authenticated
-				// check if gps in allowed
+
 				if (navigator.geolocation) {
 					navigator.geolocation.getCurrentPosition((position) => {
-					const userLocation = {
-						lat: position.coords.latitude,
-						lon: position.coords.longitude,
-					};
-					setLocation(userLocation);
-				})};
-				if (JSON.stringify(location).length < 3) {
-					geoApiKey().then((response) => {
-						const locationAPI = `https://ipgeolocation.abstractapi.com/v1/?api_key=${response.data}`;
-						axios.get(locationAPI)
-							.then(response => {
-								console.log(response.data)
-								const position = {
-									lon: response.data.longitude,
-									lat: response.data.latitude,
-								}
-								setLocation(position);
-							})
-					})
-			}
-			updateLocation(location).then(response => console.log('66', response))
-			// console.log(JSON.stringify(location).length)
-			// console.log(JSON.stringify(location))
 
-			if (response.data === "fill profile") {
-				Navigate('../completeaccount');
-			}
-			// if (response.data === "login") {
-			// 	Navigate('')
-			// }  NAVIGATE TO HOMEPAGE
+						const userLocation = {
+							lat: position.coords.latitude,
+							lon: position.coords.longitude,
+						};
+
+						if(Object.keys(userLocation).length > 0) {
+							updateGpsLocation(userLocation).then(response => console.log(response))
+						}
+					}
+				)}
+				
+
+				geoApiKey().then((response) => {
+					console.log('api key', response.data)
+					const locationAPI = `https://ipgeolocation.abstractapi.com/v1/?api_key=${response.data}`;
+					axios.get(locationAPI)
+						.then(response => {
+							
+							const position = {
+								lon: response.data.longitude,
+								lat: response.data.latitude,
+							}
+							console.log(position)
+							updateIpLocation(position).then(response => {
+								console.log(response);
+							})
+						})
+				})
+
+				if (response.data === "fill profile") {
+					Navigate('../completeaccount');
+				}
+				if (response.data === "login") {
+					Navigate('../profile')
+				}
 			}}
 		)}
 

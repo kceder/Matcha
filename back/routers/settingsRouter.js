@@ -10,7 +10,7 @@ const tokenValidator = (request, response, next) => {
 	const user = verifyToken(token)
 	request.user = user;
 	if (user) {
-		next()
+		next();
 	} else {
 		response.send('token invalid')
 		return null
@@ -29,5 +29,6 @@ const fileStorage = multer.diskStorage({
 const upload = multer({ storage: fileStorage })
 
 settingsRouter.route('/api/settings/password').post(tokenValidator, settingsController.changePassword)
+settingsRouter.route('/api/settings/changeUserInfo').post(tokenValidator, settingsController.changeUserInfo)
 
 module.exports = settingsRouter;

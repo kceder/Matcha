@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { setUpUser } from '../../services/register';
+import { useNavigate } from "react-router-dom";
 
 const PersonalDetailsForm = () => {
 
+	const [username, setUsername] = useState('');
 	const [bio, setBio] = useState('');
 	const [gender, setGender] = useState('');
 	const [birthday, setBirthday] = useState('');
@@ -10,6 +12,7 @@ const PersonalDetailsForm = () => {
 	const [preference, setPreference] = useState('');
 	const [interests, setInterests] = useState([]);
 	const [error, setError] = useState('');
+	const Navigate = useNavigate();
 
 
 
@@ -25,6 +28,16 @@ const PersonalDetailsForm = () => {
 			setError('');
 		}
 		setBio(event.target.value);
+		console.log(event.target.value);
+	}
+
+	const handleUsernameChange = (event) => {
+		if (event.target.value.length > 15) {
+			setError('Username is too long');
+		} else {
+			setError('');
+		}
+		setUsername(event.target.value);
 		console.log(event.target.value);
 	}
 
@@ -58,6 +71,7 @@ const PersonalDetailsForm = () => {
 			setError('You must be 18 years old to use this website');
 		} else {
 			const userObject = {
+				username,
 				gender,
 				bio,
 				birthday,
@@ -65,8 +79,8 @@ const PersonalDetailsForm = () => {
 				interests,
 			};
 			setUpUser(userObject).then((response) => {
-				if(response.status === 200) {
-					
+				if(response.status === 208) {
+					Navigate('/completeaccount/photos');
 				}
 			})
 		}
@@ -77,6 +91,8 @@ const PersonalDetailsForm = () => {
 		<div className='input-group flex-column m-40 text-warning'>
 			<h2>Complete your accout</h2>
 			<form className='d-flex flex-column'>
+				<label htmlFor='username'>Username</label>
+				<input id="username" className='form-control' type="text" maxLength={15} value={username} onChange={(e) => handleUsernameChange(e)} required/>
 				<label htmlFor="gender" className="form-label" >Gender</label>
 				<select id='gender' className="form-select" aria-label="Default select example" onChange={(e) => handleGenderChange(e.target.value)} defaultValue={''} required>
 					<option value="" disabled>-- select --</option>

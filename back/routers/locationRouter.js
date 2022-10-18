@@ -3,6 +3,7 @@ const locationController = require('../controllers/location.js')
 
 const locationRouter = express.Router();
 
-locationRouter.route('/api/location/update').post(locationController.updateLocation);
+locationRouter.route('/api/location/gps').post(locationController.updateGpsLocation);
+locationRouter.route('/api/location/ip').post(locationController.updateIpLocation);
 
 module.exports = locationRouter;
