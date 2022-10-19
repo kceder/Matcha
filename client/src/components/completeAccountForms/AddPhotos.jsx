@@ -55,17 +55,20 @@ const AddPhotos = () => {
 			</h1>
 			<form id="form" className='d-flex flex-wrap' encType="multipart/form-data"  onSubmit={event => handleSubmit(event)}>
 			<div>
+				<label forhtml="files" className="btn btn-light" onClick={() => document.getElementById('files').click()}>Select a profile image</label>
 				<input
+					id="files"
 					type="file"
+					style={{"visibility":"hidden"}}
 					onChange={(event) => {
 					setUrl_1(URL.createObjectURL(event.target.files[0]));
 					setPic_1(event.target.files[0]);
 					}}
-				/> <br></br>
+				/>
+				 <br></br>
 				<Preview url={url_1} />
 			</div>
-			<hr />
-			<div>
+			{/* <div>
 				<input
 					type="file"
 					onChange={(event) => {
@@ -75,9 +78,8 @@ const AddPhotos = () => {
 					}}
 				/> <br></br>
 				<Preview url={url_2} />
-			</div>
-			<hr />
-			<div>
+			</div> */}
+			{/* <div>
 				<input
 					type="file"
 					onChange={(event) => {
@@ -88,7 +90,6 @@ const AddPhotos = () => {
 				/> <br></br>
 				<Preview url={url_3} />
 			</div>
-			<hr />
 			<div>
 				<input
 					type="file"
@@ -100,7 +101,6 @@ const AddPhotos = () => {
 				/> <br></br>
 				<Preview url={url_4} />
 			</div>
-			<hr />
 			<div>
 				<input
 					type="file"
@@ -111,7 +111,7 @@ const AddPhotos = () => {
 					}}
 				/> <br></br>
 				<Preview url={url_5} />
-			</div>
+			</div> */}
 			<button type="submit"> Upload </button>
 			</form>
 		</>

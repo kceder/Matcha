@@ -6,7 +6,9 @@ import { getUser } from "../../services/users";
 import { changeUserInfo } from "../../services/settings";
 
 
-
+const ProfileView = (userInfo) => {
+	
+}
 
 const ProfileForm = () => {
 
@@ -208,7 +210,7 @@ const ProfileForm = () => {
 			</Form.Group>
 			<Form.Group className="mb-3"  >
 				<Form.Label>Bio  <span className="text-danger">{bioError}</span> </Form.Label>
-				<Form.Control placeholder="Bio" maxLength={500} value={bio} onChange={event => handleBioChange(event)} />
+				<Form.Control as="textarea" rows="3" placeholder="Bio" maxLength={500} value={bio} onChange={event => handleBioChange(event)} />
 				<small className='align-self-end'>{bio.length}/500</small>
 			</Form.Group>
 			<Form.Group className="mb-3">

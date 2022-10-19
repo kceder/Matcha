@@ -10,7 +10,7 @@ const getUser = (request, response) => {
 	if (request.body.target = "self") {
 		const jToken = request.cookies.token;
 		const user = verifyToken(jToken).id;
-		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, location FROM users WHERE id = ?';
+		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests FROM users WHERE id = ?';
 
 		db.query(sql, [user], 
 				function (error, result) {
@@ -48,7 +48,7 @@ const register = (request, response) => {
 					function (error, results) {
 						if (error) throw error;
 						else 
-							console.log('row added');
+							console.log(results);
 					}
 				);
 				const infoForEmail = {
@@ -56,7 +56,18 @@ const register = (request, response) => {
 					activationToken
 				}
 				sendMail(infoForEmail);
-				db.query(initialize_location_tab_sql, [])
+				const getUserId = 'SELECT id FROM users WHERE email = ?'
+				db.query(getUserId, [infoForEmail.email], function (error, result) {
+					if (error) throw error;
+					else {
+						const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)"
+						db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
+							if (error) throw error;
+							else
+								console.log('succes');
+						})
+					}
+				})
 				response.status(201).json({
 					name: name,
 					email: email,
@@ -129,11 +140,6 @@ const activateUser = (request, response) => {
 				response.status(202).send('user activated :)');
 			});
 			console.log(result[0].id)
-			const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)";
-			db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
-				if (error) throw error
-				console.log(result);
-			})
 			
 		} else {
 			response.send('user not found');
