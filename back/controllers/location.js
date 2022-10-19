@@ -12,7 +12,7 @@ const updateGpsLocation = (request, response) => {
 	
 	const sql = "UPDATE locations SET gps_location = POINT(?, ?) WHERE id = ?";
 	console.log(request.body)
-	db.query(sql, [request.body.lat, request.body.lon, decodedToken.id],
+	db.query(sql, [request.body.lon, request.body.lat, decodedToken.id],
 		function (error, result) {
 			console.log(result)
 			if (error) {
@@ -37,7 +37,7 @@ const updateIpLocation = (request, response) => {
 	
 	const sql = "UPDATE locations SET ip_location = POINT(?, ?) WHERE id = ?";
 	console.log(request.body)
-	db.query(sql, [request.body.lat, request.body.lon, decodedToken.id],
+	db.query(sql, [request.body.lon, request.body.lat, decodedToken.id],
 		function (error, result) {
 			console.log(result)
 			if (error) {

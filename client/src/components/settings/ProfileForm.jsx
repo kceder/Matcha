@@ -93,7 +93,28 @@ const ProfileForm = () => {
 		}
 		setEmail(event.target.value);
 	}
+	const handleLocationClick = () => {
+		const userLocation = {
+			lat: 0,
+			lon: 0
+		};
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(( position ) => {
+				
+				userLocation = {
+					lat: position.coords.latitude,
+					lon: position.coords.longitude
+				};
 
+			})
+			if(userLocation.lat === 0 && userLocation.lon === 0) {
+				alert("are you from null island or your gps is not working?")
+			} else {
+				setLon(userLocation.lon);
+				setLat(userLocation.lat);
+			}
+		}
+	}
 	const handleLatChange = (event) => {
 
 		var re = new RegExp('^-?[0-9]{1,3}(?:.[0-9]{1,10})?$');
@@ -182,7 +203,7 @@ const ProfileForm = () => {
 				<div className="row">
 					<Form.Control type="number" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
 					<Form.Control type="number" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
-					<button className="col" >lol</button>
+					<button className="col" onClick={() => handleLocationClick()}>lol</button>
 				</div>
 			</Form.Group>
 			<Form.Group className="mb-3"  >

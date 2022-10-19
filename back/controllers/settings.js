@@ -89,13 +89,20 @@ const changeUserInfo = (request, response) => {
 	} else {
 		const updateUser = "UPDATE users SET \
 		name = ?, lastName = ?, username = ?, email = ?, gender = ?, bio = ?, preference = ? WHERE id = ?"
-		
+		const updateLocation = "UPDATE locations SET user_set_location = POINT(?, ?) WHERE user_id = ?;";
+
 		
 		
 		
 		db.query(updateUser, [name, lastName, username, email, gender, bio, preference, userId], (error, result) => {
 			if (error) throw error;
 			else {
+				db.query(updateLocation, [ location.lon, location.lat, userId], function (error, result) {
+					if (error) throw error;
+					else {
+						console.log(result);
+					}
+				})
 				console.log(result);
 			}
 		})
