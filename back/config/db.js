@@ -69,7 +69,10 @@ con.connect((err) => {
 	user_id INT(11) UNIQUE,\
 	gps_location POINT,\
 	ip_location POINT,\
-	user_set_location POINT);";
+	user_set_location POINT,\
+	user_set_city VARCHAR(50),\
+	gps_city VARCHAR(50),\
+	ip_city VARCHAR(50));";
 
 	
 	con.query(sql, (err, result) => {

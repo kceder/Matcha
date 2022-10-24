@@ -5,11 +5,6 @@ import Form from 'react-bootstrap/Form';
 import { getUser } from "../../services/users";
 import { changeUserInfo } from "../../services/settings";
 
-
-const ProfileView = (userInfo) => {
-	
-}
-
 const ProfileForm = () => {
 
 	const [name, setName] = useState('');
@@ -33,13 +28,13 @@ const ProfileForm = () => {
 	useEffect(() => {
 		const obj = { target: 'self' }
 		getUser(obj).then(response => {
-			setUsername(response.data.username)
-			setName(response.data.name)
-			setLastName(response.data.lastName)
-			setEmail(response.data.email)
-			setGender(response.data.gender)
-			setPreference(response.data.preference)
-			setBio(response.data.bio)
+			setUsername(response.data.basicInfo.username)
+			setName(response.data.basicInfo.name)
+			setLastName(response.data.basicInfo.lastName)
+			setEmail(response.data.basicInfo.email)
+			setGender(response.data.basicInfo.gender)
+			setPreference(response.data.basicInfo.preference)
+			setBio(response.data.basicInfo.bio)
 
 			console.log(response.data);
 		})

@@ -11,4 +11,15 @@ const geoApi = (request, response) => {
 	response.send(process.env.GEO_API_KEY);
 }
 
-module.exports = {geoApi};
+const reverseGeoApi = (request, response) => {
+	const token = request.cookies.token;
+	let decodedToken = verifyToken(token);
+	console.log(decodedToken);
+	console.log(process.env.REVERSE_GEO_API_KEY);
+	response.send(process.env.REVERSE_GEO_API_KEY);
+}
+
+module.exports = {
+	geoApi,
+	reverseGeoApi
+};

@@ -11,7 +11,7 @@ import axios from "axios";
 
 const LoginForm = () => {
 	
-	const [email, setEmail] = useState("amajer69@proton.me");
+	const [email, setEmail] = useState("a@a.a");
 	const [password, setPassword] = useState("Malibu11");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
@@ -41,8 +41,10 @@ const LoginForm = () => {
 			else if (response.status === 202) {
 
 				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition((position) => {
+					
+					navigator.geolocation.getCurrentPosition((position, error) => {
 
+						if (error) console.log(error);
 						const userLocation = {
 							lat: position.coords.latitude,
 							lon: position.coords.longitude,
@@ -60,10 +62,11 @@ const LoginForm = () => {
 					const locationAPI = `https://ipgeolocation.abstractapi.com/v1/?api_key=${response.data}`;
 					axios.get(locationAPI)
 						.then(response => {
-							
+							console.log('65', response)
 							const position = {
 								lon: response.data.longitude,
 								lat: response.data.latitude,
+								city: `${response.data.city}, ${response.data.country_code}`
 							}
 							console.log(position)
 							updateIpLocation(position).then(response => {

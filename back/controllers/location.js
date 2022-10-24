@@ -1,5 +1,5 @@
 const db = require('../config/db.js');
-const verifyToken = require('../utils/verifyToken.js')
+const verifyToken = require('../utils/verifyToken.js');
 
 const updateGpsLocation = (request, response) => {
 	console.log('inside update location')
@@ -35,9 +35,9 @@ const updateIpLocation = (request, response) => {
 	
 	console.log(decodedToken.id);
 	
-	const sql = "UPDATE locations SET ip_location = POINT(?, ?) WHERE id = ?";
+	const sql = "UPDATE locations SET ip_location = POINT(?, ?), ip_city = ? WHERE id = ?";
 	console.log(request.body)
-	db.query(sql, [request.body.lon, request.body.lat, decodedToken.id],
+	db.query(sql, [request.body.lon, request.body.lat, request.body.city, decodedToken.id],
 		function (error, result) {
 			console.log(result)
 			if (error) {
@@ -50,7 +50,6 @@ const updateIpLocation = (request, response) => {
 		
 		console.log('END update location')
 }
-
 
 module.exports = {
 	updateGpsLocation,

@@ -5,7 +5,9 @@ import { Register } from "./pages/register";
 import { SetUpProfile } from "./pages/setUpProfile";
 import { ProfilePage } from "./pages/profilePage";
 import  AddPhotos from "./components/completeAccountForms/AddPhotos";
+import  ProfilePictureUpload from "./components/completeAccountForms/ProfilePictureUpload";
 import { Navbar, Container, Nav } from 'react-bootstrap';
+import ProfileCard from './components/ProfileCard'
 
 const Navigation = () => {
 	return (
@@ -36,9 +38,10 @@ const App = () => {
 			<Route path="/:message" element={<Login />} />
 			<Route path="/register" element={<Register />} />
 			<Route path="/completeaccount" element={<SetUpProfile />} />
-			<Route path="/completeaccount/photos" element={<AddPhotos />} />
+			<Route path="/completeaccount/photos" element={<ProfilePictureUpload />} />
 			<Route path="/activateaccount/:token" element={<ActivateAccount />} />
 			<Route path="/profile" element={<ProfilePage />}/>
+			<Route path="/profilecard" element={<ProfileCard />}/>
 		</Routes>
 		</>
 	);

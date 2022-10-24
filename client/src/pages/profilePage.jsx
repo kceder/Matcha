@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Container, Nav } from "react-bootstrap";
 import ProfileForm from "../components/settings/ProfileForm";
 import PasswordForm from "../components/settings/PasswordForm";
+import AddPhotos from "../components/completeAccountForms/AddPhotos";
 
 const Form = ({containerToShow}) => {
 
@@ -9,6 +10,8 @@ const Form = ({containerToShow}) => {
 		return (<PasswordForm />)
 	if (containerToShow === 1)
 		return (<ProfileForm />)
+	if (containerToShow === 3)
+		return (<AddPhotos target={9} />)
 
 }
 
@@ -29,7 +32,8 @@ export const ProfilePage = () => {
 						<Nav defaultActiveKey="/home" className="flex-column  align-items-center ">
 							<Nav.Link onClick={() => handleClick(1)}>Profile</Nav.Link>
 							<Nav.Link onClick={() => handleClick(2)}>Password</Nav.Link>
-							<Nav.Link onClick={() => handleClick(3)}>Scores</Nav.Link>
+							<Nav.Link onClick={() => handleClick(3)}>Edit Photos</Nav.Link>
+							<Nav.Link onClick={() => handleClick(4)}>Scores</Nav.Link>
 						</Nav>
 					</ div>
 					<div className="col" >

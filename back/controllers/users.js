@@ -10,7 +10,7 @@ const getUser = (request, response) => {
 	if (request.body.target = "self") {
 		const jToken = request.cookies.token;
 		const user = verifyToken(jToken).id;
-		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests FROM users WHERE id = ?';
+		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday FROM users WHERE id = ?';
 
 		db.query(sql, [user], 
 				function (error, result) {
@@ -19,7 +19,15 @@ const getUser = (request, response) => {
 						console.log('19')
 						response.send('user not found')
 					} else {
-						response.send(result[0])
+						const userInfo = { 'basicInfo': result[0]}
+						const sql = "SELECT * FROM locations WHERE user_id = ?";
+						db.query(sql, [user], function (error, result) {
+							if (error) throw error;
+							else {
+								userInfo.locations = result[0];
+								response.send(userInfo);
+							}
+						})
 					}
 				})
 	}
