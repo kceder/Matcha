@@ -1,6 +1,77 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { setUpUser } from '../../services/register';
 import { useNavigate } from "react-router-dom";
+import { getAllTags } from '../../services/tags';
+import Badge from 'react-bootstrap/Badge';
+
+
+const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) => {
+
+	const [newTag, setNewTag] = useState('');
+	
+	function containsWhitespace(str) {
+		return /\s|\t/.test(str);
+	}
+
+	const removeInterest = (event, tag) => {
+
+		setInterests(interests.filter((interest) => interest !== tag));
+	};
+
+	const handleTextInput = (event) => {
+		if (event.target.value === ' ') {
+			return;
+		} else {
+			const last = event.target.value.charAt(event.target.value.length - 1);
+			console.log(last);
+			if (containsWhitespace(last) === false) {
+				if (event.target.value.length > 30) {
+					alert('Tag must be less than 30 characters');
+				} else {
+					setNewTag(event.target.value.replace(/(<([^>]+)>)/ig, ''));
+				}
+			} else {
+				setInterests([...interests, newTag.replace(/(<([^>]+)>)/ig, '')]);
+				setNewTag('');
+			}
+		}
+		
+	};
+
+	const handleInterestsChange = (event) => {
+		console.log(interests)
+		
+		if (interests.includes(event)) {
+			return null;
+		} else {
+			setInterests(interests.concat(event));
+		}
+	}
+	const submitTag = (event, newTag) => {
+		if (newTag === '') {
+			return null;
+		} else if (interests.includes(newTag)) {
+			setNewTag('');
+			return null;
+		} else {
+			setInterests([...interests, newTag]);
+			setNewTag('');
+		}
+	}
+	const options = tags.map((tag) => <option key={tag.id} value={tag.tag}>{tag.tag}</option>)
+	const selectedTags = interests.map((tag, i) => <Badge key={i} value={tag} bg="warning" className="m-1">{tag}	<Badge bg="danger" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge></Badge>)
+	return (
+		<div>
+			<select id='tags' className="form-select" defaultValue={''} onChange={(e) => handleInterestsChange(e.target.value)} required>
+				<option value="" disabled>-- select --</option>
+				{options}
+			</select>
+			<div className='mt-1 mb-1'>
+				<Badge bg="warning" ><input value={newTag} style={{ outline: 'none', border: 'none', borderRadius: '2px'}} type='text' onChange={(e) => handleTextInput(e)}></input><Badge className="m-1" bg="success" value={newTag} onClick={(event) => submitTag(event, newTag)}>+</Badge></Badge>{selectedTags}
+			</div>
+		</div>
+	);
+}
 
 const PersonalDetailsForm = () => {
 
@@ -10,15 +81,20 @@ const PersonalDetailsForm = () => {
 	const [birthday, setBirthday] = useState('');
 	const [age, setAge] = useState('');
 	const [preference, setPreference] = useState('');
+	const [tags, setTags] = useState([]);
 	const [interests, setInterests] = useState([]);
 	const [error, setError] = useState('');
 	const Navigate = useNavigate();
 
-
+	
+	useEffect(() => {
+		getAllTags().then((response) => {
+			setTags(response.data);
+		})
+	}, [])
 
 	const handleGenderChange = (event) => {
 		setGender(event);
-		console.log(event);
 	}
 
 	const handleBioChange = (event) => {
@@ -28,7 +104,6 @@ const PersonalDetailsForm = () => {
 			setError('');
 		}
 		setBio(event.target.value);
-		console.log(event.target.value);
 	}
 
 	const handleUsernameChange = (event) => {
@@ -38,7 +113,6 @@ const PersonalDetailsForm = () => {
 			setError('');
 		}
 		setUsername(event.target.value);
-		console.log(event.target.value);
 	}
 
 	const handleBirthdayChange = (event) => {
@@ -49,18 +123,7 @@ const PersonalDetailsForm = () => {
 		setAge(Math.floor(ageMS / 31536000000));
 	}
 
-	const handleInterestsChange = (interest) => {
-		if (!interests.includes(interest)) {
-			let array = interests.concat(interest)
-			setInterests(array);
-		} else {
-			let array = interests.filter(element => {
-				return interest !== element
-			})
-			setInterests(array);
-		}
-		console.log(interests);
-	}
+	
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -80,7 +143,7 @@ const PersonalDetailsForm = () => {
 			};
 			setUpUser(userObject).then((response) => {
 				if(response.status === 208) {
-					Navigate('/completeaccount/photos');
+					// Navigate('/completeaccount/photos');
 				}
 			})
 		}
@@ -90,7 +153,7 @@ const PersonalDetailsForm = () => {
 	<div className='p-5'>
 		<div className='input-group flex-column m-40 text-warning'>
 			<h2>Complete your accout</h2>
-			<form className='d-flex flex-column'>
+			<form className='d-flex flex-column' onSubmit={(e) => handleSubmit(e)}>
 				<label htmlFor='username'>Username</label>
 				<input id="username" className='form-control' type="text" maxLength={15} value={username} onChange={(e) => handleUsernameChange(e)} required/>
 				<label htmlFor="gender" className="form-label" >Gender</label>
@@ -111,40 +174,10 @@ const PersonalDetailsForm = () => {
 					<option value="homosexual">Homosexual</option>
 					<option value="bisexual">Bisexual</option>
 				</select>
-				<label htmlFor="interests">Interests</label>
-				<fieldset className='d-flex flex-row flex-wrap'>
-					<legend>Choose your interests:</legend>
-					<div className='p-1'>
-						<input type="checkbox" id="anime-manga" name="anime-manga" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="anime-manga">Anime and Manga</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="technology" name="technology" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="technology">Technology</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="music" name="music" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="music">Music</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="sports" name="sports" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="sports">Sports</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="nature" name="nature" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="nature">Nature</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="conspiracy" name="conspiracy" onChange={event => handleInterestsChange(event.target.id)} />
-						<label htmlFor="conspiracy">Flat Earth "Theories"</label>
-					</div>
-					<div className='p-1'>
-						<input type="checkbox" id="cinema" name="cinema" onChange={event => handleInterestsChange(event.target.id)}/>
-						<label htmlFor="cinema">Cinema</label>
-					</div>
-				</fieldset>
+				<label>Interests</label>
+				<AutocompleteTagsSelector tags={tags} setTags={setTags} interests={interests} setInterests={setInterests} />
 				
-				<button className="btn btn-outline-warning" type='submit' onClick={(e) => handleSubmit(e)}>Submit</button>
+				<button className="btn btn-outline-warning" type='submit'>Submit</button>
 			</form>
 			<small className='text-danger'>{error}</small>
 		</div>

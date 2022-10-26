@@ -9,8 +9,8 @@ let sendMail = (userInfo) => {
 		host: "smtp.mailtrap.io",
 		port: 2525,
 		auth: {
-			user: "25a47fd36dad9f",
-			pass: "7ab8f4e35d1948"
+			user: process.env.MAILTRAP_USER,
+			pass: process.env.MAILTRAP_PASS
 		}
 	});
 

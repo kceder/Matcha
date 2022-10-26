@@ -9,6 +9,7 @@ const envRouter = require('./routers/envRouter.js')
 const locationRouter = require('./routers/locationRouter.js')
 const settingsRouter = require('./routers/settingsRouter')
 const photosRouter = require('./routers/photosRouter')
+const tagsRouter = require('./routers/tagsRouter')
 
 require('dotenv').config();
 
@@ -35,6 +36,7 @@ app.use(envRouter);
 app.use(locationRouter);
 app.use(settingsRouter);
 app.use(photosRouter);
+app.use(tagsRouter);
 
 const port = process.env.PORT || 5000;
 console.log('											')

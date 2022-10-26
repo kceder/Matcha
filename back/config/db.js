@@ -1,6 +1,108 @@
 const mysql = require('mysql');
 require('dotenv').config();
 
+const tags = [
+	'Advertising',
+	'Agriculture',
+	'Architecture',
+	'Aviation',
+	'Banking',
+	'Business',
+	'Construction',
+	'Design',
+	'Economics',
+	'Engineering',
+	'Entrepreneurship',
+	'Management',
+	'Marketing',
+	'Nursing',
+	'Online',
+	'Web',
+	'Creditcards',
+	'Insurance',
+	'Investment',
+	'Retail',
+	'Sales',
+	'Science',
+	'Accounting',
+	'Acting',
+	'Art',
+	'Artificialintelligence',
+	'Audio',
+	'Automotive',
+	'Beauty',
+	'Biotechnology',
+	'Chemistry',
+	'Clothing',
+	'Comics',
+	'Computers',
+	'Cooking',
+	'Cosmetics',
+	'Dance',
+	'Design',
+	'Digital',
+	'Education',
+	'Electronics',
+	'Energy',
+	'Entertainment',
+	'Environment',
+	'Fashion',
+	'Film',
+	'Finance',
+	'Food',
+	'Gaming',
+	'Gardening',
+	'Graphicdesign',
+	'Health',
+	'History',
+	'Home',
+	'Humanresources',
+	'Industrial',
+	'Information',
+	'Internet',
+	'Journalism',
+	'Law',
+	'Literature',
+	'Media',
+	'Medicine',
+	'Music',
+	'Nature',
+	'News',
+	'Nutrition',
+	'Painting',
+	'Photography',
+	'Physics',
+	'Poetry',
+	'Politics',
+	'Psychology',
+	'Recipes',
+	'Religion',
+	'Science',
+	'Software',
+	'Sports',
+	'Technology',
+	'Travel',
+	'Video',
+	'Writing',
+	'3D',
+	'Ballet',
+	'Bars',
+	'Concerts',
+	'Dancehalls',
+	'Nightclubs',
+	'Parties',
+	'Plays',
+	'Theatre', 
+	'Flatearth',
+	'Dnb',
+	'Edm',
+	'Dubstep',
+	'Jeans',
+	'Tuning',
+	'K-Pop',
+	'Kungfu'
+	];
+
 const con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
@@ -11,7 +113,7 @@ con.connect((err) => {
 	if (err) throw err;
 	con.query("CREATE DATABASE IF NOT EXISTS matcha", function (err, result) {
 		if (err) throw err;
-		if (result.affectedRows === 0)
+		if (result.warningCount > 0)
 			console.log('\x1b[36m%s\x1b[0m', "Database already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "Database created");
@@ -19,7 +121,7 @@ con.connect((err) => {
 
 	con.query("USE matcha", function (err, result) {
 		if (err) throw err;
-		console.log("\x1b[35m", "Using to matcha db");
+		console.log("\x1b[35m", "Using matcha db");
 	});
 
 	let sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
@@ -40,7 +142,7 @@ con.connect((err) => {
 
 	con.query(sql, (err, result) => {
 		if (err) throw err;
-		if (result.affectedRows === 0)
+		if (result.warningCount > 0)
 			console.log('\x1b[36m%s\x1b[0m', "users table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "users tale created");
@@ -58,7 +160,7 @@ con.connect((err) => {
 	
 	con.query(sql, (err, result) => {
 		if (err) throw err;
-		if (result.affectedRows === 0)
+		if (result.warningCount > 0)
 			console.log('\x1b[36m%s\x1b[0m', "user_picture table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "user_pictures tale created");
@@ -77,7 +179,7 @@ con.connect((err) => {
 	
 	con.query(sql, (err, result) => {
 		if (err) throw err;
-		if (result.affectedRows === 0)
+		if (result.warningCount > 0)
 			console.log('\x1b[36m%s\x1b[0m', "locations table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "locations tale created");
@@ -92,14 +194,32 @@ con.connect((err) => {
 	
 	con.query(sql, (err, result) => {
 		if (err) throw err;
-		if (result.affectedRows === 0)
+		if (result.warningCount > 0)
 			console.log('\x1b[36m%s\x1b[0m', "notifications table already exists");
 		else
 			console.log('\x1b[36m%s\x1b[0m', "notifications tale created");
 	});
 
-});
+	sql = "CREATE TABLE IF NOT EXISTS tags \
+	(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+	tag VARCHAR(30))";
 
+	con.query(sql, (err, result) => {
+		if (err) throw err;
+		if (result.warningCount > 0)
+			console.log('\x1b[36m%s\x1b[0m', "tags table already exists");
+		else {
+			console.log('\x1b[36m%s\x1b[0m', "tags table created");
+			tags.forEach((tag) => {
+				db.query(`INSERT INTO tags (tag) VALUES (?)`, [tag], (err, result) => {
+				  if (err) throw err;
+				});
+			  });
+			}
+		});
+		
+});
+ 
 const db = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
