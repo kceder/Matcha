@@ -17,28 +17,28 @@ const ImageCropDialog = ({url}) => {
 	}
 
 
-const onZoomChange = (zoom) => {
-	setZoom(zoom);
-}
-
-const onSubmit = async() => {
-	const croppedImageUrl = await getCroppedImg(url, croppedArePixels);
-
-	const size = croppedImageUrl.length;
-	if (size * (3/4) > 52428800 / 5){
-		alert('file too big')
-	} else {
-		const obj = { base64 : croppedImageUrl };
-		setProfilePicture(obj).then(response => {
-			if (response.data === 'file too big') {
-				alert('file too big!');
-			} else if (response.data === "good") {
-				Navigate('../profile')
-			}
-		})
-
+	const onZoomChange = (zoom) => {
+		setZoom(zoom);
 	}
-};
+	
+	const onSubmit = async() => {
+		const croppedImageUrl = await getCroppedImg(url, croppedArePixels);
+	
+		const size = croppedImageUrl.length;
+		if (size * (3/4) > 52428800 / 5){
+			alert('file too big')
+		} else {
+			const obj = { base64 : croppedImageUrl };
+			setProfilePicture(obj).then(response => {
+				if (response.data === 'file too big') {
+					alert('file too big!');
+				} else if (response.data === "good") {
+					Navigate('../profile')
+				}
+			})
+		
+		}
+	};
 
 const onCropComplete = (croppedArea, croppedArePixels) => {
 	setCroppedAreaPixels(croppedArePixels);

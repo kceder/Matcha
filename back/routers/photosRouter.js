@@ -19,5 +19,6 @@ const tokenValidator = (request, response, next) => {
 
 photosRouter.route('/api/photos/user').post(tokenValidator, photosController.getPhotos);
 photosRouter.route('/api/photos/profile').post(tokenValidator, photosController.setProfilePicture);
+photosRouter.route('/api/photos').post(tokenValidator, photosController.setPicture);
 
 module.exports = photosRouter;

@@ -9,3 +9,7 @@ export const setProfilePicture = (newObject) => {
 	console.log(newObject)
 	return axios.post(`${baseUrl}/profile`, newObject, { withCredentials: true});
 }
+
+export const addPicture = (newObject) => {
+	return axios.post(`${baseUrl}`, newObject, { withCredentials: true});
+}
