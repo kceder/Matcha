@@ -8,6 +8,7 @@ import  AddPhotos from "./components/completeAccountForms/AddPhotos";
 import  ProfilePictureUpload from "./components/completeAccountForms/ProfilePictureUpload";
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import ProfileCard from './components/ProfileCard'
+import './components/style/mennu.css';
 
 const Navigation = () => {
 	return (
@@ -41,7 +42,7 @@ const App = () => {
 			<Route path="/completeaccount/photos" element={<ProfilePictureUpload />} />
 			<Route path="/activateaccount/:token" element={<ActivateAccount />} />
 			<Route path="/profile" element={<ProfilePage />}/>
-			<Route path="/profilecard" element={<ProfileCard />}/>
+			<Route path="/profilecard" element={<ProfileCard target={'self'} />}/>
 		</Routes>
 		</>
 	);

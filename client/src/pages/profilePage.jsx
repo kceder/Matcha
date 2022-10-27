@@ -3,12 +3,17 @@ import { Container, Nav } from "react-bootstrap";
 import ProfileForm from "../components/settings/ProfileForm";
 import PasswordForm from "../components/settings/PasswordForm";
 import AddPhotos from "../components/completeAccountForms/AddPhotos";
+import ProfileCard from "../components/ProfileCard";
+import SettingsMenu from "../components/settingsMenu";
 
-const Form = ({containerToShow}) => {
+
+const MyForm = ({containerToShow}) => {
 
 	if (containerToShow === 2)
 		return (<PasswordForm />)
 	if (containerToShow === 1)
+		return (<ProfileCard target={'self'}/>)
+	if (containerToShow === 4)
 		return (<ProfileForm />)
 	if (containerToShow === 3)
 		return (<AddPhotos target={9} />)
@@ -27,18 +32,11 @@ export const ProfilePage = () => {
 	return (
 
 			<Container id="nav-plus-form">
-				<div className="row">
-					<div id="nav" className="col-md-2 col-sm-12 bg-danger">
-						<Nav defaultActiveKey="/home" className="flex-column  align-items-center ">
-							<Nav.Link onClick={() => handleClick(1)}>Profile</Nav.Link>
-							<Nav.Link onClick={() => handleClick(2)}>Password</Nav.Link>
-							<Nav.Link onClick={() => handleClick(3)}>Edit Photos</Nav.Link>
-							<Nav.Link onClick={() => handleClick(4)}>Scores</Nav.Link>
-						</Nav>
-					</ div>
-					<div className="col" >
-						<Form containerToShow={containerToShow} ></Form>
-					</div>
+				<div className="row row justify-content-center ">
+					<SettingsMenu  handleClick={handleClick} />
+				</div>
+				<div className=" " >
+					<MyForm containerToShow={containerToShow} ></MyForm>
 				</div>
 			</ Container>
 

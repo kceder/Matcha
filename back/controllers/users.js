@@ -2,17 +2,23 @@ const db = require('../config/db.js');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const { sendMail } = require('../utils/sendEmail');
-const verifyToken = require('../utils/verifyToken.js')
+const verifyToken = require('../utils/verifyToken.js');
+const { Console } = require('console');
 
 require('dotenv').config();
 
 const getUser = (request, response) => {
+	const jToken = request.cookies.token;
+	const user = verifyToken(jToken).id;
+	let target;
 	if (request.body.target = "self") {
-		const jToken = request.cookies.token;
-		const user = verifyToken(jToken).id;
+		target = user;
+	} else {
+		target = request.body.target;
+	}
 		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday FROM users WHERE id = ?';
 
-		db.query(sql, [user], 
+		db.query(sql, [target], 
 				function (error, result) {
 					if (error) throw error
 					else if (result.length === 0) {
@@ -21,7 +27,7 @@ const getUser = (request, response) => {
 					} else {
 						const userInfo = { 'basicInfo': result[0]}
 						const sql = "SELECT * FROM locations WHERE user_id = ?";
-						db.query(sql, [user], function (error, result) {
+						db.query(sql, [target], function (error, result) {
 							if (error) throw error;
 							else {
 								userInfo.locations = result[0];
@@ -30,7 +36,6 @@ const getUser = (request, response) => {
 						})
 					}
 				})
-	}
 }
 
 const register = (request, response) => {
@@ -188,13 +193,13 @@ const completeAccount = (request, response) => {
 	}	else if (interests.length <= 0) {
 		response.send('interests not selected')
 	}	else {
-		const createPicsTab = "INSERT INTO user_pictures (user_id) VALUES (?)";
-		db.query(createPicsTab, [userId],
-			function (error, result) { console.log(error) });
+		// const createPicsTab = "INSERT INTO user_pictures (user_id) VALUES (?)";
+		// db.query(createPicsTab, [userId],
+			// function (error, result) { console.log(error) });
 
 		const myJSON = JSON.stringify(interests);
 		console.log(myJSON)
-		console.log(typeof(myJSON))
+
 
 		const sql = "UPDATE users SET username = ?, gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
 
@@ -202,10 +207,28 @@ const completeAccount = (request, response) => {
 		function (error, result) {
 			if (error) 
 				console.log(error);
-			else
-				response.status(208).send('good')
-		})
-	}
+			else {
+				const getTags = "SELECT tag FROM tags";
+				db.query(getTags, function (error, result) {
+					if (error) throw error;
+					else  {
+						const newTags = interests.filter((interest) => !result.map((tag) => tag.tag).includes(interest));
+						console.log(newTags);
+						newTags.forEach((tag) => {
+							const sql = `INSERT INTO tags (tag) VALUES (?)`;
+							db.query(sql, [tag],(err, result) => {
+								if (err) throw err;
+								else {
+									console.log('tag added')
+								}	
+							})
+						})
+						response.send('good');
+					}
+				})
+		}
+	})
+}
 }
 
 const addPhotos = (request, response) => {

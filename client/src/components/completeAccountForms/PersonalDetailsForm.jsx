@@ -146,6 +146,8 @@ const PersonalDetailsForm = () => {
 					// Navigate('/completeaccount/photos');
 				}
 			})
+
+
 		}
 	}
 
