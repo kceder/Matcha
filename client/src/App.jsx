@@ -8,13 +8,14 @@ import  AddPhotos from "./components/completeAccountForms/AddPhotos";
 import  ProfilePictureUpload from "./components/completeAccountForms/ProfilePictureUpload";
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import ProfileCard from './components/ProfileCard'
+import HomePage from "./pages/HomePage";
 import './components/style/mennu.css';
 
 const Navigation = () => {
 	return (
 		<Navbar bg="light" expand="lg">
 			<Container>
-				<Navbar.Brand href="#home">
+				<Navbar.Brand href="/home">
 				<h1 style={{
 							fontWeight: "bolder",
 							background: "-webkit-linear-gradient(blue, brown)",
@@ -22,8 +23,8 @@ const Navigation = () => {
 							WebkitTextFillColor: "transparent",
 						}} >MATCHA</h1>
 				</Navbar.Brand>
-				<Nav.Link>Home</Nav.Link>
-				<Nav.Link>Profile</Nav.Link>
+				<Nav.Link href="/home" >Home</Nav.Link>
+				<Nav.Link href="/profile">Profile</Nav.Link>
 				<Nav.Link>Settings</Nav.Link>
 			</Container>
 		</Navbar>
@@ -36,6 +37,7 @@ const App = () => {
 		<Navigation />
 		<Routes>
 			<Route path="/" element={<Login />} />
+			<Route path="/home" element={<HomePage />} />
 			<Route path="/:message" element={<Login />} />
 			<Route path="/register" element={<Register />} />
 			<Route path="/completeaccount" element={<SetUpProfile />} />

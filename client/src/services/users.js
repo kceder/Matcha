@@ -12,3 +12,7 @@ export const getUser = (object) => {
 export const activateUser = (token) => {
 	return axios.post(`${baseUrl}/activate`, token);
 }
+
+export const filterUsers = (object) => {
+	return axios.post(`${baseUrl}/filter`, object);
+}

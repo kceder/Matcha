@@ -5,9 +5,14 @@ const fs = require("fs");
 const getPhotos = (request, response) => {
 	console.log(request.body);
 	console.log(request.user);
-
+	let target;
+	if (request.body.target === "self") {
+		target = request.user.id;
+	} else {
+		target = request.body.target;
+	}
 	const sql = "SELECT * FROM user_pictures WHERE user_id = ? ";
-	db.query(sql, [request.user.id], function (error, result) {
+	db.query(sql, [target], function (error, result) {
 		if (error) throw error;
 		else {
 			console.log(result);
@@ -47,6 +52,7 @@ const setProfilePicture = (request, response) => {
 }
 const setPicture = (request, response) => {
 	const old = request.body.old;
+	console.log(request.user.id)
 	if (request.body.old) {
 		const sql = "SELECT * FROM user_pictures WHERE user_id = ?;";
 		db.query(sql, [request.user.id], function (error, result) {

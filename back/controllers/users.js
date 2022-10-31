@@ -11,11 +11,12 @@ const getUser = (request, response) => {
 	const jToken = request.cookies.token;
 	const user = verifyToken(jToken).id;
 	let target;
-	if (request.body.target = "self") {
+	if (request.body.target === "self") {
 		target = user;
 	} else {
 		target = request.body.target;
 	}
+	console.log(target)
 		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday FROM users WHERE id = ?';
 
 		db.query(sql, [target], 
@@ -261,6 +262,62 @@ const  getAllUsers = (request, response) => {
 			response.send(result);
 		})
 }
+const filterUsers = (request, response) => {
+
+	const filterByTags = (users, interests) => {
+		
+		users.forEach (user => {
+			const tags = user.interests;
+			const tagsArray = tags.replace(/['"]+/g, '').replace('[', '').replace(']', '').split(',');
+			// filter users comparing multiple tags //
+			return (tagsArray.filter((tag) => {
+				console.log(tag)
+				return interests.includes(tag)
+			}));
+
+			// console.log(tagsArray)
+			// console.log(interestsArray)
+
+		})
+
+		// remove quotes and square brackets and split by comma //
+		// const tagsArray = tags.split(',');
+	}
+	console.log(request.body);
+	console.log(request.user);
+	const user = verifyToken(request.cookies.token);
+	const gender = request.body.gender; //
+	const preference = request.body.preference; //
+	const interests = request.body.tags; //
+	const minAge = request.body.minAge;
+	const maxAge = request.body.maxAge;
+	const distance = request.body.distance;
+	let sql;
+	if (gender === 'female' && preference === 'heterosexual') {
+		sql = `SELECT * FROM users WHERE gender = 'male' and preference = 'heterosexual' OR preference = 'bisexual'`;
+	} else if (gender === 'male' && preference === 'heterosexual') {
+		console.log('here    1');
+		sql = `SELECT * FROM users WHERE gender = 'female' and preference = 'heterosexual' OR preference = 'bisexual'`;
+	} else if (gender === 'male' && preference === 'homosexual') {
+		sql = `SELECT * FROM users WHERE gender = 'male' and preference = 'homosexual' OR preference = 'bisexual'`;
+	} else if (gender === 'female' && preference === 'homosexual') {
+		sql = `SELECT * FROM users WHERE gender = 'female' and preference = 'homosexual' OR preference = 'bisexual'`;
+	} else if (gender === 'male' && preference === 'bisexual') {
+		sql = `SELECT * FROM users WHERE gender = 'male' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'female' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
+	} else if (gender === 'female' && preference === 'bisexual') {
+		sql = `SELECT * FROM users WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
+	}
+	db.query(sql, function (error, result) {
+		if (error) throw error;
+		else {
+			console.log(result);
+			const filteredByTags = filterByTags(result, interests);
+			console.log(filteredByTags);
+			response.send('gut')
+		}
+	})
+	// response.send('good');
+}
 
 
 
@@ -272,4 +329,5 @@ module.exports = {
 	completeAccount,
 	getAllUsers,
 	addPhotos,
+	filterUsers,
 }

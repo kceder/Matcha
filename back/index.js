@@ -31,6 +31,7 @@ app.use(cookieParser());
 app.use(requestLogger);
 app.use(express.static('build'));
 app.use("/images", express.static("./images"));
+app.use("/profilePics", express.static("./profilePics"));
 app.use(userRouter);
 app.use(envRouter);
 app.use(locationRouter);

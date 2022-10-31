@@ -2,6 +2,19 @@ const express = require('express');
 const userController = require('../controllers/users.js')
 const multer  = require('multer')
 const userRouter = express.Router();
+const verifyToken = require('../utils/verifyToken.js')
+
+const tokenValidator = (request, response, next) => {
+	const token = request.cookies.token;
+	const user = verifyToken(token)
+	request.user = user;
+	if (user) {
+		next();
+	} else {
+		response.send('token invalid')
+		return null
+	}
+}
 
 const fileStorage = multer.diskStorage({
 	destination : (request, file, callBack) => {
@@ -22,6 +35,7 @@ userRouter.route('/api/users/getUser').post(userController.getUser);
 userRouter.route('/api/users/complete-account').post(userController.completeAccount);
 // userRouter.route('/api/users/complete-account/pictures').post(upload.single('image'), userController.addPhotos);
 userRouter.route('/api/users/complete-account/pictures').post(upload.array('images', 5), userController.addPhotos);
+userRouter.route('/api/users/filter').post(tokenValidator ,userController.filterUsers);
 
 userRouter.route('/api/users').get(userController.getAllUsers);
 
