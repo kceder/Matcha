@@ -5,16 +5,10 @@ import './style/slider.css';
 import { getAllTags } from "../services/tags";
 import { filterUsers } from "../services/users";
 
-const SortOptions = ({sorting, setSorting}) => {
-	
-	return (
-		<>
-		</>
-	)
-}
+
 
 const SearchForm = ({states}) => {
-	console.log(states)
+
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -26,10 +20,11 @@ const SearchForm = ({states}) => {
 			tags: states.tags,
 			gender: states.gender,
 			preference: states.preference,
+			userLocation: states.location,
 		}
 		filterUsers(filters).then(response => {
 			console.log(response.data)
-
+			states.setUsers(response.data);
 		})
 	}
 
@@ -49,9 +44,9 @@ const SearchForm = ({states}) => {
 				maxValue={states.maxAge}
 				ruler={false}
 				style={{ border: "none", boxShadow: "none", padding: "15px 10px" }}
-				barLeftColor="yellow"
-				barInnerColor="red"
-				barRightColor="yellow"
+				barLeftColor="white"
+				barInnerColor="#055ef7"
+				barRightColor="white"
 				onInput={(e) => {
 					handleAgeChange(e);
 				}}
@@ -60,8 +55,11 @@ const SearchForm = ({states}) => {
 			<input className="slider" type="range" min="0" max="500" value={states.distance} onChange={(e) => {states.setDistance(e.target.value)}}></input>
 			<label>Tags</label>
 			<TagsSelector setInterests={states.setTags} interests={states.tags} tags={states.allTags}/>
-			<button type="submit" onClick={(event) => handleSubmit(event)}>Filter</button>
+			<div style={{display: 'flex'}}>
+				<button type="submit" onClick={(event) => handleSubmit(event)}>Filter</button>
+			</div>
 			</form>
+			
 		</div>
 	)
 }

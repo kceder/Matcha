@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { sendMail } = require('../utils/sendEmail');
 const verifyToken = require('../utils/verifyToken.js');
 const { Console } = require('console');
+const { birthday } = require('random-profile-generator');
 
 require('dotenv').config();
 
@@ -23,10 +24,9 @@ const getUser = (request, response) => {
 				function (error, result) {
 					if (error) throw error
 					else if (result.length === 0) {
-						console.log('19')
 						response.send('user not found')
 					} else {
-						const userInfo = { 'basicInfo': result[0]}
+						let userInfo = { 'basicInfo': result[0]}
 						const sql = "SELECT * FROM locations WHERE user_id = ?";
 						db.query(sql, [target], function (error, result) {
 							if (error) throw error;
@@ -194,9 +194,9 @@ const completeAccount = (request, response) => {
 	}	else if (interests.length <= 0) {
 		response.send('interests not selected')
 	}	else {
-		// const createPicsTab = "INSERT INTO user_pictures (user_id) VALUES (?)";
-		// db.query(createPicsTab, [userId],
-			// function (error, result) { console.log(error) });
+		const createPicsTab = "INSERT INTO user_pictures (user_id) VALUES (?)";
+		db.query(createPicsTab, [userId],
+			function (error, result) { console.log(error) });
 
 		const myJSON = JSON.stringify(interests);
 		console.log(myJSON)
@@ -264,27 +264,20 @@ const  getAllUsers = (request, response) => {
 }
 const filterUsers = (request, response) => {
 
-	const filterByTags = (users, interests) => {
-		
-		users.forEach (user => {
-			const tags = user.interests;
-			const tagsArray = tags.replace(/['"]+/g, '').replace('[', '').replace(']', '').split(',');
-			// filter users comparing multiple tags //
-			return (tagsArray.filter((tag) => {
-				console.log(tag)
-				return interests.includes(tag)
-			}));
-
-			// console.log(tagsArray)
-			// console.log(interestsArray)
-
+	const filterByTags = (user, interests) => {
+		let i = 0;
+		interests.forEach((interest) => {
+			if (user.interests.includes(interest)) {
+				i++;
+			}
+	
 		})
-
-		// remove quotes and square brackets and split by comma //
-		// const tagsArray = tags.split(',');
+		if (i > 0)
+			user.commontags = i;
+		
+		return i > 0 ? user : null;
 	}
-	console.log(request.body);
-	console.log(request.user);
+
 	const user = verifyToken(request.cookies.token);
 	const gender = request.body.gender; //
 	const preference = request.body.preference; //
@@ -292,34 +285,73 @@ const filterUsers = (request, response) => {
 	const minAge = request.body.minAge;
 	const maxAge = request.body.maxAge;
 	const distance = request.body.distance;
+	const userLocation = request.body.userLocation;
+	console.log(' 2    ########', request.body);
 	let sql;
+	// sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE users.id = 51`;
+	// db.query(sql, function (error, result) {
+	// 	console.log(result);
+	// })
+
 	if (gender === 'female' && preference === 'heterosexual') {
-		sql = `SELECT * FROM users WHERE gender = 'male' and preference = 'heterosexual' OR preference = 'bisexual'`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE (gender = 'male' AND preference = 'heterosexual') OR (gender = 'male' AND preference = 'bisexual')`;
 	} else if (gender === 'male' && preference === 'heterosexual') {
-		console.log('here    1');
-		sql = `SELECT * FROM users WHERE gender = 'female' and preference = 'heterosexual' OR preference = 'bisexual'`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE (gender = 'female' AND preference = 'heterosexual') OR (gender = 'female' AND preference = 'bisexual')`;
 	} else if (gender === 'male' && preference === 'homosexual') {
-		sql = `SELECT * FROM users WHERE gender = 'male' and preference = 'homosexual' OR preference = 'bisexual'`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE (gender = 'male' AND preference = 'homosexual') OR (gender = 'male' AND preference = 'bisexual')`;
 	} else if (gender === 'female' && preference === 'homosexual') {
-		sql = `SELECT * FROM users WHERE gender = 'female' and preference = 'homosexual' OR preference = 'bisexual'`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE (gender = 'female' AND preference = 'homosexual') OR (gender = 'female' AND preference = 'bisexual')`;
 	} else if (gender === 'male' && preference === 'bisexual') {
-		sql = `SELECT * FROM users WHERE gender = 'male' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'female' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'male' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'female' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
 	} else if (gender === 'female' && preference === 'bisexual') {
-		sql = `SELECT * FROM users WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
 	}
 	db.query(sql, function (error, result) {
 		if (error) throw error;
 		else {
-			console.log(result);
-			const filteredByTags = filterByTags(result, interests);
-			console.log(filteredByTags);
-			response.send('gut')
+			let array = [];
+			result.forEach(user => {
+				let ret = filterByTags(user, interests);
+				ret === null ? null : array.push(ret);
+			})
+			let array2 = [];
+			array.forEach(user => {
+				const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);
+				const age = getAge(user.birthday);
+				if (age >= minAge && age <= maxAge) {
+					user.age = age;
+					array2.push(user);
+				}
+			})
+			let array3 = [];
+			console.log(array2)
+			array2.forEach(user => {
+				const user2Loation = user.user_set_location ? user.user_set_location : (user.gps_location ? user.gps_location : user.ip_location);
+				const distanceResult = getDistance(userLocation.x , userLocation.y, user2Loation.x, user2Loation.y);
+				if (distanceResult <= distance) {
+					user.distance = distanceResult;
+					array3.push(user);
+				}
+			})
+			response.send(array3);
 		}
 	})
-	// response.send('good');
 }
 
+const getDistance = (lat1, lon1, lat2, lon2) => {
 
+	function deg2rad(deg) {
+		return deg * (Math.PI/180)
+	}
+	const R = 6371; // Radius of the earth in km
+	const dLat = deg2rad(lat2 - lat1);  // deg2rad below
+	const dLon = deg2rad(lon2 - lon1);
+	const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +	Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *	Math.sin(dLon / 2) * Math.sin(dLon / 2);
+	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	const d = R * c; // Distance in km
+	console.log(d);
+	return d;
+}
 
 module.exports = {
 	getUser,

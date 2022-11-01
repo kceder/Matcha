@@ -6,7 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import Carousel from 'react-bootstrap/Carousel';
 
 const CarouselImages = ({pictures}) => {
-
+	console.log(pictures);
 	const array = Object.keys(pictures).map(key => pictures[key])
 	array.shift();
 	array.shift();
@@ -48,7 +48,7 @@ const ProfileCard = ({target}) => {
 		
 		const obj = { target: target }
 		getUser(obj).then(response => {
-			console.log(typeof(response.data.basicInfo.interests));
+			console.log(response.data);
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)

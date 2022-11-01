@@ -10,12 +10,15 @@ const HomePage = () => {
 	
 	useEffect(() => {
 		getUser({target: "self"}).then((response) => {
-			console.log(response.data.basicInfo)
+			const locations = response.data.locations;
 			const user = response.data.basicInfo;
 			calculateAge(user.birthday);
 			setGender(user.gender)
 			setPreference(user.preference);
 			setTags(user.interests.replace(/\[|\]|\"/g, '').split(','));
+			const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
+			setLocation(ret);
+			
 		})
 	}, []);
 	useEffect(() => {
@@ -40,8 +43,9 @@ const HomePage = () => {
 	const [gender, setGender] = useState("");
 	const [preference, setPreference] = useState([]);
 	const [tags, setTags] = useState([]);
+	
 	const [allTags, setAllTags] = useState([]);
-	const [sorting, setSorting] = useState('distance')
+	const [location, setLocation] = useState();
 
 	const [rating, setRating] = useState(0);
 	const states = {
@@ -52,22 +56,26 @@ const HomePage = () => {
 		tags,
 		rating,
 		allTags,
-		sorting,
 		gender,
 		preference,
+		location,
 		setDistance,
 		setMinAge,
 		setMaxAge,
 		setTags,
 		setRating,
-		setSorting,
 		setUsers,
 	}
-	
+	console.log(users);
 	return (
-		<div>
+		<div className="" style={{
+			display: 'flex',
+			alignItems: 'center',
+			justifyContent: 'center',
+			flexDirection: 'column',
+		  }}>
 			<SearchFilter states={states}/>
-			{/* <UsersGallery users={1}/> */}
+			{ users ? <UsersGallery users={users}/> : null}
 		</div>
 	);
 }
