@@ -1,5 +1,6 @@
 import ProfileCard from "./ProfileCard";
 import { useState } from "react";
+import { useEffect } from "react";
 
 
 const SortOptions = ({ setSorting}) => {
@@ -22,7 +23,7 @@ const UsersGallery = ({ users }) => {
 
 	const sortedUsers = users.sort((a, b) => {
 		if (sorting === "age") {
-			return a.sorting - b.age;
+			return a.age - b.age;
 		} else if (sorting === "distance") {
 			return a.distance - b.distance;
 		} else if (sorting === "score") {
@@ -32,10 +33,12 @@ const UsersGallery = ({ users }) => {
 		}
 	})
 	console.log("sorted users", sortedUsers)
-
-	const filteredUsers = sortedUsers.map(user => {
-		return <ProfileCard target={user.id} />
-	}) 
+	let filteredUsers = [];
+	useEffect ((filteredUsers) => {
+		filteredUsers = sortedUsers.map(user => {
+			return <ProfileCard target={user.id} />
+		}) 
+	}, [sorting])
 
 	return (
 
