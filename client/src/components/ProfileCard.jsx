@@ -6,7 +6,7 @@ import Badge from 'react-bootstrap/Badge';
 import Carousel from 'react-bootstrap/Carousel';
 
 const CarouselImages = ({pictures}) => {
-	console.log(pictures);
+
 	const array = Object.keys(pictures).map(key => pictures[key])
 	array.shift();
 	array.shift();
@@ -44,11 +44,12 @@ const ProfileCard = ({target}) => {
 	const [age, setAge] = useState();
 	const [interests, setinterests] = useState();
 
+
 	useEffect(() => {
 		
 		const obj = { target: target }
 		getUser(obj).then(response => {
-			console.log(response.data);
+
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)
@@ -58,7 +59,7 @@ const ProfileCard = ({target}) => {
 			setBio(response.data.basicInfo.bio)
 			setinterests(response.data.basicInfo.interests.replace(/\[|\]|\"/g, '').split(','));
 
-			console.log(interests)
+
 
 
 			
@@ -90,11 +91,13 @@ const ProfileCard = ({target}) => {
 			<div className="card col-md-4 col-lg-2" >
 				<CarouselImages pictures={pictures} />
 				<div className="card-body">
-					<h5 className="card-title">{username}, {age}</h5>
+					<h5 className="card-title">{username}, {age} </h5>
+
 					<ul className="list-flush p-0">
 						<li className="list-group-item">{name} {lastName}</li>
 						<li className="list-group-item">{preference}, {gender}</li>
 						<li className="list-group-item">{location}</li>
+
 					</ul>
 				</div>
 				<div className='mt-1 mb-1'>

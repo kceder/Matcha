@@ -66,14 +66,14 @@ const HomePage = () => {
 		setRating,
 		setUsers,
 	}
-	console.log(users);
+
 	return (
 		<div className="" style={{
 			display: 'flex',
 			alignItems: 'center',
 			justifyContent: 'center',
 			flexDirection: 'column',
-		  }}>
+		}}>
 			<SearchFilter states={states}/>
 			{ users ? <UsersGallery users={users}/> : null}
 		</div>

@@ -7,7 +7,7 @@ import { filterUsers } from "../services/users";
 
 
 
-const SearchForm = ({states}) => {
+const SearchForm = ({states, dropMenu}) => {
 
 
 	const handleSubmit = (event) => {
@@ -26,6 +26,7 @@ const SearchForm = ({states}) => {
 			console.log(response.data)
 			states.setUsers(response.data);
 		})
+		dropMenu();
 	}
 
 	const handleAgeChange = (e) => {
@@ -74,7 +75,7 @@ const SearchFilter = ({states}) => {
 		return (
 			<>
 				<div className="burger" onClick={() => dropMenu()}></div>
-				{showHide ? <> <SearchForm className="bg-alert" states={states}/> </> : null}
+				{showHide ? <> <SearchForm dropMenu={dropMenu} className="bg-alert" states={states}/> </> : null}
 			</>
 		)
 }

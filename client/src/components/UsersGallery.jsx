@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 const SortOptions = ({ setSorting}) => {
 	const handleSort = (e) => {
-		console.log('cgh')
 		setSorting(e.target.value)
 	}
 	return (
@@ -32,14 +31,20 @@ const UsersGallery = ({ users }) => {
 			return a.commontags	- b.commontags;
 		}
 	})
-	console.log("sorted users", sortedUsers)
-	let filteredUsers = [];
-	useEffect ((filteredUsers) => {
-		filteredUsers = sortedUsers.map(user => {
-			return <ProfileCard target={user.id} />
+	console.log(sortedUsers)
+	const filteredUsers = sortedUsers.map(user => {
+			return <ProfileCard target={user.id} key={user.id} />
 		}) 
-	}, [sorting])
 
+	if (sorting === "age") {
+		filteredUsers.map(user => console.log(user))
+	} else if (sorting === "distance") {
+		filteredUsers.map(user => console.log(user.distance))
+	} else if (sorting === "score") {
+		filteredUsers.map(user => console.log(user.score))
+	} else if (sorting === "tags") {
+		filteredUsers.map(user => console.log(user.commontags))
+	}
 	return (
 
 		<>
