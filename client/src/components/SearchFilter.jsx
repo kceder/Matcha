@@ -53,7 +53,7 @@ const SearchForm = ({states, dropMenu}) => {
 				}}
 			/>
 			<label className="mt-2">Distance</label> <small>{states.distance} km</small><br></br>
-			<input className="slider" type="range" min="0" max="500" value={states.distance} onChange={(e) => {states.setDistance(e.target.value)}}></input>
+			<input className="slider" type="range" min="0" max="1000" value={states.distance} onChange={(e) => {states.setDistance(e.target.value)}}></input>
 			<label>Tags</label>
 			<TagsSelector setInterests={states.setTags} interests={states.tags} tags={states.allTags}/>
 			<div style={{display: 'flex'}}>

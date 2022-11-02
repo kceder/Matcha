@@ -110,6 +110,7 @@ const con = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,
 	password: process.env.DB_PASS,
+	queueLimit : 15000
 });
 
 con.connect((err) => {
@@ -553,66 +554,95 @@ con.connect((err) => {
 	let iMalePictures = 0;
 	let iFemalePictures = 0;
 	let iPreferences = 0;
-	// db.query("SELECT * FROM users", (err, result) => {
-	// 	if (err) {
-	// 		console.log(err);
-	// 	} else {
-	// 		console.log(result)
-	// 	}
-	// });
-	// while (i < 50) {
-	// 	let profile = randomProfile.profile();
-	// 	if (iLocation === locations.length)
-	// 		iLocation = 0;
-	// 	if (iMalePictures === menPics.length)
-	// 	iMalePictures = 0;
-	// 	if (iFemalePictures === womenPics.length)
-	// 	iFemalePictures = 0;
-	// 	if (iPreferences === preferences.length)
-	// 	iPreferences = 0;
-	// 	profile.birthday = randomDate(new Date(1954, 0, 1), new Date(2004, 0, 1));
-	// 	const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);
-	// 	profile.age = getAge(profile.birthday);
-	// 	profile.city = locations[iLocation];
-	// 	profile.coordinates = coordinates[iLocation++];
-	// 	profile.password = bcrypt.hashSync('Malibu11', 10);
-	// 	profile.gender = profile.gender.toLowerCase();
-	// 	profile.bio = `I am ${profile.firstName} ${profile.lastName} and I am ${profile.age} years old. I am a ${preferences[iPreferences]}. I am from ${profile.city} and I am looking for a partner in ${profile.city}.`;
-	// 	const path = `../utils/profilePics/`;
-	// 	if (profile.gender === 'male'){
-	// 		profile.profilePicture = menPics[iMalePictures++];
-	// 		profile.picture = menPics[iMalePictures];
-	// 	} else{
-	// 		profile.profilePicture = womenPics[iFemalePictures++];
-	// 		profile.picture = womenPics[iFemalePictures];
-	// 	}
-	// 	profile.preferences = preferences[iPreferences++];
-	// 	console.log(profile);
-	// 	let array = [];
-	// 	array.push(tags[Math.floor(Math.random() * tags.length)]);
-	// 	array.push(tags[Math.floor(Math.random() * tags.length)]);
-	// 	const myJSON = JSON.stringify(array);
 
-	// 	const score = Math.floor(Math.random() * 50);
+
+	const insertLocationArray = [];
+	const insertUsersArray = [];
+	const insertPicturesArray = [];
+	db.query('SELECT * FROM users', (err, result) => {
+		if (err) {
+			console.log(err);
+		} else if (result.length === 0) {
+			
+
+
+			while (i < 3000) {
+				console.log('CHEKCTHIS OUT : ', i)
+				let profile = randomProfile.profile();
+				console.log(profile);
+				if (iLocation === locations.length)
+					iLocation = 0;
+				if (iMalePictures === menPics.length)
+				iMalePictures = 0;
+				if (iFemalePictures === womenPics.length)
+				iFemalePictures = 0;
+				if (iPreferences === preferences.length)
+				iPreferences = 0;
+				profile.birthday = randomDate(new Date(1954, 0, 1), new Date(2004, 0, 1));
+				const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);
+				profile.age = getAge(profile.birthday);
+				profile.city = locations[iLocation];
+				profile.coordinates = coordinates[iLocation++];
+				profile.password = bcrypt.hashSync('Malibu11', 10);
+				profile.gender = profile.gender.toLowerCase();
+				profile.bio = `I am ${profile.firstName} ${profile.lastName} and I am ${profile.age} years old. I am a ${preferences[iPreferences]}. I am from ${profile.city} and I am looking for a partner in ${profile.city}.`;
+				const path = `../utils/profilePics/`;
+				if (profile.gender === 'male'){
+					profile.profilePicture = menPics[iMalePictures++];
+					profile.picture = menPics[iMalePictures];
+				} else{
+					profile.profilePicture = womenPics[iFemalePictures++]; 
+					profile.picture = womenPics[iFemalePictures];
+				}
+				profile.preferences = preferences[iPreferences++];
 		
-	// 	const insertUsers = `INSERT INTO users (name, lastName, username, email, password, gender, bio, birthday, preference, acti_stat, interests, score)
-	// 						VALUES ('${profile.firstName}', '${profile.lastName}', '${profile.fullName}', '${profile.email}', '${profile.password}', '${profile.gender}', '${profile.bio}', '${profile.birthday}', '${profile.preferences}', 2, '${myJSON}', ${score});`;
-	// 						db.query(insertUsers, (err, result) => {
-	// 							if (err) throw err;
-	// 						})
-	// 	const insertPictures = `INSERT INTO user_pictures (user_id, pic_1, pic_2) VALUES (${i}, '${profile.profilePicture}', '${profile.picture}');`;
-	// 	db.query(insertPictures, (err, result) => {
-	// 		if (err) throw err;
-	// 	})
-	// 	const lat = profile.coordinates.split(" ")[0];
-	// 	const lon = profile.coordinates.split(" ")[1];
-	// 	const insertLocation = `INSERT INTO locations (user_id, user_set_city, user_set_location) VALUES (${i}, '${profile.city}', POINT(${lon}, ${lat}));`;
-	// 	db.query(insertLocation, (err, result) => {
-	// 		if (err) throw err;
-	// 	})
+				let array = []; 
+				let t = Math.floor(Math.random() * tags.length) - 12;
+				array.push(tags[t + 1]);
+				array.push(tags[t + 3]);
+				array.push(tags[t + 2]);
+				array.push(tags[t + 6]);
+				array.push(tags[t + 8]);
+				array.push(tags[t + 9]);
+				array.push(tags[t + 12]);
+				const myJSON = JSON.stringify(array);
+		
+				const score = Math.floor(Math.random() * (50 - 10 + 1) + 10);
 
-	// 	i++;
-	// }
+				const insertUsers = `INSERT INTO users (name, lastName, username, email, password, gender, bio, birthday, preference, acti_stat, interests, score)
+									VALUES ('${profile.firstName}', '${profile.lastName}', '${profile.fullName}', '${profile.email}', '${profile.password}', '${profile.gender}', '${profile.bio}', '${profile.birthday}', '${profile.preferences}', 2, '${myJSON}', ${score});`;
+				insertUsersArray.push(insertUsers);
+			
+				const insertPictures = `INSERT INTO user_pictures (user_id, pic_1, pic_2) VALUES (${i}, '${profile.profilePicture}', '${profile.picture}');`;
+				insertPicturesArray.push(insertPictures);
+		
+				const lat = profile.coordinates.split(" ")[0];
+				const lon = profile.coordinates.split(" ")[1];
+				const insertLocation = `INSERT INTO locations (user_id, user_set_city, user_set_location) VALUES (${i}, '${profile.city}', POINT(${lon}, ${lat}));`;
+				insertLocationArray.push(insertLocation);
+		
+				i++;
+
+			}
+		
+			insertUsersArray.forEach((query) => {
+				db.query(query, (err, result) => {
+					if (err) throw err;
+				})
+			})
+			insertPicturesArray.forEach((query) => {
+				db.query(query, (err, result) => { 
+					if (err) throw err;
+				})
+			})
+			insertLocationArray.forEach((query) => {
+				db.query(query, (err, result) => {
+					if (err) throw err;
+				})
+			})
+		}
+	})
+	
 })
 	
 });

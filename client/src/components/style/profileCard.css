@@ -1,0 +1,9 @@
+.like-dislike-button {
+    border: none;
+    background-color: transparent;
+}
+
+#like-button {
+    color: #3b5998;
+    background-image: url("../../images/like.png");
+}

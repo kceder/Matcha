@@ -18,7 +18,7 @@ const getUser = (request, response) => {
 		target = request.body.target;
 	}
 	console.log(target)
-		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday FROM users WHERE id = ?';
+		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score FROM users WHERE id = ?';
 
 		db.query(sql, [target], 
 				function (error, result) {
@@ -118,7 +118,7 @@ const login = (request, response) => {
 							}).send('fill profile');
 						} else if (result[0].acti_stat === 0){
 							console.log('acti_0')
-							response.status(202).send('account not verified');
+							response.send('account not verified');
 						} else if (result[0].acti_stat === 2) {
 							console.log('acti_2')
 							response.status(202).cookie('token', accessToken,

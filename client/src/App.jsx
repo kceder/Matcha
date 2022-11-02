@@ -10,6 +10,10 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import ProfileCard from './components/ProfileCard'
 import HomePage from "./pages/HomePage";
 import './components/style/mennu.css';
+import { createContext } from "react";
+import { useState } from "react";
+
+export const LoginContext = createContext();
 
 const Navigation = () => {
 	return (
@@ -32,7 +36,9 @@ const Navigation = () => {
 }
 
 const App = () => {
+	const [loggedIn, setLoggedIn] = useState(true);
 	return (
+		<LoginContext.Provider value={{loggedIn, setLoggedIn}}>
 		<>
 		<Navigation />
 		<Routes>
@@ -47,6 +53,7 @@ const App = () => {
 			<Route path="/profilecard" element={<ProfileCard target={'self'} />}/>
 		</Routes>
 		</>
+		</LoginContext.Provider>
 	);
 };
 
