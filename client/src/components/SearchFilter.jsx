@@ -4,6 +4,7 @@ import TagsSelector from "./TagsSelector";
 import './style/slider.css';
 import { getAllTags } from "../services/tags";
 import { filterUsers } from "../services/users";
+import './style/slider.css'
 
 
 
@@ -44,20 +45,20 @@ const SearchForm = ({states, dropMenu}) => {
 				minValue={states.minAge}
 				maxValue={states.maxAge}
 				ruler={false}
-				style={{ border: "none", boxShadow: "none", padding: "15px 10px" }}
+				style={{ border: "none", boxShadow: "none" }}
 				barLeftColor="white"
-				barInnerColor="#055ef7"
+				barInnerColor="black"
 				barRightColor="white"
 				onInput={(e) => {
 					handleAgeChange(e);
 				}}
 			/>
 			<label className="mt-2">Distance</label> <small>{states.distance} km</small><br></br>
-			<input className="slider" type="range" min="0" max="1000" value={states.distance} onChange={(e) => {states.setDistance(e.target.value)}}></input>
+			<input type="range" min="0" max="1000" value={states.distance} onChange={(e) => {states.setDistance(e.target.value)}}></input><br></br>
 			<label>Tags</label>
 			<TagsSelector setInterests={states.setTags} interests={states.tags} tags={states.allTags}/>
-			<div style={{display: 'flex'}}>
-				<button type="submit" onClick={(event) => handleSubmit(event)}>Filter</button>
+			<div className="d-flex align-content-center">
+				<button className="ml-5" id="submitFilters" type="submit" onClick={(event) => handleSubmit(event)}>Filter</button>
 			</div>
 			</form>
 			

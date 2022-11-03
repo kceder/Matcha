@@ -5,6 +5,7 @@ import SearchFilter from "../components/SearchFilter";
 import { getAllTags } from "../services/tags";
 import { filterUsers } from "../services/users";
 import Spinner from 'react-bootstrap/Spinner';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 
 const HomePage = () => {
@@ -18,8 +19,10 @@ const HomePage = () => {
 	
 	const [allTags, setAllTags] = useState([]);
 	const [location, setLocation] = useState(null);
-
+	const [displayUsers, setDisplayUsers] = useState([]);
 	const [rating, setRating] = useState(0);
+	const [sorting, setSorting] = useState('distance')
+	let more = true;
 	useEffect(() => { // get user
 		console.log(12)
 		getUser({target: "self"}).then((response) => {
@@ -35,6 +38,7 @@ const HomePage = () => {
 
 		})
 	}, []);
+
 	useEffect(() => { // get all tags
 		console.log(3)
 		getAllTags().then(response => {
@@ -51,7 +55,14 @@ const HomePage = () => {
 		setMinAge(Math.floor(ageMS / 31536000000) - 5);
 		setMaxAge(Math.floor(ageMS / 31536000000) + 5);
 	}
-	
+	const getMoreUsers = () => {
+		setDisplayUsers([...displayUsers, ...users.slice(displayUsers.length, displayUsers.length + 10)]);
+		if (displayUsers.length < users.length - 2) {
+			console.log('no more');
+			more = false;
+		}
+		return;
+	}
 	
 	const states = {
 		users,
@@ -72,7 +83,7 @@ const HomePage = () => {
 		setUsers,
 	}
 	useEffect(() => { // set default filters for firtst query
-		if(location){
+		if(location && sorting){
 			const filters = {
 				distance: 800,
 				minAge: 22,
@@ -83,10 +94,46 @@ const HomePage = () => {
 				userLocation: location,
 			}
 			filterUsers(filters).then(response => {
-				setUsers(response.data);
+				console.log('response', response.data.length);
+				console.log('users', users.length);
+				const temp = response.data.sort((a, b) => {
+					if (sorting === "age") {
+						return a.age - b.age;
+					} else if (sorting === "distance") {
+						return a.distance - b.distance;
+					} else if (sorting === "score") {
+						return b.score - a.score;
+					} else if (sorting === "tags") {
+						return b.commontags	- a.commontags;
+					}
+					return null;
+				})
+				console.log('temp 1 ', temp);
+				setUsers(temp);
+				console.log('users 1 ', users.length);
+				setDisplayUsers(temp.slice(0, 10));
 			})
 		}
 	}, [location, gender, preference, tags])
+	
+	useEffect(() => { // filter users
+		setUsers(
+			users.sort((a, b) => {
+				if (sorting === "age") {
+					return a.age - b.age;
+				} else if (sorting === "distance") {
+					return a.distance - b.distance;
+				} else if (sorting === "score") {
+					return b.score - a.score;
+				} else if (sorting === "tags") {
+					return b.commontags	- a.commontags;
+				}
+				return null;
+			})
+		)
+		setDisplayUsers(users.slice(0, 10));
+	}, [sorting])
+
 	if (users.length === 0) {
 		return (
 			<Spinner animation="grow" role="status">
@@ -94,6 +141,8 @@ const HomePage = () => {
 			</Spinner>
 		)
 	} else {
+		console.log('users length before return', users.length);
+		console.log('display length before return', displayUsers.length);
 		return (
 			<div className="" style={{
 				display: 'flex',
@@ -102,7 +151,17 @@ const HomePage = () => {
 				flexDirection: 'column',
 			}}>
 				<SearchFilter states={states}/>
-				{ users ? <UsersGallery users={users}/> : null}
+				<UsersGallery setSorting={setSorting} displayUsers={displayUsers} users={users}/>
+				<InfiniteScroll
+					dataLength={displayUsers.length}
+					next={getMoreUsers}
+					hasMore={more}
+					loader={<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
+								<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
+							</Spinner>}
+					endMessage={<p style={{textAlign: 'center'}}></p>}
+				>
+				</InfiniteScroll>
 			</div>
 		);
 	}

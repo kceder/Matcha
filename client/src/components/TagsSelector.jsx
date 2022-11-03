@@ -58,8 +58,8 @@ const TagsSelector = ({ tags, setTags, interests, setInterests }) => {
 	const options = tags.map((tag) => <option key={tag.id} value={tag.tag}>{tag.tag}</option>)
 	const selectedTags = interests.map((tag, i) => {
 		return (
-			<Badge key={i} value={tag} bg="warning" className="m-1">{tag}	
-				<Badge bg="danger" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge>
+			<Badge key={i} value={tag} bg="dark" className="m-1">{tag}	
+				<Badge className="text-dark"bg="light" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge>
 			</Badge>
 		)
 	})

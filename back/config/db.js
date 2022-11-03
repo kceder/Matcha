@@ -223,6 +223,11 @@ con.connect((err) => {
 					});
 				}
 		});
+		sql = "CREATE TABLE IF NOT EXISTS matches (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11), like1 BOOLEAN, like2 BOOLEAN, matched BOOLEAN);";
+		con.query(sql, (error, resutl) => {
+			if (error) throw error;
+			else console.log('match table')
+		})
 	}
 	createTables().then(() => {
 	const womenPics = [

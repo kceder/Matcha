@@ -8,6 +8,7 @@ import { Spinner } from "react-bootstrap";
 import like from "../images/like.jpeg";
 import dislike from "../images/dislike.jpeg";
 import {Image} from "react-bootstrap";
+import {likeDislike} from "../services/match"
 
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
@@ -78,7 +79,8 @@ const CarouselImages = ({pictures}) => {
 	)
 }
 
-const ProfileCard = ({commontags, distance, target}) => {
+const ProfileCard = ({commontags, distance, target, users}) => {
+	// console.log(users);
 	const [name, setName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [username, setUsername] = useState('');
@@ -97,7 +99,7 @@ const ProfileCard = ({commontags, distance, target}) => {
 		
 		const obj = { target: target }
 		getUser(obj).then(response => {
-			console.log('response',response.data)
+
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)
@@ -107,8 +109,8 @@ const ProfileCard = ({commontags, distance, target}) => {
 			setBio(response.data.basicInfo.bio)
 			setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setScore(response.data.basicInfo.score)
-		getUser({target : "self"}).then(response => {
-			setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
+			getUser({target : "self"}).then(response => {
+				setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 		})
 
 
@@ -145,7 +147,19 @@ const ProfileCard = ({commontags, distance, target}) => {
 	const showHideInfo = () => {
 		setInfoShow(!infoShow);
 	}
-
+	const handleLike = () => {
+		console.log('like');
+		console.log(target);
+		likeDislike({target : target, like : true}).then(response => {
+			console.log(response);
+		})
+	}
+	const handleDislike = () => {
+		console.log('dislike');
+		likeDislike({target : target, like : false}).then(response => {
+			console.log(response);
+		})
+	}
 	if (pictures.length === 0) {
 		return (
 			<Spinner animation="grow" role="status">
@@ -168,9 +182,9 @@ const ProfileCard = ({commontags, distance, target}) => {
 								</div>
 							</div>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <Image src={like} width="80"  />}
+									{target === "self" ? null : <Image onClick={() => handleLike()} src={like} width="80"  />}
 									{infoShow === false ? <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i onClick={() => showHideInfo()} class="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <Image src={dislike} width="80"  />}
+									{target === "self" ? null : <Image onClick={() => handleDislike()} src={dislike} width="80"  />}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
 						</div> {/* end   */}
