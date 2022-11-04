@@ -21,10 +21,11 @@ const Navigation = () => {
 			<Container>
 				<Navbar.Brand href="/home">
 				<h1 style={{
+							background: 'url(https://static01.nyt.com/images/2022/08/09/well/09ASKWELL-WILDFIRES-CANCER3/merlin_211227660_ccc9570a-94a8-40a5-b3b2-403a08d84d2b-superJumbo.jpg?quality=75&auto=webp)',
+							backgroundSize: 'cover',
+							WebkitBackgroundClip: 'text',
+							WebkitTextFillColor: 'transparent',
 							fontWeight: "bolder",
-							background: "-webkit-linear-gradient(blue, brown)",
-							WebkitBackgroundClip: "text",
-							WebkitTextFillColor: "transparent",
 						}} >MATCHA</h1>
 				</Navbar.Brand>
 				<Nav.Link href="/home" >Home</Nav.Link>

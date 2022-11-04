@@ -15,7 +15,6 @@ const getUser = (request, response) => {
 	} else {
 		target = request.body.target;
 	}
-	console.log(target)
 		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score FROM users WHERE id = ?';
 
 		db.query(sql, [target], 
@@ -284,6 +283,7 @@ const filterUsers = (request, response) => {
 	const maxAge = request.body.maxAge;
 	const distance = request.body.distance;
 	const userLocation = request.body.userLocation;
+	const rating = request.body.rating;
 	let sql;
 	let blockedUsers = [];
 	sql = `SELECT * FROM matches WHERE user1 = ${user.id} OR user2 = ${user.id}`;
@@ -334,8 +334,9 @@ const filterUsers = (request, response) => {
 				}
 			})
 			let array3 = [];
-			// console.log(array2)
+			console.log(array2)
 			array2.forEach(user => {
+				console.log(user)
 				const user2Loation = user.user_set_location ? user.user_set_location : (user.gps_location ? user.gps_location : user.ip_location);
 				const distanceResult = getDistance(userLocation.x , userLocation.y, user2Loation.x, user2Loation.y);
 				if (distanceResult <= distance) {
@@ -343,7 +344,22 @@ const filterUsers = (request, response) => {
 					array3.push(user);
 				}
 			})
-			response.send(array3);
+			let i = 0;
+			if (rating > 0) {
+				console.log('rating', rating)
+				let array4 = [];
+				array3.forEach(user => {
+					if (user.score >= rating) {
+						console.log(user.score)
+						array4.push(user);
+					}
+				})
+				console.log('RESPONSE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+				response.send(array4);
+			} else {
+				response.send(array3)
+				console.log('RESPONSE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+			}
 		}
 	})
 }

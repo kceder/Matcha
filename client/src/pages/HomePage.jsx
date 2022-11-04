@@ -10,6 +10,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 const HomePage = () => {
 	const [users, setUsers] = useState([]);
+	const [stars, setStars] = useState(0);
 	const [distance, setDistance] = useState(200);
 	const [minAge, setMinAge] = useState();
 	const [maxAge, setMaxAge] = useState();
@@ -73,12 +74,14 @@ const HomePage = () => {
 		gender,
 		preference,
 		location,
+		stars,
 		setDistance,
 		setMinAge,
 		setMaxAge,
 		setTags,
 		setRating,
 		setUsers,
+		setStars,
 	}
 	useEffect(() => { // set default filters for firtst query
 
@@ -128,13 +131,16 @@ const HomePage = () => {
 			})
 		)
 		setDisplayUsers(users.slice(0, 10));
-	}, [sorting])
+	}, [sorting, users])
 
 	if (users.length === 0) {
 		return (
-			<Spinner animation="grow" role="status">
-				<span className="sr-only">Loading...</span>
-			</Spinner>
+			<div>
+				<SearchFilter states={states}/>
+				<Spinner animation="grow" role="status">
+					<span className="sr-only">Loading...</span>
+				</Spinner>
+			</div>
 		)
 	} else {
 		return (

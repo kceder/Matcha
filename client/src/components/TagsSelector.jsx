@@ -59,7 +59,7 @@ const TagsSelector = ({ tags, setTags, interests, setInterests }) => {
 	const selectedTags = interests.map((tag, i) => {
 		return (
 			<Badge key={i} value={tag} bg="dark" className="m-1">{tag}	
-				<Badge className="text-dark"bg="light" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge>
+				<Badge style={{cursor:'pointer'}} className="text-dark"bg="light" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge>
 			</Badge>
 		)
 	})

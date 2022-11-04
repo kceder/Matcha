@@ -200,9 +200,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 								</div>
 							</div>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <Image onClick={() => handleLike()} src={like} width="80"  />}
-									{infoShow === false ? <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <Image onClick={() => handleDislike()} src={dislike} width="80"  />}
+									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleLike()} src={like} width="80"  />}
+									{infoShow === false ? <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
+									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike} width="80"  />}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
 						</div>
