@@ -24,9 +24,8 @@ const HomePage = () => {
 	const [sorting, setSorting] = useState('distance')
 	let more = true;
 	useEffect(() => { // get user
-		console.log(12)
+
 		getUser({target: "self"}).then((response) => {
-			console.log(1)
 			const locations = response.data.locations;
 			const user = response.data.basicInfo;
 			calculateAge(user.birthday);
@@ -40,14 +39,14 @@ const HomePage = () => {
 	}, []);
 
 	useEffect(() => { // get all tags
-		console.log(3)
+
 		getAllTags().then(response => {
 			setAllTags(response.data);
 		})
 	}, [])
 
 	const calculateAge = (birthday) => {
-		console.log('2')
+
 		let birthDate = new Date(birthday);
 		const today = new Date();
 		
@@ -58,7 +57,6 @@ const HomePage = () => {
 	const getMoreUsers = () => {
 		setDisplayUsers([...displayUsers, ...users.slice(displayUsers.length, displayUsers.length + 10)]);
 		if (displayUsers.length < users.length - 2) {
-			console.log('no more');
 			more = false;
 		}
 		return;
@@ -83,6 +81,7 @@ const HomePage = () => {
 		setUsers,
 	}
 	useEffect(() => { // set default filters for firtst query
+
 		if(location && sorting){
 			const filters = {
 				distance: 800,
@@ -94,8 +93,6 @@ const HomePage = () => {
 				userLocation: location,
 			}
 			filterUsers(filters).then(response => {
-				console.log('response', response.data.length);
-				console.log('users', users.length);
 				const temp = response.data.sort((a, b) => {
 					if (sorting === "age") {
 						return a.age - b.age;
@@ -108,15 +105,14 @@ const HomePage = () => {
 					}
 					return null;
 				})
-				console.log('temp 1 ', temp);
 				setUsers(temp);
-				console.log('users 1 ', users.length);
 				setDisplayUsers(temp.slice(0, 10));
 			})
 		}
 	}, [location, gender, preference, tags])
 	
 	useEffect(() => { // filter users
+
 		setUsers(
 			users.sort((a, b) => {
 				if (sorting === "age") {
@@ -141,8 +137,6 @@ const HomePage = () => {
 			</Spinner>
 		)
 	} else {
-		console.log('users length before return', users.length);
-		console.log('display length before return', displayUsers.length);
 		return (
 			<div className="" style={{
 				display: 'flex',
@@ -151,7 +145,7 @@ const HomePage = () => {
 				flexDirection: 'column',
 			}}>
 				<SearchFilter states={states}/>
-				<UsersGallery setSorting={setSorting} displayUsers={displayUsers} users={users}/>
+				<UsersGallery setUsers={setUsers} setSorting={setSorting} displayUsers={displayUsers} users={users} setDisplayUsers={setDisplayUsers}/>
 				<InfiniteScroll
 					dataLength={displayUsers.length}
 					next={getMoreUsers}

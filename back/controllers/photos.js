@@ -3,8 +3,8 @@ const fs = require("fs");
 
 
 const getPhotos = (request, response) => {
-	console.log(request.body);
-	console.log(request.user);
+	// console.log(request.body);
+	// console.log(request.user);
 	let target;
 	if (request.body.target === "self") {
 		target = request.user.id;
@@ -15,7 +15,7 @@ const getPhotos = (request, response) => {
 	db.query(sql, [target], function (error, result) {
 		if (error) throw error;
 		else {
-			console.log(result);
+			// console.log(result);
 			response.send(result[0]);
 		}
 	})
@@ -41,8 +41,8 @@ const setProfilePicture = (request, response) => {
 			db.query(sql, [path, request.user.id], function (error, result) {
 				if (error) throw (error);
 				else {
-					console.log('result:\n', result)
-					console.log('######### END ########')
+					// console.log('result:\n', result)
+					// console.log('######### END ########')
 					response.send('good');
 				}
 			})
@@ -58,7 +58,6 @@ const setPicture = (request, response) => {
 		db.query(sql, [request.user.id], function (error, result) {
 			if (error) throw error;
 			else {
-				console.log(result[0])
 				let i = -1;
 				for (const property in result[0]) {
 					if(result[0][property] === old) {
@@ -77,7 +76,7 @@ const setPicture = (request, response) => {
 					db.query(sql, [path, request.user.id], function (error, result) {
 						if (error) throw (error);
 						else {
-							console.log('result:\n', result)
+							// console.log('result:\n', result)
 							response.send('good');
 						}
 					})
@@ -102,7 +101,7 @@ const setPicture = (request, response) => {
 			});
 			const findIndex = "SELECT * FROM user_pictures WHERE user_id = ?;";
 			db.query(findIndex, [request.user.id], function (error, result) {
-				console.log(typeof(result[0]))
+				// console.log(typeof(result[0]))
 				let i = -1
 				for (const property in result[0]) {
 					if(result[0][property] === null) {
@@ -114,14 +113,12 @@ const setPicture = (request, response) => {
 				if (i === 6) {
 					response.send('no space')
 				} else {
-
-					console.log('cnbdbshjgbvfkss', i)
 					const sql = `UPDATE user_pictures SET pic_${i} = ? WHERE user_id = ?;`;
 					db.query(sql, [path, request.user.id], function (error, result) {
 						if (error) throw (error);
 						else {
-							console.log('result:\n', result)
-							console.log('######### END ########')
+							// console.log('result:\n', result)
+							// console.log('######### END ########')
 							response.send('good');
 						}
 					})

@@ -1,7 +1,7 @@
 import ProfileCard from "./ProfileCard";
-import { useState } from "react";
 import Form from 'react-bootstrap/Form';
 import { useEffect } from "react";
+import { useState } from "react";
 
 
 const SortOptions = ({ setSorting }) => {
@@ -20,24 +20,24 @@ const SortOptions = ({ setSorting }) => {
 	)
 }
 
-const UsersGallery = ({ users, displayUsers, setSorting }) => {
+const UsersGallery = ({ setUsers, users, displayUsers, setDisplayUsers,setSorting }) => {
 
-	console.log('dislay users', displayUsers.length)
+
+	console.log(displayUsers)
 
 	const filteredUsers = displayUsers.map(user => {
-		return <ProfileCard users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
+		return <ProfileCard setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
 	}) 
 
-	
+	if (filteredUsers) {
+		return (
+			<>
+				<SortOptions setSorting={setSorting}/>
+				{filteredUsers}
+			</>
+		)
 
-	
-	return (
-
-		<>
-			<SortOptions setSorting={setSorting}/>
-			{filteredUsers}
-		</>
-	)
+	}
 }
 
 export default UsersGallery;

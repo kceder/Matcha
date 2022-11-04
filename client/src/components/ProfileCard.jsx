@@ -79,8 +79,8 @@ const CarouselImages = ({pictures}) => {
 	)
 }
 
-const ProfileCard = ({commontags, distance, target, users}) => {
-	// console.log(users);
+const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) => {
+
 	const [name, setName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [username, setUsername] = useState('');
@@ -96,7 +96,7 @@ const ProfileCard = ({commontags, distance, target, users}) => {
 
 
 	useEffect(() => {
-		
+		console.log('1')
 		const obj = { target: target }
 		getUser(obj).then(response => {
 
@@ -151,13 +151,31 @@ const ProfileCard = ({commontags, distance, target, users}) => {
 		console.log('like');
 		console.log(target);
 		likeDislike({target : target, like : true}).then(response => {
-			console.log(response);
+			setUsers(
+				users.filter(user => user.id !== target)
+			)
+			setDisplayUsers(
+				displayUsers.push(users[displayUsers.length])
+			)
+			setDisplayUsers(
+				displayUsers.filter(user => user.id !== target)
+			)
 		})
 	}
 	const handleDislike = () => {
 		console.log('dislike');
 		likeDislike({target : target, like : false}).then(response => {
 			console.log(response);
+			setDisplayUsers(
+				displayUsers.push(users[displayUsers.length])
+			)
+			setUsers(
+				users.filter(user => user.id !== target)
+			)
+			setDisplayUsers(
+				displayUsers.filter(user => user.id !== target)
+			)
+			console.log(users)
 		})
 	}
 	if (pictures.length === 0) {
@@ -183,11 +201,11 @@ const ProfileCard = ({commontags, distance, target, users}) => {
 							</div>
 							<div className="d-flex justify-content-around">
 									{target === "self" ? null : <Image onClick={() => handleLike()} src={like} width="80"  />}
-									{infoShow === false ? <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i onClick={() => showHideInfo()} class="align-self-end fa-solid fa-chevron-up"></i>}
+									{infoShow === false ? <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
 									{target === "self" ? null : <Image onClick={() => handleDislike()} src={dislike} width="80"  />}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
-						</div> {/* end   */}
+						</div>
 					<div className='row p-2'>
 						<div className='col'>{tags}</div>
 					</div>

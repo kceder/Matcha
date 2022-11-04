@@ -3,8 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const { sendMail } = require('../utils/sendEmail');
 const verifyToken = require('../utils/verifyToken.js');
-const { Console } = require('console');
-const { birthday } = require('random-profile-generator');
 
 require('dotenv').config();
 
@@ -62,7 +60,7 @@ const register = (request, response) => {
 					function (error, results) {
 						if (error) throw error;
 						else 
-							console.log(results);
+							console.log(1);
 					}
 				);
 				const infoForEmail = {
@@ -102,7 +100,7 @@ const login = (request, response) => {
 			if (result.length > 0) {
 				bcrypt.compare(password,  result[0].password, function(err, compare) {
 					if (err) throw err
-					console.log('59', compare)
+					// console.log('59', compare)
 					if (compare == true) {
 						const user = { 
 							name : `${result[0].name} ${result[0].lastName}` , 
@@ -110,17 +108,17 @@ const login = (request, response) => {
 						}
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						if(result[0].acti_stat === 1) {
-							console.log('acti_1')
+							// console.log('acti_1')
 							response.status(202).cookie('token', accessToken,
 							{ 
 								path: '/',
 								httpOnly: true
 							}).send('fill profile');
 						} else if (result[0].acti_stat === 0){
-							console.log('acti_0')
+							// console.log('acti_0')
 							response.send('account not verified');
 						} else if (result[0].acti_stat === 2) {
-							console.log('acti_2')
+							// console.log('acti_2')
 							response.status(202).cookie('token', accessToken,
 							{ 
 								path: '/',
@@ -143,17 +141,17 @@ const activateUser = (request, response) => {
 	const sql = 'SELECT * FROM users WHERE activation_token = ?';
 
 	const token = request.body.token;
-	console.log(request.body)
+	// console.log(request.body)
 	db.query(sql, [token], function(error, result) {
 		if (error) throw error;
 		if (result.length > 0) {
 			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
 			db.query(sql, [result[0].id], function (error, result) {
-				// console.log('result ---->', result)
+				console.log('result ---->', result)
 				if (error) throw error;
 				response.status(202).send('user activated :)');
 			});
-			console.log(result[0].id)
+			// console.log(result[0].id)
 			
 		} else {
 			response.send('user not found');
@@ -199,7 +197,7 @@ const completeAccount = (request, response) => {
 			function (error, result) { console.log(error) });
 
 		const myJSON = JSON.stringify(interests);
-		console.log(myJSON)
+		// console.log(myJSON)
 
 
 		const sql = "UPDATE users SET username = ?, gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
@@ -214,7 +212,7 @@ const completeAccount = (request, response) => {
 					if (error) throw error;
 					else  {
 						const newTags = interests.filter((interest) => !result.map((tag) => tag.tag).includes(interest));
-						console.log(newTags);
+						// console.log(newTags);
 						newTags.forEach((tag) => {
 							const sql = `INSERT INTO tags (tag) VALUES (?)`;
 							db.query(sql, [tag],(err, result) => {
@@ -244,7 +242,7 @@ const addPhotos = (request, response) => {
 		db.query(sql, [image.path, user.id],
 			function (error, result) {
 				if (error) {
-					console.log(error);
+					// console.log(error);
 					response.send('SQL error')
 				}
 			});
@@ -286,12 +284,17 @@ const filterUsers = (request, response) => {
 	const maxAge = request.body.maxAge;
 	const distance = request.body.distance;
 	const userLocation = request.body.userLocation;
-	console.log(' 2    ########', request.body);
 	let sql;
-	// sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE users.id = 51`;
-	// db.query(sql, function (error, result) {
-	// 	console.log(result);
-	// })
+	let blockedUsers = [];
+	sql = `SELECT * FROM matches WHERE user1 = ${user.id} OR user2 = ${user.id}`;
+	db.query(sql, function (error, result) {
+		if (error) throw error;
+		else {
+			blockedUsers = result.map((match) => {
+				return match.user1 === user.id ? match.user2 : match.user1;
+			})
+		}
+	});
 
 	if (gender === 'female' && preference === 'heterosexual') {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE (gender = 'male' AND preference = 'heterosexual') OR (gender = 'male' AND preference = 'bisexual')`;
@@ -304,12 +307,19 @@ const filterUsers = (request, response) => {
 	} else if (gender === 'male' && preference === 'bisexual') {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'male' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'female' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
 	} else if (gender === 'female' && preference === 'bisexual') {
-		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id NOT LIKE ?`;
 	}
-	db.query(sql, function (error, result) {
+	db.query(sql, [user.id], function (error, result) {
+		console.log('blocked list !!!!', blockedUsers);
 		if (error) throw error;
 		else {
 			let array = [];
+			result = result.filter(result => {
+				return result.id !== user.id;
+			})
+			result = result.filter(result => {
+				return !blockedUsers.includes(result.id);
+			})
 			result.forEach(user => {
 				let ret = filterByTags(user, interests);
 				ret === null ? null : array.push(ret);
@@ -324,7 +334,7 @@ const filterUsers = (request, response) => {
 				}
 			})
 			let array3 = [];
-			console.log(array2)
+			// console.log(array2)
 			array2.forEach(user => {
 				const user2Loation = user.user_set_location ? user.user_set_location : (user.gps_location ? user.gps_location : user.ip_location);
 				const distanceResult = getDistance(userLocation.x , userLocation.y, user2Loation.x, user2Loation.y);
@@ -349,7 +359,7 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 	const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +	Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *	Math.sin(dLon / 2) * Math.sin(dLon / 2);
 	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	const d = R * c; // Distance in km
-	console.log(d);
+	// console.log(d);
 	return d;
 }
 

@@ -24,7 +24,6 @@ const SearchForm = ({states, dropMenu}) => {
 			userLocation: states.location,
 		}
 		filterUsers(filters).then(response => {
-			console.log(response.data)
 			states.setUsers(response.data);
 		})
 		dropMenu();
@@ -58,6 +57,7 @@ const SearchForm = ({states, dropMenu}) => {
 			<label>Tags</label>
 			<TagsSelector setInterests={states.setTags} interests={states.tags} tags={states.allTags}/>
 			<div className="d-flex align-content-center">
+				<>*****</>
 				<button className="ml-5" id="submitFilters" type="submit" onClick={(event) => handleSubmit(event)}>Filter</button>
 			</div>
 			</form>
