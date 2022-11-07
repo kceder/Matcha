@@ -12,13 +12,26 @@ import HomePage from "./pages/HomePage";
 import './components/style/mennu.css';
 import { createContext } from "react";
 import { useState } from "react";
+import { logOut } from "./services/login";
+import {Button} from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import {io} from 'socket.io-client';
 
 const socket = io("http://localhost:5000");
 
+
 export const LoginContext = createContext();
 
 const Navigation = () => {
+
+	const Navigate = useNavigate();
+	const handleLogout = (e) => {
+		e.preventDefault()
+		logOut().then(response => {
+				socket.emit("login");
+				Navigate('/');	
+			})
+		};
 	return (
 		<Navbar bg="light" expand="lg">
 			<Container>
@@ -34,6 +47,7 @@ const Navigation = () => {
 				<Nav.Link href="/home" >Home</Nav.Link>
 				<Nav.Link href="/profile">Profile</Nav.Link>
 				<Nav.Link>Settings</Nav.Link>
+				<Button onClick={(e) => handleLogout(e) }>Log Out</Button>
 			</Container>
 		</Navbar>
 	)

@@ -9,7 +9,46 @@ import like from "../images/like.jpeg";
 import dislike from "../images/dislike.jpeg";
 import {Image} from "react-bootstrap";
 import {likeDislike} from "../services/match"
+import {io} from 'socket.io-client';
+import { getLoggedInUsers } from '../services/users';
 
+const socket = io("http://localhost:5000");
+
+const LoginStatus = ({user}) => {
+	const [login, setLogin] = useState(false);
+	getLoggedInUsers().then(response => {
+		console.log('IN USE');
+		const users = response.data;
+		if (users.length > 0) {
+			if (users.includes(user))
+				setLogin(true)
+			else
+				setLogin(false)
+		}
+	}) 
+	socket.on("logged", (data) => {
+		if (data.includes(user))
+			setLogin(true)
+		else
+			setLogin(false)
+	});
+
+	if (login) {
+		return (
+			<div>
+				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
+				</Spinner>
+			</div>
+		)
+	} else {
+		return (
+			<div>
+				<Spinner style={{textAlign: 'center'}} animation="border" size="sm" role="status">
+				</Spinner>
+			</div>
+		)
+	}
+}
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -96,7 +135,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 
 
 	useEffect(() => {
-		console.log('1')
+
 		const obj = { target: target }
 		getUser(obj).then(response => {
 
@@ -206,7 +245,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 						<div className="container">
 							<div className="row">
 								<div className="col-7">
-									<h5 className="card-title">{username}, {age}</h5> 
+									<div>
+										<LoginStatus className="m-2" user={target}/><h5 className="ml-2 card-title">{username}, {age}</h5>
+									</div> 
 								</div>
 								<div className="col-5">
 									<StarRating rating={score / 10} />

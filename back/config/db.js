@@ -206,6 +206,20 @@ con.connect((err) => {
 				console.log('\x1b[36m%s\x1b[0m', "notifications tale created");
 		});
 
+		sql = "CREATE TABLE IF NOT EXISTS loggedInUsers \
+		(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+		user_id INT(11),\
+		time DATETIME DEFAULT NOW());";
+
+		
+		con.query(sql, (err, result) => {
+			if (err) throw err;
+			if (result.warningCount > 0)
+				console.log('\x1b[36m%s\x1b[0m', "loggedInUsers table already exists");
+			else
+				console.log('\x1b[36m%s\x1b[0m', "loggedInUsers tale created");
+		});
+
 		sql = "CREATE TABLE IF NOT EXISTS tags \
 		(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
 		tag VARCHAR(30))";

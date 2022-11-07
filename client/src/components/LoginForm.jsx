@@ -8,6 +8,9 @@ import { geoApiKey } from "../services/env";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import {io} from 'socket.io-client';
+
+const socket = io("http://localhost:5000");
 
 const LoginForm = () => {
 	
@@ -78,12 +81,13 @@ const LoginForm = () => {
 				if (response.data === "fill profile") {
 					Navigate('../completeaccount');
 				}
-				if (response.data === "login") {
+				if (response.data.message === "login") {
+					socket.emit("login");
 					Navigate('../profile')
 				}
 			}}
 		)}
-
+	
 	const handleChangePassword = (event) => {
 		setPassword(event);
 	};

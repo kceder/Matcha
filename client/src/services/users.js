@@ -16,3 +16,7 @@ export const activateUser = (token) => {
 export const filterUsers = (object) => {
 	return axios.post(`${baseUrl}/filter`, object);
 }
+
+export const getLoggedInUsers = () => {
+	return axios.post(`${baseUrl}/getLoggedInUsers`);
+}

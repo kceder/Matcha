@@ -38,6 +38,8 @@ userRouter.route('/api/users/complete-account/pictures').post(upload.array('imag
 userRouter.route('/api/users/filter').post(tokenValidator ,userController.filterUsers);
 
 userRouter.route('/api/users').get(userController.getAllUsers);
+userRouter.route('/api/users/getLoggedInUsers').post(tokenValidator, userController.getLoggedInUsers);
+userRouter.route('/api/logout').post(tokenValidator, userController.logOut);
 
 
 module.exports = userRouter;

@@ -24,8 +24,13 @@ const requestLogger = (request, response, next) => {
 	// console.log('---')
 	next();
 }
+const corsOptions = {
+	origin: "http://localhost:3000",
+	credentials: true,
+	optionSuccessStatus: 200,
+};
 
-app.use(cors({credentials : true, origin : 'http://localhost:3000'}));
+app.use(cors(corsOptions));
 app.use(bodyParser.json({limit: '1000mb'}));
 app.use(bodyParser.urlencoded({limit: '1000mb', extended: true}));
 app.use(express.json());
@@ -44,7 +49,7 @@ app.use(matchRouter);
 
 
 
-socketServer(server);
+socketServer.socketServer(server);
 const port = process.env.PORT || 5000;
 console.log('											')
 server.listen(port, () => console.log(`Listening on port ${port}`))

@@ -6,6 +6,26 @@ const verifyToken = require('../utils/verifyToken.js');
 
 require('dotenv').config();
 
+const getLoggedInUsers = (request, response) => {
+	const sql = 'SELECT user_id FROM loggedinusers';
+	db.query(sql, function (error, result) {
+		if (error) console.log('Error in logged in users:', error);
+		else
+			response.send(result);
+	})
+}
+
+const logOut = (request, response) => {
+	const sql = 'DELETE FROM loggedinusers WHERE user_id = ?';
+	db.query(sql, [request.user.id], function (error, result) {
+		if (error) console.log('Error in logout:', error);
+		else {
+			response.clearCookie('token').send('logout');
+
+		}
+	})
+}
+
 const getUser = (request, response) => {
 	const jToken = request.cookies.token;
 	const user = verifyToken(jToken).id;
@@ -117,12 +137,15 @@ const login = (request, response) => {
 							// console.log('acti_0')
 							response.send('account not verified');
 						} else if (result[0].acti_stat === 2) {
-							// console.log('acti_2')
-							response.status(202).cookie('token', accessToken,
-							{ 
-								path: '/',
-								httpOnly: true
-							}).send('login');
+							const logUser = "Insert into loggedInUsers (user_id) values (?)";
+							db.query(logUser, [user.id] ,function (error, result) {
+								if (error) throw error;
+								response.status(202).cookie('token', accessToken,
+								{ 
+									path: '/',
+									httpOnly: true
+								}).send({message: 'login', user: user.id});
+							});
 						}
 					
 					
@@ -388,4 +411,6 @@ module.exports = {
 	getAllUsers,
 	addPhotos,
 	filterUsers,
+	getLoggedInUsers,
+	logOut,
 }
