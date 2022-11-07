@@ -12,6 +12,9 @@ import HomePage from "./pages/HomePage";
 import './components/style/mennu.css';
 import { createContext } from "react";
 import { useState } from "react";
+import {io} from 'socket.io-client';
+
+const socket = io("http://localhost:5000");
 
 export const LoginContext = createContext();
 

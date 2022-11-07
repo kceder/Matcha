@@ -135,11 +135,17 @@ const HomePage = () => {
 
 	if (users.length === 0) {
 		return (
-			<div>
+			<div className="" style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				flexDirection: 'column',
+			}}>
 				<SearchFilter states={states}/>
-				<Spinner animation="grow" role="status">
-					<span className="sr-only">Loading...</span>
-				</Spinner>
+					<span style={{textAlign: 'center', marginTop: '30%'}} className="">Change filters to find more people!</span>
+					{<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
+								<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
+							</Spinner>}
 			</div>
 		)
 	} else {

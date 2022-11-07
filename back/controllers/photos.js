@@ -117,8 +117,6 @@ const setPicture = (request, response) => {
 					db.query(sql, [path, request.user.id], function (error, result) {
 						if (error) throw (error);
 						else {
-							// console.log('result:\n', result)
-							// console.log('######### END ########')
 							response.send('good');
 						}
 					})

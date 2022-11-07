@@ -154,9 +154,12 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			setUsers(
 				users.filter(user => user.id !== target)
 			)
-			setDisplayUsers(
-				displayUsers.push(users[displayUsers.length])
-			)
+			if (users[displayUsers.length]) {
+				setDisplayUsers(
+					displayUsers.push(users[displayUsers.length])
+					)
+				console.log('DU length after like: ', displayUsers.length);
+			}
 			setDisplayUsers(
 				displayUsers.filter(user => user.id !== target)
 			)
@@ -166,9 +169,12 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		console.log('dislike');
 		likeDislike({target : target, like : false}).then(response => {
 			console.log(response);
-			setDisplayUsers(
-				displayUsers.push(users[displayUsers.length])
-			)
+			if (users[displayUsers.length]) {
+				setDisplayUsers(
+					displayUsers.push(users[displayUsers.length])
+					)
+				console.log('DU length after dislike: ', displayUsers.length);
+			}
 			setUsers(
 				users.filter(user => user.id !== target)
 			)
@@ -180,9 +186,16 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	}
 	if (pictures.length === 0) {
 		return (
-			<Spinner animation="grow" role="status">
-				<span className="sr-only">Loading...</span>
+			<div className="" style={{
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center',
+				flexDirection: 'column',
+			}}>
+			<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
+				<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
 			</Spinner>
+			</div>
 		)
 	} else {
 		return (

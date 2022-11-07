@@ -1,8 +1,9 @@
 
 const express = require('express');
+const http = require('http');
+const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const app = express();
 const cookieParser = require('cookie-parser');
 const userRouter = require('./routers/userRouter.js')
 const envRouter = require('./routers/envRouter.js')
@@ -11,10 +12,10 @@ const settingsRouter = require('./routers/settingsRouter')
 const photosRouter = require('./routers/photosRouter')
 const tagsRouter = require('./routers/tagsRouter')
 const matchRouter = require('./routers/matchRouter')
+const server = http.createServer(app);
+const socketServer = require('./socket.js');
 
 require('dotenv').config();
-
-
 
 const requestLogger = (request, response, next) => {
 	// console.log('Method:', request.method)
@@ -41,6 +42,9 @@ app.use(photosRouter);
 app.use(tagsRouter);
 app.use(matchRouter);
 
+
+
+socketServer(server);
 const port = process.env.PORT || 5000;
 console.log('											')
-app.listen(port, () => console.log(`Listening on port ${port}`))
+server.listen(port, () => console.log(`Listening on port ${port}`))
