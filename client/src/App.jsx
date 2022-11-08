@@ -44,9 +44,9 @@ const Navigation = ({socket}) => {
 					fontWeight: "bolder",
 				}} >MATCHA</h1>
 				</Navbar.Brand>
-				{ login === true ? <Nav.Link href="/home" >Home</Nav.Link> :null}
-				{ login === true ? <Nav.Link href="/profile">Profile</Nav.Link> :null}
-				{ login === true ? <Nav.Link>Settings</Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/home" > <i className="fa-solid fa-house"></i></Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/profile"> <i className="fa-solid fa-user"></i></Nav.Link> :null}
+				{ login === true ? <Nav.Link> <i className="fa-solid fa-gear"></i></Nav.Link> :null}
 				{ login === true ? <i className="fa-solid fa-bell"></i> : null}
 				{ login === true ? <i onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"></i> :null}
 			</Container>
