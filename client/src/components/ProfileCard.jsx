@@ -9,36 +9,43 @@ import like from "../images/like.jpeg";
 import dislike from "../images/dislike.jpeg";
 import {Image} from "react-bootstrap";
 import {likeDislike} from "../services/match"
-import {io} from 'socket.io-client';
 import { getLoggedInUsers } from '../services/users';
+import SocketContext from "../contexts/socketContext";
+import { useContext } from "react";
 
-const socket = io("http://localhost:5000");
 
 const LoginStatus = ({user}) => {
+	const socket = useContext(SocketContext);
+	console.log(socket.id)
 	const [login, setLogin] = useState(false);
-	getLoggedInUsers().then(response => {
-		console.log('IN USE');
-		const users = response.data;
-		if (users.length > 0) {
-			if (users.includes(user))
+	useEffect(() => {
+		getLoggedInUsers().then(response => {
+			const users = response.data;
+			console.log(users)
+			if (users.length > 0) {
+				if (users.includes(user))
+					setLogin(true)
+				else
+					setLogin(false)
+			}
+		})
+	}, [])
+	useEffect(() => {
+		socket.on("logged", (data) => {
+			if (data.includes(user))
 				setLogin(true)
 			else
 				setLogin(false)
-		}
-	}) 
-	socket.on("logged", (data) => {
-		if (data.includes(user))
-			setLogin(true)
-		else
-			setLogin(false)
-	});
+		});
+	}, [socket])
+	
 
 	if (login) {
 		return (
 			<div>
 				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
 				</Spinner>
-			</div>
+			</div> 
 		)
 	} else {
 		return (
@@ -187,8 +194,6 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
-		console.log('like');
-		console.log(target);
 		likeDislike({target : target, like : true}).then(response => {
 			setUsers(
 				users.filter(user => user.id !== target)
@@ -205,7 +210,6 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		})
 	}
 	const handleDislike = () => {
-		console.log('dislike');
 		likeDislike({target : target, like : false}).then(response => {
 			console.log(response);
 			if (users[displayUsers.length]) {
@@ -246,7 +250,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 							<div className="row">
 								<div className="col-7">
 									<div>
-										<LoginStatus className="m-2" user={target}/><h5 className="ml-2 card-title">{username}, {age}</h5>
+										{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> }<h5 className="ml-2 card-title">{username}, {age}</h5>
 									</div> 
 								</div>
 								<div className="col-5">

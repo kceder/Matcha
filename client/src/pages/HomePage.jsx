@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getUser } from "../services/users";
 import UsersGallery from "../components/UsersGallery";
 import SearchFilter from "../components/SearchFilter";
@@ -6,9 +6,14 @@ import { getAllTags } from "../services/tags";
 import { filterUsers } from "../services/users";
 import Spinner from 'react-bootstrap/Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
-
+import { useContext } from "react";
+import SocketContext from "../contexts/socketContext";
+import { useNavigate } from "react-router-dom";
+import { logOut } from "../services/login";
+import { Navbar, Nav, Container } from "react-bootstrap";
 
 const HomePage = () => {
+
 	const [users, setUsers] = useState([]);
 	const [stars, setStars] = useState(0);
 	const [distance, setDistance] = useState(200);
@@ -24,6 +29,7 @@ const HomePage = () => {
 	const [rating, setRating] = useState(0);
 	const [sorting, setSorting] = useState('distance')
 	let more = true;
+	const socket = useContext(SocketContext);
 	useEffect(() => { // get user
 
 		getUser({target: "self"}).then((response) => {
@@ -135,39 +141,43 @@ const HomePage = () => {
 
 	if (users.length === 0) {
 		return (
-			<div className="" style={{
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				flexDirection: 'column',
-			}}>
-				<SearchFilter states={states}/>
-					<span style={{textAlign: 'center', marginTop: '30%'}} className="">Change filters to find more people!</span>
-					{<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
-								<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
-							</Spinner>}
+			<div>
+				<div className="" style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					flexDirection: 'column',
+				}}>
+					<SearchFilter states={states}/>
+						<span style={{textAlign: 'center', marginTop: '30%'}} className="">Change filters to find more people!</span>
+						{<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
+									<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
+								</Spinner>}
+				</div>
 			</div>
 		)
 	} else {
 		return (
-			<div className="" style={{
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				flexDirection: 'column',
-			}}>
-				<SearchFilter states={states}/>
-				<UsersGallery setUsers={setUsers} setSorting={setSorting} displayUsers={displayUsers} users={users} setDisplayUsers={setDisplayUsers}/>
-				<InfiniteScroll
-					dataLength={displayUsers.length}
-					next={getMoreUsers}
-					hasMore={more}
-					loader={<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
-								<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
-							</Spinner>}
-					endMessage={<p style={{textAlign: 'center'}}></p>}
-				>
-				</InfiniteScroll>
+			<div>
+				<div className="" style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					flexDirection: 'column',
+				}}>
+					<SearchFilter states={states}/>
+					<UsersGallery setUsers={setUsers} setSorting={setSorting} displayUsers={displayUsers} users={users} setDisplayUsers={setDisplayUsers}/>
+					<InfiniteScroll
+						dataLength={displayUsers.length}
+						next={getMoreUsers}
+						hasMore={more}
+						loader={<Spinner style={{textAlign: 'center'}} animation="grow" role="status">
+									<span style={{textAlign: 'center'}} className="sr-only">Loading...</span>
+								</Spinner>}
+						endMessage={<p style={{textAlign: 'center'}}></p>}
+					>
+					</InfiniteScroll>
+				</div>
 			</div>
 		);
 	}

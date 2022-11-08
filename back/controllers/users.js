@@ -10,8 +10,10 @@ const getLoggedInUsers = (request, response) => {
 	const sql = 'SELECT user_id FROM loggedinusers';
 	db.query(sql, function (error, result) {
 		if (error) console.log('Error in logged in users:', error);
-		else
-			response.send(result);
+		else{
+			const users = result.map(user => user.user_id);
+			response.send(users);
+		}
 	})
 }
 
@@ -78,8 +80,8 @@ const register = (request, response) => {
 				db.query(sql,[ name, lastName, email, hash, activationToken ], 
 					function (error, results) {
 						if (error) throw error;
-						else 
-							console.log(1);
+						// else 
+						// 	console.log(1);
 					}
 				);
 				const infoForEmail = {
@@ -94,8 +96,8 @@ const register = (request, response) => {
 						const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)"
 						db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
 							if (error) throw error;
-							else
-								console.log('succes');
+							// else
+							// 	console.log('succes');
 						})
 					}
 				})
@@ -169,7 +171,7 @@ const activateUser = (request, response) => {
 		if (result.length > 0) {
 			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
 			db.query(sql, [result[0].id], function (error, result) {
-				console.log('result ---->', result)
+				// console.log('result ---->', result)
 				if (error) throw error;
 				response.status(202).send('user activated :)');
 			});
@@ -239,9 +241,9 @@ const completeAccount = (request, response) => {
 							const sql = `INSERT INTO tags (tag) VALUES (?)`;
 							db.query(sql, [tag],(err, result) => {
 								if (err) throw err;
-								else {
-									console.log('tag added')
-								}	
+								// else {
+								// 	console.log('tag added')
+								// }	
 							})
 						})
 						response.send('good');
@@ -333,7 +335,7 @@ const filterUsers = (request, response) => {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id NOT LIKE ?`;
 	}
 	db.query(sql, [user.id], function (error, result) {
-		console.log('blocked list !!!!', blockedUsers);
+		// console.log('blocked list !!!!', blockedUsers);
 		if (error) throw error;
 		else {
 			let array = [];
@@ -357,9 +359,9 @@ const filterUsers = (request, response) => {
 				}
 			})
 			let array3 = [];
-			console.log(array2)
+			// console.log(array2)
 			array2.forEach(user => {
-				console.log(user)
+				// console.log(user)
 				const user2Loation = user.user_set_location ? user.user_set_location : (user.gps_location ? user.gps_location : user.ip_location);
 				const distanceResult = getDistance(userLocation.x , userLocation.y, user2Loation.x, user2Loation.y);
 				if (distanceResult <= distance) {
@@ -369,19 +371,19 @@ const filterUsers = (request, response) => {
 			})
 			let i = 0;
 			if (rating > 0) {
-				console.log('rating', rating)
+				// console.log('rating', rating)
 				let array4 = [];
 				array3.forEach(user => {
 					if (user.score >= rating) {
-						console.log(user.score)
+						// console.log(user.score)
 						array4.push(user);
 					}
 				})
-				console.log('RESPONSE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+				// console.log('RESPONSE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 				response.send(array4);
 			} else {
 				response.send(array3)
-				console.log('RESPONSE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+				// console.log('RESPONSE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 			}
 		}
 	})

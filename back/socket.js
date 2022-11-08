@@ -3,7 +3,7 @@
 
 const db = require("./config/db.js");
 
-
+let i = 0;
 const socketServer = (server) => {
     const io = require("socket.io")(server, {
         cors: {
@@ -18,6 +18,7 @@ const socketServer = (server) => {
         socket.on("login", () => { // listen to the event
             const sql = `SELECT user_id FROM loggedinusers`;
             db.query(sql, (error, result) => {
+				console.log(i++);
                 if (error)
                     console.log(error);
                 else {
@@ -29,11 +30,13 @@ const socketServer = (server) => {
                     io.emit("logged", users);
                 }
             })
-            // send the event to the client
+            socket.on("disconnect", () => {
+				console.log("User Disconnected", socket.id);
+			});
         });
 
     })
-}
+} 
 
 module.exports = {
     socketServer

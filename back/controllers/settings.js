@@ -15,17 +15,17 @@ const changePassword = (request,  response) => {
 			if (error) throw error
 			if (result.length > 0) {
 
-				console.log(password)
+				// console.log(password)
 				bcrypt.compare(password,  result[0].password, function(err, valid) {
 					if (valid === true) {
 						const hash = bcrypt.hashSync(newPassword, 10);
 						const updatePassword = "UPDATE users SET password = ? WHERE id = ?;";
 						db.query(updatePassword, [hash, request.user.id],  function (error, resut) {
 							if (error) throw error;
-							else	console.log(result);
+							// else	console.log(result);
 						})
 					}
-					console.log(request.body.newPassword)
+					// console.log(request.body.newPassword)
 			})
 		}
 	})
@@ -100,10 +100,10 @@ const changeUserInfo = (request, response) => {
 				db.query(updateLocation, [ location.lon, location.lat, userId], function (error, result) {
 					if (error) throw error;
 					else {
-						console.log(result);
+						// console.log(result);
 					}
 				})
-				console.log(result);
+				// console.log(result);
 			}
 		})
 		response.send('lol');

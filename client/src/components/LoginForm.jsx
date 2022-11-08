@@ -8,9 +8,9 @@ import { geoApiKey } from "../services/env";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {io} from 'socket.io-client';
-
-const socket = io("http://localhost:5000");
+import { useContext } from "react";
+import LoginContext from "../contexts/loginContext";
+import SocketContext from "../contexts/socketContext";
 
 const LoginForm = () => {
 	
@@ -19,6 +19,8 @@ const LoginForm = () => {
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
 	const [location, setLocation] = useState({});
+	const [login, setLogin] = useContext(LoginContext);
+	const socket = useContext(SocketContext);
 
 	const Navigate = useNavigate();
 
@@ -82,6 +84,7 @@ const LoginForm = () => {
 					Navigate('../completeaccount');
 				}
 				if (response.data.message === "login") {
+					setLogin(true);
 					socket.emit("login");
 					Navigate('../profile')
 				}

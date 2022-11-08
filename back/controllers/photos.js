@@ -52,7 +52,7 @@ const setProfilePicture = (request, response) => {
 }
 const setPicture = (request, response) => {
 	const old = request.body.old;
-	console.log(request.user.id)
+	// console.log(request.user.id)
 	if (request.body.old) {
 		const sql = "SELECT * FROM user_pictures WHERE user_id = ?;";
 		db.query(sql, [request.user.id], function (error, result) {
@@ -61,7 +61,7 @@ const setPicture = (request, response) => {
 				let i = -1;
 				for (const property in result[0]) {
 					if(result[0][property] === old) {
-						console.log(`${property}: ${result[0][property]}`);
+						// console.log(`${property}: ${result[0][property]}`);
 						break;
 					}
 					i++;
