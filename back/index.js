@@ -12,6 +12,7 @@ const settingsRouter = require('./routers/settingsRouter')
 const photosRouter = require('./routers/photosRouter')
 const tagsRouter = require('./routers/tagsRouter')
 const matchRouter = require('./routers/matchRouter')
+const validatorRouter = require('./routers/validator')
 const server = http.createServer(app);
 const socketServer = require('./socket.js');
 
@@ -46,8 +47,7 @@ app.use(settingsRouter);
 app.use(photosRouter);
 app.use(tagsRouter);
 app.use(matchRouter);
-
-
+app.use(validatorRouter);
 
 socketServer.socketServer(server);
 const port = process.env.PORT || 5000;

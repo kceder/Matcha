@@ -8,11 +8,11 @@ const tokenValidator = (request, response, next) => {
 	const token = request.cookies.token;
 	const user = verifyToken(token)
 	request.user = user;
-	if (user) {
+	console.log('user in middleware', user)
+	if (user != false) {
 		next();
 	} else {
 		response.send('token invalid')
-		return null
 	}
 }
 
@@ -31,10 +31,10 @@ const upload = multer({ storage: fileStorage })
 userRouter.route('/api/login').post(userController.login);
 userRouter.route('/api/register').post(userController.register);
 userRouter.route('/api/users/activate').post(userController.activateUser);
-userRouter.route('/api/users/getUser').post(userController.getUser);
-userRouter.route('/api/users/complete-account').post(userController.completeAccount);
+userRouter.route('/api/users/getUser').post(tokenValidator ,userController.getUser);
+userRouter.route('/api/users/complete-account').post(tokenValidator, userController.completeAccount);
 // userRouter.route('/api/users/complete-account/pictures').post(upload.single('image'), userController.addPhotos);
-userRouter.route('/api/users/complete-account/pictures').post(upload.array('images', 5), userController.addPhotos);
+userRouter.route('/api/users/complete-account/pictures').post(tokenValidator, upload.array('images', 5), userController.addPhotos);
 userRouter.route('/api/users/filter').post(tokenValidator ,userController.filterUsers);
 
 userRouter.route('/api/users').get(userController.getAllUsers);

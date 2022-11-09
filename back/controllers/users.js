@@ -30,7 +30,7 @@ const logOut = (request, response) => {
 
 const getUser = (request, response) => {
 	const jToken = request.cookies.token;
-	const user = verifyToken(jToken).id;
+	const user = request.user.id
 	let target;
 	if (request.body.target === "self") {
 		target = user;
@@ -186,7 +186,7 @@ const activateUser = (request, response) => {
 const completeAccount = (request, response) => {
 
 	const token = request.cookies.token;
-
+	console.log('token in completeAccount: ', token);
 	let decodedToken = verifyToken(token);
 	
 	const username  = request.body.username
@@ -258,6 +258,7 @@ const addPhotos = (request, response) => {
 
 
 	const user = verifyToken(request.cookies.token);
+	console.log('ASKPKSAKPSDAPKSADPK!!!!!');
 	let i = request.files.length;
 	
 	request.files.forEach(image => {

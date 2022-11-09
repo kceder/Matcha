@@ -11,6 +11,8 @@ import SocketContext from "../contexts/socketContext";
 import { useNavigate } from "react-router-dom";
 import { logOut } from "../services/login";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import { validator } from "../services/validator";
+import LoginContext from "../contexts/loginContext";
 
 const HomePage = () => {
 
@@ -28,19 +30,30 @@ const HomePage = () => {
 	const [displayUsers, setDisplayUsers] = useState([]);
 	const [rating, setRating] = useState(0);
 	const [sorting, setSorting] = useState('distance')
-	let more = true;
+	const navigate = useNavigate();
 	const socket = useContext(SocketContext);
+	const [login, setLogin] = useContext(LoginContext);
+	let more = true;
+	
 	useEffect(() => { // get user
-
-		getUser({target: "self"}).then((response) => {
-			const locations = response.data.locations;
-			const user = response.data.basicInfo;
-			calculateAge(user.birthday);
-			setGender(user.gender)
-			setPreference(user.preference);
-			setTags(user.interests.replace(/\[|\]|"/g, '').split(','));
-			const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
-			setLocation(ret);
+		validator().then((response) => {
+			console.log((response.data))
+			if (response.data === 'token invalid')
+				navigate('/')
+			else {
+				setLogin(true);
+				getUser({target: "self"}).then((response) => {
+					const locations = response.data.locations;
+					const user = response.data.basicInfo;
+					calculateAge(user.birthday);
+					setGender(user.gender)
+					setPreference(user.preference);
+					setTags(user.interests.replace(/\[|\]|"/g, '').split(','));
+					const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
+					setLocation(ret);
+					console.log(login);
+			})
+			}
 
 		})
 	}, []);

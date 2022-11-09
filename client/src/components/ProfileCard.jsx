@@ -145,7 +145,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 
 		const obj = { target: target }
 		getUser(obj).then(response => {
-
+			console.log('ZIBBER', response.data)
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)
