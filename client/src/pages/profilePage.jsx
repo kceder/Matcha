@@ -30,12 +30,17 @@ export const ProfilePage = () => {
 	}
 
 	return (
-
+		
 			<Container id="nav-plus-form">
 				<div className="row row justify-content-center ">
 					<SettingsMenu  handleClick={handleClick} />
 				</div>
-				<div className=" " >
+				<div className="" style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					flexDirection: 'column',
+				}}>
 					<MyForm containerToShow={containerToShow} ></MyForm>
 				</div>
 			</ Container>

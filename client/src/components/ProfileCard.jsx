@@ -243,7 +243,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	} else {
 		return (
 			<>
-				<div className="card mb-2" >
+				<div className="card mb-2" style={{ maxWidth: 500}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<div className="container">

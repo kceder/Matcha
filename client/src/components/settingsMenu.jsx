@@ -8,11 +8,11 @@ const Links = ({handleClick}) => {
     return (
         <div id="nav" className="col-md-2 col-sm-12">
                 <Nav defaultActiveKey="/home" className="flex-column  align-items-center ">
-                    <Nav.Link onClick={() => handleClick(1)}>Profile</Nav.Link>
-                    <Nav.Link onClick={() => handleClick(4)}>Edit Profile</Nav.Link>
-                    <Nav.Link onClick={() => handleClick(2)}>Password</Nav.Link>
-                    <Nav.Link onClick={() => handleClick(3)}>Edit Photos</Nav.Link>
-                    <Nav.Link onClick={() => handleClick(5)}>Scores</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(1)}>Profile</Nav.Link>
+                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(4)}>Edit Profile</Nav.Link>
+                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(2)}>Password</Nav.Link>
+                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(3)}>Edit Photos</Nav.Link>
+                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(5)}>Scores</Nav.Link>
                 </Nav>
             </ div>
     )
