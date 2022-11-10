@@ -8,7 +8,6 @@ const tokenValidator = (request, response, next) => {
 	const token = request.cookies.token;
 	const user = verifyToken(token)
 	request.user = user;
-	console.log('user in middleware', user)
 	if (user != false) {
 		next();
 	} else {

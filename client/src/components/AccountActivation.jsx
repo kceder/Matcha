@@ -14,6 +14,8 @@ const ActivateAccount = () => {
 		{
 			console.log('user activated')
 			navigate('/acccount_on');
+		} else {
+			navigate('/')
 		}
 	});
 	return <>{request.token}</>;

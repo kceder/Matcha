@@ -45,7 +45,7 @@ const getUser = (request, response) => {
 					else if (result.length === 0) {
 						response.send('user not found')
 					} else {
-						let userInfo = { 'basicInfo': result[0]}
+						let userInfo = { 'basicInfo': result[0], id : target };
 						const sql = "SELECT * FROM locations WHERE user_id = ?";
 						db.query(sql, [target], function (error, result) {
 							if (error) throw error;

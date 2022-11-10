@@ -11,17 +11,16 @@ import {Image} from "react-bootstrap";
 import {likeDislike} from "../services/match"
 import { getLoggedInUsers } from '../services/users';
 import SocketContext from "../contexts/socketContext";
+import {view} from "../services/notifications"
 import { useContext } from "react";
 
 
 const LoginStatus = ({user}) => {
 	const socket = useContext(SocketContext);
-	console.log(socket.id)
 	const [login, setLogin] = useState(false);
 	useEffect(() => {
 		getLoggedInUsers().then(response => {
 			const users = response.data;
-			console.log(users)
 			if (users.length > 0) {
 				if (users.includes(user))
 					setLogin(true)
@@ -139,13 +138,14 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	const [interests, setinterests] = useState();
 	const [score, setScore] = useState();
 	const [userTags, setUserTags] = useState([]);
+	const socket = useContext(SocketContext);
+	const [infoShow, setInfoShow] = useState(false);
 
 
 	useEffect(() => {
 
 		const obj = { target: target }
 		getUser(obj).then(response => {
-			console.log('ZIBBER', response.data)
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)
@@ -189,8 +189,15 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		}
 	}) : null;
 	
-	const [infoShow, setInfoShow] = useState(false);
+	
 	const showHideInfo = () => {
+		if (infoShow === false) {
+			const obj = {target: target, username: username};
+			view(obj).then(response => {
+				console.log(response.data)
+				socket.emit('notification', response.data);
+			})
+		}
 		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
@@ -202,7 +209,6 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				setDisplayUsers(
 					displayUsers.push(users[displayUsers.length])
 					)
-				console.log('DU length after like: ', displayUsers.length);
 			}
 			setDisplayUsers(
 				displayUsers.filter(user => user.id !== target)
@@ -211,12 +217,10 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	}
 	const handleDislike = () => {
 		likeDislike({target : target, like : false}).then(response => {
-			console.log(response);
 			if (users[displayUsers.length]) {
 				setDisplayUsers(
 					displayUsers.push(users[displayUsers.length])
 					)
-				console.log('DU length after dislike: ', displayUsers.length);
 			}
 			setUsers(
 				users.filter(user => user.id !== target)
@@ -224,7 +228,6 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			setDisplayUsers(
 				displayUsers.filter(user => user.id !== target)
 			)
-			console.log(users)
 		})
 	}
 	if (pictures.length === 0) {

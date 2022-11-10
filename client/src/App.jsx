@@ -13,16 +13,43 @@ import './components/style/mennu.css';
 import { useContext, createContext } from "react";
 import { useState } from "react";
 import { logOut } from "./services/login";
-import {Button} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {io} from 'socket.io-client';
 import React from "react";
 import SocketContext from "./contexts/socketContext";
 import LoginContext from "./contexts/loginContext";
+import NotificationsPage from "./pages/NotificationsPage";
+import { getUser } from "./services/users";
+import { Spinner } from "react-bootstrap";
+import { useEffect } from "react";
+import { getNofications } from "./services/notifications";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
-
+	const [newNotifications, setNewNotifications] = useState(false);
+	const [unreadNotifications, setUnreadNotifications] = useState(false);
+	useEffect(() => {
+		getNofications().then(response => {
+			if (response.data.length === 0)
+				setUnreadNotifications(false)
+			else {
+				response.data.forEach(element => {
+					if (element.read === 0)
+						setUnreadNotifications(true)
+				});
+			}
+		})
+	})
+	socket.on('receive notification', (data) => {
+		if (login === true) {
+			getUser({target: 'self'}).then(response => {
+				if (response.data.id === data.to) {
+					setNewNotifications(true);
+					setUnreadNotifications(true);
+				}
+			})
+		}
+	})
 	const Navigate = useNavigate();
 	const handleLogout = (e) => {
 		e.preventDefault()
@@ -32,6 +59,7 @@ const Navigation = ({socket}) => {
 			Navigate('/');	
 		})
 	};
+
 	return (
 		<Navbar bg="light" expand="lg">
 			<Container>
@@ -47,7 +75,13 @@ const Navigation = ({socket}) => {
 				{ login === true ? <Nav.Link href="/home" > <i className="fa-solid fa-house"></i></Nav.Link> :null}
 				{ login === true ? <Nav.Link href="/profile"> <i className="fa-solid fa-user"></i></Nav.Link> :null}
 				{ login === true ? <Nav.Link> <i className="fa-solid fa-gear"></i></Nav.Link> :null}
-				{ login === true ? <i className="fa-solid fa-bell"></i> : null}
+				{ login === true ? 
+					<Nav.Link href="/notifications">
+						<div style={{position: 'relative'}}>
+							<i className={unreadNotifications === true ? "fa-solid fa-bell" : "fa-regular fa-bell"}></i>
+							<Spinner animation="grow" size="bg" variant="light" style={{display: newNotifications ? 'block' : 'none', position: 'absolute', marginTop: '-25px', marginLeft: "-0.10px"}}/>
+						</div>
+					</Nav.Link> : null}
 				{ login === true ? <i onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"></i> :null}
 			</Container>
 		</Navbar>
@@ -57,24 +91,23 @@ const App = () => {
 	
 	const socket = io.connect("http://localhost:5000");
 	const [login, setLogin] = useState(false);
+	const [notificationsShown, setNotificationsShown] = useState(false);
 
 	return (
 		<SocketContext.Provider value={socket}>
 			<LoginContext.Provider value={[login, setLogin]}>
-				<>
-				<Navigation socket={socket}/>
-				<Routes>
-					<Route path="/" element={<Login />} />
-					<Route path="/home" element={<HomePage />} />
-					<Route path="/:message" element={<Login />} />
-					<Route path="/register" element={<Register />} />
-					<Route path="/completeaccount" element={<SetUpProfile />} />
-					<Route path="/completeaccount/photos" element={<ProfilePictureUpload />} />
-					<Route path="/activateaccount/:token" element={<ActivateAccount />} />
-					<Route path="/profile" element={<ProfilePage />}/>
-					<Route path="/profilecard" element={<ProfileCard target={'self'} />}/>
-				</Routes>
-				</>
+					<Navigation socket={socket}/>
+					<Routes>
+						<Route path="/" element={<Login />} />
+						<Route path="/home" element={<HomePage />} />
+						<Route path="/:message" element={<Login />} />
+						<Route path="/register" element={<Register />} />
+						<Route path="/completeaccount" element={<SetUpProfile />} />
+						<Route path="/completeaccount/photos" element={<ProfilePictureUpload />} />
+						<Route path="/activateaccount/:token" element={<ActivateAccount />} />
+						<Route path="/profile" element={<ProfilePage />}/>
+						<Route path="/notifications" element={<NotificationsPage />}/>
+					</Routes>
 			</LoginContext.Provider>
 		</SocketContext.Provider>
 	);

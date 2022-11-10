@@ -193,8 +193,10 @@ con.connect((err) => {
 
 		sql = "CREATE TABLE IF NOT EXISTS notifications \
 		(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
-		user_id INT(11),\
+		`from` INT(11),\
+		`to` INT(11),\
 		content VARCHAR(60),\
+		`read` BOOLEAN,\
 		time DATETIME DEFAULT NOW());";
 
 		
@@ -386,7 +388,6 @@ con.connect((err) => {
 		'./profilePics/photo-1505975410356-cec53a6cdec9.jpeg',
 		'./profilePics/photo-1506207803951-1ee93d7256ad.jpeg',
 		'./profilePics/photo-1509112756314-34a0badb29d4.jpeg',
-		'./profilePics/photo-1509399693673-755307bfc4e1.jpeg',
 		'./profilePics/photo-1510852328951-457a8f54a7f6.jpeg',
 		'./profilePics/photo-1511406850240-0ffe42effea8.jpeg',
 		'./profilePics/photo-1514218698632-ef079aeae842.jpeg',
@@ -582,21 +583,19 @@ con.connect((err) => {
 		if (err) {
 			console.log(err);
 		} else if (result.length === 0) {
-			
 
-
-			while (i < 3000) {
+			while (i < 1000) {
 				console.log('CHEKCTHIS OUT : ', i)
 				let profile = randomProfile.profile();
 				console.log(profile);
 				if (iLocation === locations.length)
 					iLocation = 0;
 				if (iMalePictures === menPics.length)
-				iMalePictures = 0;
+					iMalePictures = 0;
 				if (iFemalePictures === womenPics.length)
-				iFemalePictures = 0;
+					iFemalePictures = 0;
 				if (iPreferences === preferences.length)
-				iPreferences = 0;
+					iPreferences = 0;
 				profile.birthday = randomDate(new Date(1954, 0, 1), new Date(2004, 0, 1));
 				const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);
 				profile.age = getAge(profile.birthday);

@@ -34,7 +34,7 @@ const HomePage = () => {
 	const socket = useContext(SocketContext);
 	const [login, setLogin] = useContext(LoginContext);
 	let more = true;
-	
+
 	useEffect(() => { // get user
 		validator().then((response) => {
 			console.log((response.data))
