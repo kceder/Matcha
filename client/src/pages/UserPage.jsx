@@ -1,60 +1,24 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
+import { Container, Nav } from "react-bootstrap";
+import ProfileForm from "../components/settings/ProfileForm";
+import PasswordForm from "../components/settings/PasswordForm";
+import AddPhotos from "../components/completeAccountForms/AddPhotos";
+import SettingsMenu from "../components/settingsMenu";
+import { validator } from "../services/validator";
 import { getUser } from "../services/users";
 import { getUserPhotos } from "../services/photos";
-import Badge from 'react-bootstrap/Badge';
-import Carousel from 'react-bootstrap/Carousel';
-import { Spinner } from "react-bootstrap";
+import { likeDislike } from "../services/match";
 import like from "../images/like.jpeg";
 import dislike from "../images/dislike.jpeg";
-import {Image} from "react-bootstrap";
-import {likeDislike} from "../services/match"
-import { getLoggedInUsers } from '../services/users';
+import {Spinner} from "react-bootstrap";
+import Carousel from 'react-bootstrap/Carousel';
+import LoginContext from "../contexts/loginContext";
 import SocketContext from "../contexts/socketContext";
-import {view} from "../services/notifications"
-import { useContext } from "react";
-
-
-const LoginStatus = ({user}) => {
-	const socket = useContext(SocketContext);
-	const [login, setLogin] = useState(false);
-	useEffect(() => {
-		getLoggedInUsers().then(response => {
-			const users = response.data;
-			if (users.length > 0) {
-				if (users.includes(user))
-					setLogin(true)
-				else
-					setLogin(false)
-			}
-		})
-	}, [])
-	useEffect(() => {
-		socket.on("logged", (data) => {
-			if (data.includes(user))
-				setLogin(true)
-			else
-				setLogin(false)
-		});
-	}, [socket])
-	
-
-	if (login) {
-		return (
-			<div>
-				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
-				</Spinner>
-			</div> 
-		)
-	} else {
-		return (
-			<div>
-				<Spinner style={{textAlign: 'center'}} animation="border" size="sm" role="status">
-				</Spinner>
-			</div>
-		)
-	}
-}
+import { useNavigate, useParams } from "react-router-dom";
+import Badge from "react-bootstrap/badge";
+import { getLoggedInUsers } from "../services/users";
+import {Image} from "react-bootstrap";
+import { fetchMatch } from "../services/match";
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -97,6 +61,47 @@ const StarRating = ({rating}) => {
 	)
 }
 
+const LoginStatus = ({user}) => {
+	const socket = useContext(SocketContext);
+	const [login, setLogin] = useState(false);
+	useEffect(() => {
+		getLoggedInUsers().then(response => {
+			const users = response.data;
+			if (users.length > 0) {
+				if (users.includes(user))
+					setLogin(true)
+				else
+					setLogin(false)
+			}
+		})
+	}, [])
+	useEffect(() => {
+		socket.on("logged", (data) => {
+			if (data.includes(user))
+				setLogin(true)
+			else
+				setLogin(false)
+		});
+	}, [socket])
+	
+
+	if (login) {
+		return (
+			<div>
+				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
+				</Spinner>
+			</div> 
+		)
+	} else {
+		return (
+			<div>
+				<Spinner style={{textAlign: 'center'}} animation="border" size="sm" role="status">
+				</Spinner>
+			</div>
+		)
+	}
+}
+
 const CarouselImages = ({pictures}) => {
 
 	const array = Object.keys(pictures).map(key => pictures[key])
@@ -108,7 +113,7 @@ const CarouselImages = ({pictures}) => {
 				<Carousel.Item key={index}>
 					<img
 						className="d-block w-100"
-						src={image}
+						src={`../${image}`}
 						alt="First slide"
 					/>
 				</Carousel.Item>
@@ -124,8 +129,8 @@ const CarouselImages = ({pictures}) => {
 	)
 }
 
-const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) => {
-
+const UserCard = ({props}) => {
+	const target = props.target
 	const [name, setName] = useState('');
 	const [lastName, setLastName] = useState('');
 	const [username, setUsername] = useState('');
@@ -139,11 +144,34 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	const [score, setScore] = useState();
 	const [userTags, setUserTags] = useState([]);
 	const socket = useContext(SocketContext);
-	const [infoShow, setInfoShow] = useState(false);
-
+	const [matched, setMatched] = useState(false);
+	const [liked, setLiked] = useState(false);
+	const [blocked, setBlocked] = useState(false);
+	const navigate =useNavigate();
+	
+	const calculateAge = (birthday) => {
+	
+		let birthDate = new Date(birthday);
+		const today = new Date();
+		
+		const ageMS = today - birthDate;
+		setAge(Math.floor(ageMS / 31536000000));
+	}
 	useEffect(() => {
-
-		const obj = { target: target }
+		fetchMatch({target: target}).then(response => {
+			console.log(response.data)
+			if (response.data === 'blocked') {
+				navigate('/home')
+			}
+			else if (response.data === 'no show') {
+				setLiked(true);
+			}
+			else if (response.data === 'match') {
+				setLiked(true);
+				setMatched(true);
+			}
+		})
+		const obj = { target: props.target }
 		getUser(obj).then(response => {
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
@@ -154,29 +182,17 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			setBio(response.data.basicInfo.bio)
 			setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setScore(response.data.basicInfo.score)
-			getUser({target : "self"}).then(response => {
-				setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
-		})
-
-			getUserPhotos(obj).then(response => {
-				setPictures(response.data);
-			})
-
 			const locationTemp = response.data.locations.user_set_city ? response.data.locations.user_set_city :
-							response.data.locations.gps_city ? response.data.locations.gps_city :
-							response.data.locations.ip_city;
+								response.data.locations.gps_city ? response.data.locations.gps_city :
+								response.data.locations.ip_city;
 			setLocation(locationTemp)
+		});
+		getUserPhotos(obj).then(response => {
+			console.log(response.data)
+			setPictures(response.data);
 		})
-	}, [target])
-	
-	const calculateAge = (birthday) => {
-	
-		let birthDate = new Date(birthday);
-		const today = new Date();
-		
-		const ageMS = today - birthDate;
-		setAge(Math.floor(ageMS / 31536000000));
-	}
+	}, [props.target, liked])
+
 	const tags = interests ? interests.map((tag, index) => {
 		if (userTags.includes(tag)) {
 			return <Badge key={index} className='bg-dark text-light' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>
@@ -184,48 +200,20 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			return <Badge key={index} className='bg-light text-dark' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>
 		}
 	}) : null;
-	
-	
-	const showHideInfo = () => {
-		if (infoShow === false) {
-			const obj = {target: target, username: username};
-			view(obj).then(response => {
-				console.log(response.data)
-				socket.emit('notification', response.data);
-			})
-		}
-		setInfoShow(!infoShow);
-	}
+
 	const handleLike = () => {
 		likeDislike({target : target, like : true}).then(response => {
-			setUsers(
-				users.filter(user => user.id !== target)
-			)
-			if (users[displayUsers.length]) {
-				setDisplayUsers(
-					displayUsers.push(users[displayUsers.length])
-					)
-			}
-			setDisplayUsers(
-				displayUsers.filter(user => user.id !== target)
-			)
+			console.log(response)
+			setLiked(true)
 		})
 	}
 	const handleDislike = () => {
 		likeDislike({target : target, like : false}).then(response => {
-			if (users[displayUsers.length]) {
-				setDisplayUsers(
-					displayUsers.push(users[displayUsers.length])
-					)
-			}
-			setUsers(
-				users.filter(user => user.id !== target)
-			)
-			setDisplayUsers(
-				displayUsers.filter(user => user.id !== target)
-			)
+			console.log(response)
+			setLiked(true)
 		})
 	}
+
 	if (pictures.length === 0) {
 		return (
 			<div className="" style={{
@@ -257,11 +245,10 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 								</div>
 							</div>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleLike()} src={like} width="80"  />}
-									{infoShow === false ? <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike} width="80"  />}
+									{liked === true ? null : <Image style={{cursor:'pointer'}} onClick={() => handleLike()} src={like} width="80"  />}
+									{liked === true ? null : <Image style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike} width="80"  />}
 							</div>
-							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
+							<Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/>
 						</div>
 					<div className='row p-2'>
 						<div className='col'>{tags}</div>
@@ -271,6 +258,49 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			</div>
 		)
 	}
-}
+};
 
-export default ProfileCard;
+export const UserPage = () => {
+
+	const props = {
+		target : useParams().id,
+	}
+	console.log('smotheng elseeeee')
+	const [login, setLogin] = useContext(LoginContext);
+	const navigate = useNavigate();
+
+	validator().then((response) => {
+		console.log((response.data))
+		if (response.data === 'token invalid') {
+			navigate('/')
+		}
+		else {
+			setLogin(true)
+		}
+	})
+
+	useEffect (() => {
+		getUser({target: 'self'}).then(response => {
+			if (response.data.id === parseInt(props.target)) {
+				navigate('/profile');
+			}
+		})
+	})
+
+
+	console.log('login context in pp:', login);
+	return (
+			<Container id="nav-plus-form" className="p-0">
+				<div className="row row justify-content-center ">
+				</div>
+				<div style={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					flexDirection: 'column',
+				}}>
+					<UserCard props={props} />
+				</div>
+			</ Container>
+	);
+};

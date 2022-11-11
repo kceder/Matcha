@@ -23,23 +23,28 @@ import { getUser } from "./services/users";
 import { Spinner } from "react-bootstrap";
 import { useEffect } from "react";
 import { getNofications } from "./services/notifications";
+import { UserPage } from "./pages/UserPage";
+import { ChatPage } from "./pages/ChatPage";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
 	const [newNotifications, setNewNotifications] = useState(false);
 	const [unreadNotifications, setUnreadNotifications] = useState(false);
-	useEffect(() => {
-		getNofications().then(response => {
-			if (response.data.length === 0)
-				setUnreadNotifications(false)
-			else {
-				response.data.forEach(element => {
-					if (element.read === 0)
-						setUnreadNotifications(true)
-				});
+	
+		useEffect(() => {
+			if (login) {
+				getNofications().then(response => {
+					if (response.data.length === 0)
+						setUnreadNotifications(false)
+					else {
+						response.data.forEach(element => {
+							if (element.read === 0)
+								setUnreadNotifications(true)
+						});
+					}
+				})
 			}
-		})
-	})
+		}, [login])
 	socket.on('receive notification', (data) => {
 		if (login === true) {
 			getUser({target: 'self'}).then(response => {
@@ -74,7 +79,7 @@ const Navigation = ({socket}) => {
 				</Navbar.Brand>
 				{ login === true ? <Nav.Link href="/home" > <i className="fa-solid fa-house"></i></Nav.Link> :null}
 				{ login === true ? <Nav.Link href="/profile"> <i className="fa-solid fa-user"></i></Nav.Link> :null}
-				{ login === true ? <Nav.Link> <i className="fa-solid fa-gear"></i></Nav.Link> :null}
+				{ login === true ? <Nav.Link  href="/messages"><i className="fa-solid fa-comments"></i></Nav.Link> :null}
 				{ login === true ? 
 					<Nav.Link href="/notifications">
 						<div style={{position: 'relative'}}>
@@ -106,7 +111,9 @@ const App = () => {
 						<Route path="/completeaccount/photos" element={<ProfilePictureUpload />} />
 						<Route path="/activateaccount/:token" element={<ActivateAccount />} />
 						<Route path="/profile" element={<ProfilePage />}/>
+						<Route path="/user/:id" element={<UserPage />}/>
 						<Route path="/notifications" element={<NotificationsPage />}/>
+						<Route path="/messages" element={<ChatPage />}/>
 					</Routes>
 			</LoginContext.Provider>
 		</SocketContext.Provider>

@@ -1,8 +1,35 @@
+const { response } = require('express');
 const db = require('../config/db.js');
 
+const fetchMatch = (request,  response) => {
+	console.log('body in fm:', request.body);
+	const user1 = request.user.id;
+	const user2 = request.body.target;
+
+	console.log('user1 id in fm:', user1);
+	console.log('user1 id in fm:', user2);
+
+	const sql = "SELECT * FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
+	db.query(sql, [user1, user2, user2, user1], (error, result) => {
+		if (error) console.log('ERROR in fetchMatch');
+		else if (result.length === 0)
+			response.send('empty');
+		else if (result[0].block === 1)
+			response.send('blocked')
+		else if (result[0].matched === 1)
+			response.send('match');
+		else if (result[0].user1 === user1)
+			response.send('no show');
+		else if (result[0].user2 === user1 && (result[0].like2 !== 1 || result[0].like2 !== 0))
+			response.send('show')
+		else
+			response.send('something wrong in fetchMatch')
+		console.log(result[0]);
+		
+	})
+}
+
 const likeDislike = (request, response) => {
-    // console.log(request.body);
-    // console.log(request.user);
 	const user1 = request.user.id;
 	const user2 = request.body.target;
 	const like1 = request.body.like;
@@ -11,13 +38,25 @@ const likeDislike = (request, response) => {
 		if (error)  throw error;
 		else {
 			if (result.length === 0) {
-				sql = "INSERT INTO matches (user1, user2, like1) VALUES (?,?,?)";
-				db.query(sql, [user1, user2, like1], (error, result) => {
-					if (error)
-						response.send('upsi in matches insert :(');
-					else
-						response.send('good');
-				})
+				if (like1 === false) {
+					sql = "INSERT INTO matches (user1, user2, block) VALUES (?, ?, 1)"
+					db.query(sql, [user1, user2], function(error, result) {
+						if (error) 
+							console.log('ERROR in matches 44')
+						else {
+							response.send('OK');
+						}
+					})
+				}
+				else {
+					sql = "INSERT INTO matches (user1, user2, like1) VALUES (?,?,?)";
+					db.query(sql, [user1, user2, like1], (error, result) => {
+						if (error)
+							response.send('upsi in matches insert :(');
+						else
+							response.send('good');
+					})
+				}
 			} else {
 				const like2 = result[0].like1;
 				const matchId = result[0].id;
@@ -52,5 +91,6 @@ const likeDislike = (request, response) => {
 }
 
 module.exports = {
-	likeDislike
+	likeDislike,
+	fetchMatch,
 }

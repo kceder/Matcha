@@ -1,7 +1,8 @@
 const db = require('../config/db.js');
 
 const viewNotification = (request, response) => {
-
+	console.log(request.body)
+	console.log(request.user)
 	const from_name = request.user.name;
 	const from_id = request.user.id;
 	const to = request.body.target;
@@ -25,7 +26,7 @@ const viewNotification = (request, response) => {
 					}
 				})
 			} else {
-				sql = 'UPDATE notifications SET time = NOW() WHERE id = ?';
+				sql = 'UPDATE notifications SET time = NOW(), `read` = 0 WHERE id = ?';
 				db.query(sql, [result[0].id], (error, result) => {
 					if (error) {
 						console.log(error);

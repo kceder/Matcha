@@ -4,7 +4,7 @@ import LoginContext from "../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
 import Notification from "../components/Notification";
 import { useEffect } from "react";
-import { getNofications } from "../services/notifications";
+import { getNofications, setNotificationsRead } from "../services/notifications";
 
 const NotificationsPage = () => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -29,6 +29,12 @@ const NotificationsPage = () => {
 					return <Notification key={element.id} props={element} />
 				})
 			)
+		})
+	}, [])
+
+	useEffect(() => {
+		setNotificationsRead().then(response => {
+			console.log(response)
 		})
 	}, [])
 

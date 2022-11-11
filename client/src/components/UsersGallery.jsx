@@ -24,11 +24,13 @@ const UsersGallery = ({ setUsers, users, displayUsers, setDisplayUsers,setSortin
 
 
 	console.log(displayUsers)
-
+	
+	
 	const filteredUsers = displayUsers.map(user => {
 		return <ProfileCard setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
 	}) 
-
+	
+	
 	if (filteredUsers) {
 		return (
 			<>

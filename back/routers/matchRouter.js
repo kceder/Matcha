@@ -16,6 +16,7 @@ const tokenValidator = (request, response, next) => {
 
 const matchRouter = express.Router();
 
-matchRouter.route('/api/match').post(tokenValidator, matchController.likeDislike);
+matchRouter.route('/api/match/match').post(tokenValidator, matchController.likeDislike);
+matchRouter.route('/api/match/fetchMatch').post(tokenValidator, matchController.fetchMatch);
 
 module.exports = matchRouter;
