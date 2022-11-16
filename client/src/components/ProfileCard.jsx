@@ -12,6 +12,8 @@ import {likeDislike} from "../services/match"
 import { getLoggedInUsers } from '../services/users';
 import SocketContext from "../contexts/socketContext";
 import {view} from "../services/notifications"
+import {liked} from "../services/notifications"
+import {disliked} from "../services/notifications"
 import { useContext } from "react";
 
 
@@ -197,7 +199,13 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
+		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
+			console.log(obj);
+			liked(obj).then(response => {
+				console.log(response.data)
+				socket.emit('notification', response.data);
+			})
 			setUsers(
 				users.filter(user => user.id !== target)
 			)
@@ -212,6 +220,12 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		})
 	}
 	const handleDislike = () => {
+		const obj = {target: target, username: username};
+		console.log(obj);
+		disliked(obj).then(response => {
+			console.log(response.data)
+			socket.emit('notification', response.data);
+		})
 		likeDislike({target : target, like : false}).then(response => {
 			if (users[displayUsers.length]) {
 				setDisplayUsers(

@@ -312,7 +312,7 @@ const filterUsers = (request, response) => {
 	const rating = request.body.rating;
 	let sql;
 	let blockedUsers = [];
-	sql = `SELECT * FROM matches WHERE user1 = ${user.id} OR user2 = ${user.id}`;
+	sql = `SELECT * FROM matches WHERE user1 = ${user.id}`;
 	db.query(sql, function (error, result) {
 		if (error) throw error;
 		else {
@@ -336,7 +336,7 @@ const filterUsers = (request, response) => {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id NOT LIKE ?`;
 	}
 	db.query(sql, [user.id], function (error, result) {
-		// console.log('blocked list !!!!', blockedUsers);
+		console.log('blocked list !!!!', blockedUsers);
 		if (error) throw error;
 		else {
 			let array = [];

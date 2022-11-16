@@ -17,6 +17,8 @@ const tokenValidator = (request, response, next) => {
 
 
 notificationsRouter.route('/api/notifications/view').post(tokenValidator, notificationsController.viewNotification);
+notificationsRouter.route('/api/notifications/liked').post(tokenValidator, notificationsController.likedNotification);
+notificationsRouter.route('/api/notifications/disliked').post(tokenValidator, notificationsController.dislikedNotification);
 notificationsRouter.route('/api/notifications').post(tokenValidator, notificationsController.getNofications);
 notificationsRouter.route('/api/notifications/read').post(tokenValidator, notificationsController.readNotifications);
 
