@@ -202,8 +202,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
 			console.log(obj);
-			liked(obj).then(response => {
-				console.log(response.data)
+			liked(obj).then(response => { 
+				console.log('RESPONSE', response.data)
+				console.log('RESPONSE from ID:', response.data.from_id)
 				socket.emit('notification', response.data);
 			})
 			setUsers(

@@ -30,8 +30,8 @@ const socketServer = (server) => {
 			});
 		});
 		socket.on("notification", (data) => {
-			console.log(data);
-			socket.broadcast.emit('receive notification',data);
+			console.log('data in socket.js :', data);
+			socket.broadcast.emit('receive notification', data);
 		})
 
 	})

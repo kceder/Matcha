@@ -46,9 +46,17 @@ const Navigation = ({socket}) => {
 			}
 		}, [login])
 	socket.on('receive notification', (data) => {
+		console.log('DATA IN App', data);
 		if (login === true) {
+			console.log('AFTER LOGIN ##########')
+			console.log('AFTER LOGIN ##########')
+			console.log('AFTER LOGIN ##########')
+			console.log('AFTER LOGIN ##########')
 			getUser({target: 'self'}).then(response => {
-				if (response.data.id === data.to) {
+				console.log('RESPONSE in App:', response.data.id);
+				console.log('FROM_ID in App: ', data.from_id);
+				if (response.data.id === data.to || response.data.id === data.from_id) {
+					console.log('NEW NOTIFICATION ======================');
 					setNewNotifications(true);
 					setUnreadNotifications(true);
 				}

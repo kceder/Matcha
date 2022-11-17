@@ -41,7 +41,7 @@ const viewNotification = (request, response) => {
 
 }
 const likedNotification = (request, response) => {
-	console.log(request.body)
+	console.log(request.body.username)
 	console.log(request.user)
 	const from_name = request.user.name;
 	const from_id = request.user.id;
@@ -50,6 +50,8 @@ const likedNotification = (request, response) => {
 	console.log('FUBARR:', to2.from_id);
 
 	let content = `${from_name} liked you!`;
+	let content_1 = `You matched with ${from_name}!`;
+	let content_2 = `You matched with ${request.body.username}!`;
 	console.log('CONTENT:', content);
 	
 	const checksql = 'SELECT * FROM matches WHERE ((`user1` = ? AND `user2` = ?) OR (`user2` = ? AND `user1` = ?)) AND `matched` = 1';
@@ -59,52 +61,74 @@ const likedNotification = (request, response) => {
 			response.send('error');
 		} else {
 			if (result.length > 0) {
-				content = `You matched with ${from_name}!`;
-				console.log('CONTENT if Match:', content);
-				let to2 = {to: request.body.target, from_id: from_id};
-				console.log('FUBARR 1:', to2.from_id);
-			}
-
-			let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
-			db.query(sql, [from_id, to, content], (error, result) => {
-				if (error) {
-					console.log(error);
-					response.send('error');
-				} else {
-					if (result.length === 0) {
-						console.log('FUBARR 2:', to2.from_id);
-						sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
-						db.query(sql, [from_id, to, content, false], (error, result) => {
-							if (error) {
-								console.log(error);
-								response.send('error');
-							console.log('to2:', to2);
-							console.log('to2.2:', to2.from_id);
-							} else if (to2.from_id !== 0) {
-								response.send(to2);
-							} else {
-								console.log('to:', to);
-								response.send({to: to});
-							}
-						})
+				to2 = {to: request.body.target, from_id: from_id};
+				let sql = 'SELECT * FROM notifications WHERE ((`from` = ? AND `to` = ?) OR (`to` = ? AND `from` = ?)) AND content = ?';
+				db.query(sql, [from_id, to, from_id, to, content_1], (error, result) => {
+					if (error) {
+						console.log(error);
+						response.send('error');
 					} else {
-						console.log('FUBARR 3:', to2.from_id);
-						sql = 'UPDATE notifications SET time = NOW(), `read` = 0 WHERE id = ?';
-						db.query(sql, [result[0].id], (error, result) => {
-							if (error) {
-								console.log(error);
-								response.send('error');
-							console.log('to2:', to2);
-							} else if (to2.from_id !== 0) {
-								response.send(to2);
-							} else {
-								console.log('to:', to);
-								response.send({to: to});
-							}
-						});
+						if (result.length === 0) {
+							sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
+							db.query(sql, [from_id, to, content_1, false], (error, result) => {
+								if (error) {
+									console.log(error);
+									response.send('error');
+								} else
+									sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
+									db.query(sql, [to, from_id, content_2, false], (error, result) => {
+										if (error) {
+											console.log(error);
+											response.send('error');
+										} else
+											response.send(to2);
+									});
+							})
+						} else {
+							sql = 'UPDATE notifications SET time = NOW(), `read` = 0 WHERE ((`from` = ? AND `to` = ?) OR (`to` = ? AND `from` = ?)) AND (content = ? OR content = ?)';
+							db.query(sql, [from_id, to, from_id, to, content_1, content_2], (error, result) => {
+								if (error) {
+									console.log(error);
+									response.send('error');
+								} else {
+									response.send(to2);
+								}
+							});
+						}
 					}
-				}
-			});
+				});
+			}
+			else {
+				let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
+				db.query(sql, [from_id, to, content], (error, result) => {
+					if (error) {
+						console.log(error);
+						response.send('error');
+					} else {
+						if (result.length === 0) {
+							sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
+							db.query(sql, [from_id, to, content, false], (error, result) => {
+								if (error) {
+									console.log(error);
+									response.send('error');
+								} else {
+									response.send({to: to});
+								}
+							})
+						} else {
+							sql = 'UPDATE notifications SET time = NOW(), `read` = 0 WHERE id = ?';
+							db.query(sql, [result[0].id], (error, result) => {
+								if (error) {
+									console.log(error);
+									response.send('error');
+								} else {
+									response.send({to: to});
+								}
+							});
+						}
+					}
+				});
+			}
 		}
 	})
 
