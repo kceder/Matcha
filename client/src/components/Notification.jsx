@@ -12,7 +12,7 @@ const Notification = ({props}) => {
 
 	const handleNavigateToProfile = (event) => {
 		console.log(event)
-		window.location.href = `/profile/${props.from}`
+		window.location.href = `/user/${props.from}`
 	}
 	useEffect(() => {
 		getUserPhotos({target: props.from}).then(response => {
