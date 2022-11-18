@@ -4,9 +4,9 @@ import { getUser } from "../services/users";
 import { getUserPhotos } from "../services/photos";
 import Badge from 'react-bootstrap/Badge';
 import Carousel from 'react-bootstrap/Carousel';
-import { Spinner } from "react-bootstrap";
-import like from "../images/like.jpeg";
-import dislike from "../images/dislike.jpeg";
+import { Col, Container, Row, Spinner, Card } from "react-bootstrap";
+import like from "../images/like2.png";
+import dislike from "../images/like1.png";
 import {Image} from "react-bootstrap";
 import {likeDislike} from "../services/match"
 import { getLoggedInUsers } from '../services/users';
@@ -43,17 +43,11 @@ const LoginStatus = ({user}) => {
 
 	if (login) {
 		return (
-			<div>
-				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
-				</Spinner>
-			</div> 
+				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="grow" role="status"></Spinner>
 		)
 	} else {
 		return (
-			<div>
-				<Spinner style={{textAlign: 'center'}} animation="border" size="sm" role="status">
-				</Spinner>
-			</div>
+				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="border" size="sm" role="status"></Spinner>
 		)
 	}
 }
@@ -86,16 +80,16 @@ const StarRating = ({rating}) => {
 		if (i <= rating) {
 			stars.push(<i key={i} className="fas fa-star"></i>);
 		} else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
-			stars.push(<i key={i} className="fas fa-star-half-alt"></i>);
+			stars.push(<i key={i} style={{width: '3'}} className="fas fa-star-half-alt"></i>);
 		} else {
 			stars.push(<i key={i} className="far fa-star"></i>);
 		}
 	}
 
 	return (
-		<>
+		<div style={{width: 100}}>
 			{stars}
-		</>
+		</div>
 	)
 }
 
@@ -260,24 +254,19 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
-						<div className="container">
-							<div className="row">
-								<div className="col-7">
-									<div>
-										{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> }<h5 className="ml-2 card-title">{username}, {age}</h5>
-									</div> 
-								</div>
-								<div className="col-5">
-									<StarRating rating={score / 10} />
-								</div>
-							</div>
+						<Container>
+							<Row>
+								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
+								<Col xs={7} sm={6} md={6} lg={6} ><Card.Title>{username}, {age}</Card.Title></Col>
+								<Col className=""><StarRating rating={score / 10} /></Col>
+							</Row>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleLike()} src={like} width="80"  />}
+									{target === "self" ? null : <i class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
 									{infoShow === false ? <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <Image style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike} width="80"  />}
+									{target === "self" ? null : <i class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
-						</div>
+						</Container>
 					<div className='row p-2'>
 						<div className='col'>{tags}</div>
 					</div>

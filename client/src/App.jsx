@@ -25,6 +25,7 @@ import { useEffect } from "react";
 import { getNofications } from "./services/notifications";
 import { UserPage } from "./pages/UserPage";
 import { ChatPage } from "./pages/ChatPage";
+import { validator } from "./services/validator";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -46,22 +47,17 @@ const Navigation = ({socket}) => {
 			}
 		}, [login])
 	socket.on('receive notification', (data) => {
-		console.log('DATA IN App', data);
-		if (login === true) {
-			console.log('AFTER LOGIN ##########')
-			console.log('AFTER LOGIN ##########')
-			console.log('AFTER LOGIN ##########')
-			console.log('AFTER LOGIN ##########')
-			getUser({target: 'self'}).then(response => {
-				console.log('RESPONSE in App:', response.data.id);
-				console.log('FROM_ID in App: ', data.from_id);
-				if (response.data.id === data.to || response.data.id === data.from_id) {
-					console.log('NEW NOTIFICATION ======================');
-					setNewNotifications(true);
-					setUnreadNotifications(true);
-				}
-			})
-		}
+		validator().then(response => {
+			if (response.data === 'valid') {
+				getUser({target: 'self'}).then(response => {
+					if (response.data.id === data.to || response.data.id === data.from_id) {
+						console.log('======== NEW NOTIFICATION ========');
+						setNewNotifications(true);
+						setUnreadNotifications(true);
+					}
+				})
+			}
+		})
 	})
 	const Navigate = useNavigate();
 	const handleLogout = (e) => {
@@ -105,6 +101,11 @@ const App = () => {
 	const socket = io.connect("http://localhost:5000");
 	const [login, setLogin] = useState(false);
 	const [notificationsShown, setNotificationsShown] = useState(false);
+
+	getUser({target: 'self'}).then(response => {
+		if (response.data.length > 0)
+			setLogin(true);
+	})
 
 	return (
 		<SocketContext.Provider value={socket}>

@@ -3,7 +3,18 @@
     background-color: transparent;
 }
 
-#like-button {
+.like-button {
     color: #3b5998;
-    background-image: url("../../images/like.png");
+    background-image: url("../../images/like1.png");
+}
+
+.slide-out {
+    cursor:'pointer';
+    margin-left: -1000px;
+    transition-property: margin-left;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out;
+}
+.not-slide-out {
+    cursor:'pointer';
 }
