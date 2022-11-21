@@ -15,7 +15,7 @@ import {view} from "../services/notifications"
 import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
 import { useContext } from "react";
-import { motion } from "framer-motion"
+import { motion, useDragControls } from "framer-motion"
 
 
 const LoginStatus = ({user}) => {
@@ -137,6 +137,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	const [userTags, setUserTags] = useState([]);
 	const socket = useContext(SocketContext);
 	const [infoShow, setInfoShow] = useState(false);
+	const [animation, setAnimation] = useState({ x: 0, y: 0 });
 
 	useEffect(() => {
 
@@ -191,9 +192,10 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				socket.emit('notification', response.data);
 			})
 		}
-		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
+		setAnimation({x: -1000});
+		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
 			console.log(obj);
@@ -214,8 +216,12 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				displayUsers.filter(user => user.id !== target)
 			)
 		})
+		}, 250)
 	}
+	
 	const handleDislike = () => {
+		setAnimation({x: 1000});
+		setTimeout(() => {
 		const obj = {target: target, username: username};
 		console.log(obj);
 		disliked(obj).then(response => {
@@ -235,7 +241,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				displayUsers.filter(user => user.id !== target)
 			)
 		})
+	}, 250)
 	}
+
 	if (pictures.length === 0) {
 		return (
 			<div className="" style={{
@@ -252,12 +260,12 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	} else {
 		return (
 			<div>
-				<div>
-				<motion.h2 animate={{ fontSize: 500 }}>
-					Hello
-				</motion.h2>
-				</div>
-				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
+				<motion.div
+				initial={{}}
+				animate={animation}
+				transition={{ duration: 0.4 }}
+				onHover={() => showHideInfo()}
+				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<Container>
@@ -267,9 +275,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <i class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
-									{infoShow === false ? <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"></i> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <i class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: 'gray'}} class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
+									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: 'gray'}} class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
 						</Container>
@@ -277,7 +285,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 						<div className='col'>{tags}</div>
 					</div>
 					</div>
-				</div>
+				</motion.div>
 			</div>
 		)
 	}

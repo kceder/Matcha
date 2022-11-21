@@ -7,11 +7,10 @@ import { filterUsers } from "../services/users";
 import StarInput from "./StarInput";
 import './style/slider.css'
 import { Button } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 
 const SearchForm = ({states, dropMenu}) => {
-
-
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -77,7 +76,7 @@ const SearchFilter = ({states}) => {
 		}
 		return (
 			<>
-				<div className="burger" onClick={() => dropMenu()}></div>
+				<motion.div whileHover={{ scale: 1.4}} className="burger" onClick={() => dropMenu()}></motion.div>
 				{showHide ? <> <SearchForm dropMenu={dropMenu} className="bg-alert" states={states}/> </> : null}
 			</>
 		)

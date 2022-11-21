@@ -26,6 +26,7 @@ import { getNofications } from "./services/notifications";
 import { UserPage } from "./pages/UserPage";
 import { ChatPage } from "./pages/ChatPage";
 import { validator } from "./services/validator";
+import { motion } from "framer-motion";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -81,17 +82,17 @@ const Navigation = ({socket}) => {
 					fontWeight: "bolder",
 				}} >MATCHA</h1>
 				</Navbar.Brand>
-				{ login === true ? <Nav.Link href="/home" > <i className="fa-solid fa-house"></i></Nav.Link> :null}
-				{ login === true ? <Nav.Link href="/profile"> <i className="fa-solid fa-user"></i></Nav.Link> :null}
-				{ login === true ? <Nav.Link  href="/messages"><i className="fa-solid fa-comments"></i></Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/home" > <motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-house"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/profile"> <motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-user"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-comments"/></Nav.Link> :null}
 				{ login === true ? 
 					<Nav.Link href="/notifications">
 						<div style={{position: 'relative'}}>
-							<i className={unreadNotifications === true ? "fa-solid fa-bell" : "fa-regular fa-bell"}></i>
+							<motion.i whileHover={{ scale: 1.4, color: 'gray'}} className={unreadNotifications === true ? "fa-solid fa-bell" : "fa-regular fa-bell"}/>
 							<Spinner animation="grow" size="bg" variant="light" style={{display: newNotifications ? 'block' : 'none', position: 'absolute', marginTop: '-25px', marginLeft: "-0.10px"}}/>
 						</div>
 					</Nav.Link> : null}
-				{ login === true ? <i onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"></i> :null}
+				{ login === true ? <motion.i whileHover={{ scale: 1.4, color: 'gray'}}  onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"/> :null}
 			</Container>
 		</Navbar>
 	)
