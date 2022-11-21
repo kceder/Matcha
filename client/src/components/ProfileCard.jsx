@@ -15,6 +15,7 @@ import {view} from "../services/notifications"
 import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
 import { useContext } from "react";
+import { motion } from "framer-motion"
 
 
 const LoginStatus = ({user}) => {
@@ -251,6 +252,11 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	} else {
 		return (
 			<div>
+				<div>
+				<motion.h2 animate={{ fontSize: 500 }}>
+					Hello
+				</motion.h2>
+				</div>
 				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
