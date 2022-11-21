@@ -24,7 +24,12 @@ const ChatLink = ({user, room}) => {
 
 	return (
 		<div className="row">
-			{user} {room} {username} <img src={userPicture} />
+			<img className="col-3" src={userPicture} style={{maxWidth : '100px'}} />
+			<div className="col-9">
+				<p>{username}</p>
+				<small className="text-muted">last message</small>
+			</div>
+			<hr className="mt-3"></hr>
 		</div>
 	)
 }
@@ -38,7 +43,7 @@ export const ChatLinks = ({props}) => {
 		}
 	})
 	return (
-		<div className="container">
+		<div className="container mt-3">
 			{chats}
 		</div>
 	)
