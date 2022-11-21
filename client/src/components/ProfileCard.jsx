@@ -4,7 +4,7 @@ import { getUser } from "../services/users";
 import { getUserPhotos } from "../services/photos";
 import Badge from 'react-bootstrap/Badge';
 import Carousel from 'react-bootstrap/Carousel';
-import { Col, Container, Row, Spinner, Card } from "react-bootstrap";
+import { Col, Container, Row, Spinner, Card, Toast } from "react-bootstrap";
 import like from "../images/like2.png";
 import dislike from "../images/like1.png";
 import {Image} from "react-bootstrap";
@@ -48,7 +48,7 @@ const LoginStatus = ({user}) => {
 		)
 	} else {
 		return (
-				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="border" size="sm" role="status"></Spinner>
+				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem",  }} variant="secondary" animation="border" size="sm" role="status"></Spinner>
 		)
 	}
 }
@@ -121,7 +121,8 @@ const CarouselImages = ({pictures}) => {
 	)
 }
 
-const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) => {
+
+const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, displayUsers}) => {
 
 	const [name, setName] = useState('');
 	const [lastName, setLastName] = useState('');
@@ -153,7 +154,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 			setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setScore(response.data.basicInfo.score)
 			getUser({target : "self"}).then(response => {
-				setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
+			setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 		})
 
 			getUserPhotos(obj).then(response => {
@@ -196,6 +197,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 	}
 	const handleLike = () => {
 		setAnimation({x: -1000});
+		setShow({show: true, message: 'You matched with ' + username + ' !'});
 		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
@@ -275,9 +277,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#fa2323'}} class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
 									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2}} class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
 						</Container>

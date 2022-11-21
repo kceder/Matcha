@@ -74,25 +74,27 @@ const Navigation = ({socket}) => {
 		<Navbar bg="light" expand="lg">
 			<Container>
 				<Navbar.Brand href="/home">
-				<h1 style={{
+				<motion.h1
+					whileHover={{ scale: 1.1 }} 
+					style={{
 					background: 'url(https://static01.nyt.com/images/2022/08/09/well/09ASKWELL-WILDFIRES-CANCER3/merlin_211227660_ccc9570a-94a8-40a5-b3b2-403a08d84d2b-superJumbo.jpg?quality=75&auto=webp)',
 					backgroundSize: 'cover',
 					WebkitBackgroundClip: 'text',
 					WebkitTextFillColor: 'transparent',
 					fontWeight: "bolder",
-				}} >MATCHA</h1>
+				}} >MATCHA</motion.h1>
 				</Navbar.Brand>
-				{ login === true ? <Nav.Link href="/home" > <motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-house"/></Nav.Link> :null}
-				{ login === true ? <Nav.Link href="/profile"> <motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-user"/></Nav.Link> :null}
-				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: 'gray'}} className="fa-solid fa-comments"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/home" > <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-house"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link href="/profile"> <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-user"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-comments"/></Nav.Link> :null}
 				{ login === true ? 
 					<Nav.Link href="/notifications">
 						<div style={{position: 'relative'}}>
-							<motion.i whileHover={{ scale: 1.4, color: 'gray'}} className={unreadNotifications === true ? "fa-solid fa-bell" : "fa-regular fa-bell"}/>
+							<motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className={unreadNotifications === true ? "fa-solid fa-bell" : "fa-regular fa-bell"}/>
 							<Spinner animation="grow" size="bg" variant="light" style={{display: newNotifications ? 'block' : 'none', position: 'absolute', marginTop: '-25px', marginLeft: "-0.10px"}}/>
 						</div>
 					</Nav.Link> : null}
-				{ login === true ? <motion.i whileHover={{ scale: 1.4, color: 'gray'}}  onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"/> :null}
+				{ login === true ? <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}}  onClick={(e) => handleLogout(e)} className="fa-solid fa-arrow-right-from-bracket"/> :null}
 			</Container>
 		</Navbar>
 	)
