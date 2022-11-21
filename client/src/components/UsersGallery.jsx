@@ -23,9 +23,9 @@ const SortOptions = ({ setSorting }) => {
 
 const PopUp = ({show, setShow}) => {
 	return (
-		<Toast onClose={() => setShow(false)} show={show} delay={3000} autohide style={{position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
+		<Toast onClose={() => setShow(false)} show={show} delay={3000} autohide style={{ width: '200px', position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
 			<Toast.Header>
-				<strong className="mr-auto">New Match</strong>
+				<strong className="mr-auto">{show.message}</strong>
 			</Toast.Header>
 			<Toast.Body>{show.message}</Toast.Body>
 		</Toast>
