@@ -2,7 +2,8 @@ import ProfileCard from "./ProfileCard";
 import Form from 'react-bootstrap/Form';
 import { useEffect } from "react";
 import { useState } from "react";
-import { Toast } from 'react-bootstrap';
+import { Toast, ToastBody, ToastContainer } from 'react-bootstrap';
+import { motion } from "framer-motion";
 
 
 const SortOptions = ({ setSorting }) => {
@@ -23,12 +24,14 @@ const SortOptions = ({ setSorting }) => {
 
 const PopUp = ({show, setShow}) => {
 	return (
-		<Toast onClose={() => setShow(false)} show={show} delay={3000} autohide style={{ width: '200px', position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
-			<Toast.Header>
-				<strong className="mr-auto">{show.message}</strong>
-			</Toast.Header>
-			<Toast.Body>{show.message}</Toast.Body>
-		</Toast>
+          <Toast onClose={() => setShow(false)} show={show} delay={4000} autohide style={{ maxHeight: '100px', position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
+            <Toast.Header>
+				<i class="fa-solid fa-heart-circle-check"></i>
+              	<strong className="me-auto">Match!</strong>
+              	<small>Just Now</small>
+            </Toast.Header>
+            <Toast.Body>{show.message}</Toast.Body>
+          </Toast>
 	)
 }
 
@@ -40,12 +43,21 @@ const UsersGallery = ({ setUsers, users, displayUsers, setDisplayUsers,setSortin
 	
 	
 	const filteredUsers = displayUsers.map(user => {
-		return (
-			<>
-				{show.show} : <PopUp show={show} setShow={setShow}/>
-				<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
-			</>
-		)
+		if (show.show === true) {
+			return (
+				<>
+					{show.show} <PopUp show={show} setShow={setShow}/>
+					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
+				</>
+			)
+		}
+		else {
+			return (
+				<>
+					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
+				</>
+			)
+		}
 	}) 
 	
 	

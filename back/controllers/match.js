@@ -72,7 +72,7 @@ const likeDislike = (request, response) => {
 							db.query(createChatroom, [user1, user2], function(error, result) {
 								if (error) response.send(error)
 								else {
-									response.send('all gucci belushi')
+									response.send('match')
 								}
 							})
 						}

@@ -594,10 +594,9 @@ con.connect((err) => {
 			console.log(err);
 		} else if (result.length === 0) {
 
-			while (i < 1000) {
-				console.log('CHEKCTHIS OUT : ', i)
+			while (i < 500) {
+				console.log('users generated: ', i)
 				let profile = randomProfile.profile();
-				console.log(profile);
 				if (iLocation === locations.length)
 					iLocation = 0;
 				if (iMalePictures === menPics.length)
