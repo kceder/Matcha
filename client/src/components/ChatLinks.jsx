@@ -9,21 +9,24 @@ import {getUserPhotos} from "../services/photos"
 
 
 const ChatLink = ({user, room}) => {
-	console.log(user, room)
+
 	const [username, setUsername] = useState('');
 	const [userPicture, setUserPicture] = useState('');
+	const Navigate = useNavigate();
 
 	getUser({target : user}).then(response => {
-		console.log(response.data)
 		setUsername(`${response.data.basicInfo.name} ${response.data.basicInfo.lastName}`);
 		getUserPhotos({target: user}).then(response => {
-			console.log(response.data)
 			setUserPicture(response.data.pic_1)
 		})
 	})
 
+	const handleClick = (room) => {
+		console.log(room)
+		Navigate(`/direct/${room}`)
+	}
 	return (
-		<div className="row">
+		<div className="row" onClick={() => handleClick(room)}>
 			<img className="col-3" src={userPicture} style={{maxWidth : '100px'}} />
 			<div className="col-9">
 				<p>{username}</p>
