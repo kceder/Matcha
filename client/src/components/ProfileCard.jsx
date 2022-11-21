@@ -15,7 +15,7 @@ import {view} from "../services/notifications"
 import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
 import { useContext } from "react";
-import { motion, useDragControls } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 
 const LoginStatus = ({user}) => {
@@ -192,6 +192,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				socket.emit('notification', response.data);
 			})
 		}
+		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
 		setAnimation({x: -1000});
@@ -216,7 +217,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				displayUsers.filter(user => user.id !== target)
 			)
 		})
-		}, 250)
+		}, 500)
 	}
 	
 	const handleDislike = () => {
@@ -241,7 +242,7 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				displayUsers.filter(user => user.id !== target)
 			)
 		})
-	}, 250)
+	}, 500)
 	}
 
 	if (pictures.length === 0) {
@@ -264,7 +265,6 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 				initial={{}}
 				animate={animation}
 				transition={{ duration: 0.4 }}
-				onHover={() => showHideInfo()}
 				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
@@ -275,9 +275,9 @@ const ProfileCard = ({setUsers, users, target, setDisplayUsers, displayUsers}) =
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: 'gray'}} class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#fa2323'}} class="fa-regular fa-heart fa-3x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
 									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: 'gray'}} class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
+									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2}} class="fa-solid fa-heart-crack fa-3x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
 						</Container>
