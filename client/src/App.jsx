@@ -27,6 +27,7 @@ import { UserPage } from "./pages/UserPage";
 import { ChatPage } from "./pages/ChatPage";
 import { validator } from "./services/validator";
 import { motion } from "framer-motion";
+import {ChatRoom} from "./pages/ChatRoom"
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -126,6 +127,7 @@ const App = () => {
 						<Route path="/user/:id" element={<UserPage />}/>
 						<Route path="/notifications" element={<NotificationsPage />}/>
 						<Route path="/messages" element={<ChatPage />}/>
+						<Route path="/direct/:roomId" element={<ChatRoom />}/>
 					</Routes>
 			</LoginContext.Provider>
 		</SocketContext.Provider>
