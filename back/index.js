@@ -14,6 +14,7 @@ const tagsRouter = require('./routers/tagsRouter')
 const matchRouter = require('./routers/matchRouter')
 const validatorRouter = require('./routers/validator')
 const notificationsRouter = require('./routers/notificationsRouters')
+const chatsRouter = require('./routers/chatsRouters')
 const server = http.createServer(app);
 const socketServer = require('./socket.js');
 
@@ -50,6 +51,7 @@ app.use(tagsRouter);
 app.use(matchRouter);
 app.use(notificationsRouter);
 app.use(validatorRouter);
+app.use(chatsRouter);
 
 socketServer.socketServer(server);
 const port = process.env.PORT || 5000;

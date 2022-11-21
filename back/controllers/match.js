@@ -1,3 +1,4 @@
+const { Certificate } = require('crypto');
 const { response } = require('express');
 const db = require('../config/db.js');
 
@@ -67,8 +68,13 @@ const likeDislike = (request, response) => {
 							// console.log(error)
 							response.send('error matches')
 						} else {
-							// console.log('something')
-							response.send('all gucci belushi')
+							const createChatroom = "INSERT INTO chatrooms (user1, user2) VALUES (?, ?);";
+							db.query(createChatroom, [user1, user2], function(error, result) {
+								if (error) response.send(error)
+								else {
+									response.send('all gucci belushi')
+								}
+							})
 						}
 					})
 				} else if (like1 !== true) {

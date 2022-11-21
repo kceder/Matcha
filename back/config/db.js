@@ -244,6 +244,16 @@ con.connect((err) => {
 			if (error) throw error;
 			else console.log('match table')
 		})
+		sql = "CREATE TABLE IF NOT EXISTS chatrooms (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11));"
+		con.query(sql, (error, resutl) => {
+			if (error) throw error;
+			else console.log('chatroom table')
+		})
+		sql = "CREATE TABLE IF NOT EXISTS messages (id INT(11) AUTO_INCREMENT PRIMARY KEY, chatroom_id INT(11), sender INT(11), body VARCHAR(420), seen BOOLEAN DEFAULT FALSE, time DATETIME DEFAULT NOW());";
+		con.query(sql, (error, resutl) => {
+			if (error) throw error;
+			else console.log('messages table')
+		})
 	}
 	createTables().then(() => {
 	const womenPics = [
