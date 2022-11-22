@@ -54,7 +54,7 @@ const getMessages = (request, response) => {
 const sendMessage = (request, response) => {
 
 	const room = parseInt(request.body.room);
-	const message = request.body.message;
+	const message = request.body.body;
 	const sender = request.user.id;
 
 	const sql = "INSERT INTO messages (chatroom_id, sender, body) VALUES (?, ?, ?);"

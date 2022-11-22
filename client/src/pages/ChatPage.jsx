@@ -26,6 +26,7 @@ export const ChatPage = () => {
 					getChatRooms().then((response) => {
 						if (response.data.length > 0){
 							setChatRooms(response.data)
+							console.log(response.data)
 						}
 					})
 				})

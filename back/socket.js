@@ -33,7 +33,14 @@ const socketServer = (server) => {
 			console.log('data in socket.js :', data);
 			socket.broadcast.emit('receive notification', data);
 		})
-
+		socket.on('join_room', (room) => {
+			socket.join(room);
+			console.log(`${socket.id} joined room ${room}`);
+		})
+		socket.on('send_message', (data) => {
+			console.log(data);
+			io.in(data.room).emit('receive_message', data);
+		})
 	})
 } 
 
