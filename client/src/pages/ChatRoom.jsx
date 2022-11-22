@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { authorizeRoomAccess, sendMessage, getMessages } from "../services/chat";
 
 import SocketContext from "../contexts/socketContext";
+import LoginContext from "../contexts/loginContext";
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
@@ -32,14 +33,12 @@ const Message = ({message}) => {
 const Chat = ({props}) => {
 	const socket = props.socket;
 
-
 	const [message, setMessage] = useState([]);
 	useEffect(() => {
 		socket.on('receive_message', (data) => {
 			console.log(data);
-			// let temp = [...message];
-			// temp.push(data);
-			setMessage(data)
+			
+			setMessage((prev) => [...prev, data]);
 			console.log('socket messages:', message.body);
 		})
 	}, [socket])
@@ -62,6 +61,7 @@ export const ChatRoom = () => {
 	const [user1, setUser1] = useState(0);
 	const socket = useContext(SocketContext);
 	const [messages, setMessages] = useState([]);
+	const [login, setLogin] = useContext(LoginContext);
 	
 	useEffect(() => {
 		getMessages({room : room}).then(response => {
@@ -80,7 +80,7 @@ export const ChatRoom = () => {
 			if (response.data === 'token invalid')
 				navigate('/')
 			else if (response.data === 'valid') {
-				// setLogin(true);
+				setLogin(true);
 				getUser({target: 'self'}).then(response => {
 					authorizeRoomAccess({room : room}).then(response => {
 						if (response.data === 'forbid')
@@ -115,9 +115,9 @@ export const ChatRoom = () => {
 				<Chat props={{socket, room}} />
 				<div className="container" >
 				</div>
-				<form style={{bottom : '0'}} className="form-inline" onSubmit={(e) => handleSubmit(e)}>
-					<input placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)}></input>
-					<button type="submit" className="btn btn-dark ml-2" >{'>>'}</button>
+				<form style={{bottom : '0', position : 'fixed', width: '100%'}} className="form-inline" onSubmit={(e) => handleSubmit(e)}>
+					<input style={{width: '80%'}} placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)}></input>
+					<button style={{right: '0'}} type="submit" className="btn btn-dark ml-2" >{'>>'}</button>
 				</form>
 			</>
 		)

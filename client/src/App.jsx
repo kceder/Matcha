@@ -87,7 +87,7 @@ const Navigation = ({socket}) => {
 				</Navbar.Brand>
 				{ login === true ? <Nav.Link href="/home" > <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-house"/></Nav.Link> :null}
 				{ login === true ? <Nav.Link href="/profile"> <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-user"/></Nav.Link> :null}
-				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-comments"/></Nav.Link> :null}
+				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-regular fa-comments"/></Nav.Link> :null}
 				{ login === true ? 
 					<Nav.Link href="/notifications">
 						<div style={{position: 'relative'}}>
