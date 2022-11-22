@@ -198,13 +198,14 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 	}
 	const handleLike = () => {
 		setAnimation({x: -1000});
-		setShow({show: true, message: 'You matched with ' + username + ' !'});
 		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
 			console.log(obj);
-			if (response.data === 'match')
+			console.log('YOYOYOYOY:',response.data);
+			if (response.data === 'match') {
 				setShow({show: true, message: 'You matched with ' + username + ' !'});
+			}
 			liked(obj).then(response => { 
 				console.log('RESPONSE', response.data)
 				console.log('RESPONSE from ID:', response.data.from_id)

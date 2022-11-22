@@ -91,7 +91,7 @@ const Navigation = ({socket}) => {
 	};
 
 	return (
-		<Navbar bg="light" expand="lg">
+		<Navbar bg="light" expand="lg" position="absolute" top="0px">
 			<Container>
 				<Navbar.Brand href="/home">
 				<motion.h1

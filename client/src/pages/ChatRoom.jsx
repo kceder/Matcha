@@ -6,7 +6,8 @@ import { authorizeRoomAccess, sendMessage, getMessages } from "../services/chat"
 
 import SocketContext from "../contexts/socketContext";
 import LoginContext from "../contexts/loginContext";
-import { Badge } from "react-bootstrap";
+import { Badge, Image } from "react-bootstrap";
+import { getUserPhotos } from "../services/photos";
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
@@ -67,6 +68,7 @@ export const ChatRoom = () => {
 	const [messages, setMessages] = useState([]);
 	const [login, setLogin] = useContext(LoginContext);
 	const [User2Name, setUser2Name] = useState('');
+	const [photos, setPhotos] = useState('');
 
 	useEffect(() => {
 		getMessages({room : room}).then(response => {
@@ -122,13 +124,18 @@ export const ChatRoom = () => {
 			console.log(response.data.basicInfo);
 			setUser2Name(temp);
 		})
+		getUserPhotos({target: user2}).then(response => {
+			// let temp = response.data.pic_1.slice(1);
+			setPhotos(response.data.pic_1);
+			console.log('P H O T O S : ', photos)
+		})
 	},[user2])
 	
 		return (
 			<>
 				<div className="container" style={{marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550}}>
 				<div className="header" style={{marginBottom: '1rem'}}>
-				<i class="fa-regular fa-user"></i><h3>{User2Name}</h3>
+				<Image src={photos} circle /><h3>{User2Name}</h3>
 				</div>
 				<div className="" style={{height: '65vh', overflowY: 'scroll', marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550, borderStyle : 'solid', borderWidth : '1px', borderColor : 'lightgray', backgroundColor : 'lightgray'}}>
 				{messages.map((message, i) => {
