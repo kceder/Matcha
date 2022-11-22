@@ -20,5 +20,6 @@ chatsRouter.route('/api/chat/chatrooms').post(tokenValidator, chatsController.ge
 chatsRouter.route('/api/chat/authorize').post(tokenValidator, chatsController.authorizeRoomAccess);
 chatsRouter.route('/api/chat/send').post(tokenValidator, chatsController.sendMessage);
 chatsRouter.route('/api/chat/get-messages').post(tokenValidator, chatsController.getMessages);
+chatsRouter.route('/api/chat/check-read-messages').post(tokenValidator, chatsController.checkForUnreadMessages);
 
 module.exports = chatsRouter;

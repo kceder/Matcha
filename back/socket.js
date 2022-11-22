@@ -32,14 +32,25 @@ const socketServer = (server) => {
 		socket.on("notification", (data) => {
 			console.log('data in socket.js :', data);
 			socket.broadcast.emit('receive notification', data);
+			socket.on("disconnect", () => {
+				console.log("User Disconnected", socket.id);
+			});
 		})
 		socket.on('join_room', (room) => {
 			socket.join(room);
 			console.log(`${socket.id} joined room ${room}`);
+			socket.on("disconnect", () => {
+				console.log("User Disconnected", socket.id);
+			});
 		})
 		socket.on('send_message', (data) => {
-			console.log(data);
+
 			io.in(data.room).emit('receive_message', data);
+			console.log('hereeeeeeeeeeeeeeeeeeeeeeee')
+			socket.broadcast.emit('message_notification', data);
+			socket.on("disconnect", () => {
+				console.log("User Disconnected", socket.id);
+			});
 		})
 	})
 } 

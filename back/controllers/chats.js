@@ -69,9 +69,30 @@ const sendMessage = (request, response) => {
 	})
 }
 
+const checkForUnreadMessages = (request, response) => {
+	const user = request.user.id;
+
+	const sql = "SELECT * FROM chatrooms JOIN messages ON messages.chatroom_id = chatrooms.id WHERE (user1 = ? OR user2 = ?)"
+	db.query(sql, [user, user], function (error, result) {
+		if (error) {
+			console.log(error)
+			response.send('error')
+		} else {
+			console.log(result)
+			let i = 0;
+			result.forEach(message => {
+				if (message.seen === 0 && message.sender !== user)
+					i++;
+			});
+			response.send({unseenMessages : i})
+		}
+	})
+}
+
 module.exports = {
 	getChatrooms,
 	authorizeRoomAccess,
 	getMessages,
-	sendMessage
+	sendMessage,
+	checkForUnreadMessages
 };
