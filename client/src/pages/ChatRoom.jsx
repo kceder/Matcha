@@ -59,6 +59,7 @@ export const ChatRoom = () => {
 	const [inputMessage, setInputMessage] = useState('')
 	const room = useParams().roomId;
 	const [user1, setUser1] = useState(0);
+	const [user2, setUser2] = useState(0);
 	const socket = useContext(SocketContext);
 	const [messages, setMessages] = useState([]);
 	const [login, setLogin] = useContext(LoginContext);
@@ -85,6 +86,8 @@ export const ChatRoom = () => {
 					authorizeRoomAccess({room : room}).then(response => {
 						if (response.data === 'forbid')
 							navigate('/messages');
+						else if (response.data.message === 'authorize')
+							setUser2(response.data.user2);
 					})
 				})
 			}
@@ -99,6 +102,7 @@ export const ChatRoom = () => {
 			room: room,
 			body: inputMessage,
 			sender: user1,
+			receiver: user2,
 			time: new Date().getHours() + ':' + new Date().getMinutes()
 		}
 		await sendMessage(message).then(response => {

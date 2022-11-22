@@ -4,13 +4,11 @@ import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { SetUpProfile } from "./pages/setUpProfile";
 import { ProfilePage } from "./pages/profilePage";
-import  AddPhotos from "./components/completeAccountForms/AddPhotos";
 import  ProfilePictureUpload from "./components/completeAccountForms/ProfilePictureUpload";
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import ProfileCard from './components/ProfileCard'
 import HomePage from "./pages/HomePage";
 import './components/style/mennu.css';
-import { useContext, createContext } from "react";
+import { useContext} from "react";
 import { useState } from "react";
 import { logOut } from "./services/login";
 import { useNavigate } from "react-router-dom";
@@ -53,7 +51,6 @@ const Navigation = ({socket}) => {
 			if (response.data === 'valid') {
 				getUser({target: 'self'}).then(response => {
 					if (response.data.id === data.to || response.data.id === data.from_id) {
-						console.log('======== NEW NOTIFICATION ========');
 						setNewNotifications(true);
 						setUnreadNotifications(true);
 					}
@@ -61,6 +58,7 @@ const Navigation = ({socket}) => {
 			}
 		})
 	})
+	console.log(window.location.href)
 	const Navigate = useNavigate();
 	const handleLogout = (e) => {
 		e.preventDefault()

@@ -29,7 +29,8 @@ const authorizeRoomAccess = (request, response) => {
 			response.send('forbid')
 		} else {
 			if (result[0].user1 === user || result[0].user2 === user) {
-				response.send('authorize')
+				const user2 = user === result[0].user1 ? result[0].user2 : result[0].user1;
+				response.send({message: 'authorize', user2 : user2 })
 			} else {
 				response.send('forbid')
 			}
