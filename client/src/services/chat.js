@@ -17,3 +17,7 @@ export const getMessages = (newObject) => {
 export const sendMessage = (newObject) => {
 	return axios.post(`${baseUrl}/send`, newObject, {withCredentials: true})
 }
+
+export const checkForUnreadMessages = (newObject) => {
+	return axios.post(`${baseUrl}/check-read-messages`, {withCredentials: true})
+}

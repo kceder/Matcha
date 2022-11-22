@@ -26,12 +26,15 @@ import { ChatPage } from "./pages/ChatPage";
 import { validator } from "./services/validator";
 import { motion } from "framer-motion";
 import {ChatRoom} from "./pages/ChatRoom"
+import { checkForUnreadMessages } from "./services/chat";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
 	const [newNotifications, setNewNotifications] = useState(false);
 	const [unreadNotifications, setUnreadNotifications] = useState(false);
-	
+	const [newMessages, setNewMessages] = useState(false);
+	const [unreadMessages, setUnreadMessages] = useState(false);
+	const url = window.location.pathname;
 		useEffect(() => {
 			if (login) {
 				getNofications().then(response => {
@@ -44,6 +47,12 @@ const Navigation = ({socket}) => {
 						});
 					}
 				})
+				// get messages //
+				checkForUnreadMessages().then(response => {
+					if (response.data.unseenMessages > 0)
+						setUnreadMessages(true);
+				})
+
 			}
 		}, [login])
 	socket.on('receive notification', (data) => {
@@ -58,7 +67,19 @@ const Navigation = ({socket}) => {
 			}
 		})
 	})
-	console.log(window.location.href)
+	socket.on('message_notification', (data) => {
+		console.log(data)
+		validator().then(response => {
+			if (response.data === 'valid') {
+				getUser({target: 'self'}).then(response => {
+					if (response.data.id === data.receiver && url !== `/direct/${data.room}` && url !== '/messages') {
+						setNewMessages(true);
+						setUnreadMessages(true);
+					}
+				})
+			}
+		})
+	})
 	const Navigate = useNavigate();
 	const handleLogout = (e) => {
 		e.preventDefault()
@@ -85,7 +106,14 @@ const Navigation = ({socket}) => {
 				</Navbar.Brand>
 				{ login === true ? <Nav.Link href="/home" > <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-house"/></Nav.Link> :null}
 				{ login === true ? <Nav.Link href="/profile"> <motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-solid fa-user"/></Nav.Link> :null}
-				{ login === true ? <Nav.Link  href="/messages"><motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className="fa-regular fa-comments"/></Nav.Link> :null}
+				{ login === true ? 
+					<Nav.Link  href="/messages">
+						<div style={{position: 'relative'}}>
+							<motion.i whileHover={{ scale: 1.4, color: '#a3a3a3'}} className={unreadMessages === true ? "fa-solid fa-comments" : "fa-regular fa-comments"}/>
+							<Spinner animation="grow" size="bg" variant="light" style={{display: newMessages ? 'block' : 'none', position: 'absolute', marginTop: '-28px', marginLeft: "-6.12px"}}/>
+						</div>
+					</Nav.Link> 
+					:null}
 				{ login === true ? 
 					<Nav.Link href="/notifications">
 						<div style={{position: 'relative'}}>

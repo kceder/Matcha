@@ -24,14 +24,14 @@ const SortOptions = ({ setSorting }) => {
 
 const PopUp = ({show, setShow}) => {
 	return (
-          <Toast onClose={() => setShow(false)} show={show} delay={4000} autohide style={{ maxHeight: '100px', position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
-            <Toast.Header>
-				<i class="fa-solid fa-heart-circle-check"></i>
-              	<strong className="me-auto">Match!</strong>
-              	<small>Just Now</small>
-            </Toast.Header>
-            <Toast.Body>{show.message}</Toast.Body>
-          </Toast>
+		<Toast onClose={() => setShow(false)} show={show} delay={4000} autohide style={{ maxHeight: '100px', position: 'absolute', top: 0, right: 0, zIndex: 1000}}>
+			<Toast.Header>
+				<i className="fa-solid fa-heart-circle-check"></i>
+				<strong className="me-auto">Match!</strong>
+				<small>Just Now</small>
+			</Toast.Header>
+			<Toast.Body>{show.message}</Toast.Body>
+		</Toast>
 	)
 }
 
