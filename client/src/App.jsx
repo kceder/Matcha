@@ -34,8 +34,7 @@ const Navigation = ({socket}) => {
 	const [unreadNotifications, setUnreadNotifications] = useState(false);
 	const [newMessages, setNewMessages] = useState(false);
 	const [unreadMessages, setUnreadMessages] = useState(false);
-	const [url, setUrl] = useState(window.location.pathname);
-	
+	const url = window.location.pathname;
 		useEffect(() => {
 			if (login) {
 				getNofications().then(response => {
