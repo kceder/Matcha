@@ -48,7 +48,8 @@ const LoginStatus = ({user}) => {
 		)
 	} else {
 		return (
-				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem",  }} variant="secondary" animation="border" size="sm" role="status"></Spinner>
+				// <Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem",  }} variant="secondary" animation="border" size="sm" role="status"></Spinner>
+				<i style={{textAlign: 'center', width: "0.5rem", height: "0.5rem",  color: 'gray'}} class="fa-regular fa-circle-xmark"></i>
 		)
 	}
 }
@@ -275,12 +276,12 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 						<Container>
 							<Row>
 								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
-								<Col xs={7} sm={6} md={6} lg={6} ><Card.Title>{username}, {age}</Card.Title></Col>
+								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title>{username}, {age}</Card.Title></Col>
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
 									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} class="fa-regular fa-heart fa-2x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
-									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <i style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></i>}
+									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></motion.i>}
 									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} class="fa-solid fa-heart-crack fa-2x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}

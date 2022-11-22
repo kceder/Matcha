@@ -48,7 +48,7 @@ export const ProfilePage = () => {
 		console.log('login context in pp:', login);
 		return (
 
-				<Container id="nav-plus-form">
+				<Container id="nav-plus-form" style={{padding: 0}}>
 					<div className="row row justify-content-center ">
 						<SettingsMenu  handleClick={handleClick} />
 					</div>
