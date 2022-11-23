@@ -9,3 +9,7 @@ export const changePassword = (newObject) => {
 export const changeUserInfo = (newObject) => {
 	return axios.post(`${baseUrl}changeUserInfo`, newObject);
 }
+
+export const sendRestore = (email) => {
+	return axios.post(`${baseUrl}restorePassword`, email);
+}

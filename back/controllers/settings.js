@@ -1,7 +1,15 @@
 const db = require('../config/db.js');
 const bcrypt = require("bcrypt");
 var validator = require("email-validator");
+const { request } = require('http');
+const { response } = require('express');
 
+const restorePassword = (request, response) => {
+
+	console.log('in sendRestore');
+	response.send('in restore')
+
+}
 
 const changePassword = (request,  response) => {
 
@@ -126,5 +134,6 @@ const changeUserInfo = (request, response) => {
 
 module.exports = {
 	changePassword,
-	changeUserInfo
+	changeUserInfo,
+	restorePassword,
 }
