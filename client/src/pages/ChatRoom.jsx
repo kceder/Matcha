@@ -6,11 +6,15 @@ import { authorizeRoomAccess, sendMessage, getMessages } from "../services/chat"
 
 import SocketContext from "../contexts/socketContext";
 import LoginContext from "../contexts/loginContext";
-import { Badge, Image } from "react-bootstrap";
+import { Badge, Image, Row, Col, Container } from "react-bootstrap";
 import { getUserPhotos } from "../services/photos";
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
+	const time = message.time.split('T');
+	const temp = time[1].split(':')
+	console.log(temp)
+	const showTime = `${temp[0]}:${temp[1]}`
 	getUser({target: 'self'}).then(response => {
 		setUser1(response.data.id)
 
@@ -19,15 +23,15 @@ const Message = ({message}) => {
 		return (
 			<div className="d-flex" style={{padding: '1rem'}}>
 				<div style={{width : "20%"}}></div>
-				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>time</div>
-				<Badge bg="light" text="dark" style={{minWidth: "80%", maxWidth : "80%", padding : '10px', textAlign : 'end', marginRight : '10px'}}>{message.body}</Badge>
+				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>{showTime}</div>
+				<Badge bg="light" text="dark" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end', marginRight : '10px'}}>{message.body}</Badge>
 			</div>
 		)
 	} else {
 		return (
 			<div className="d-flex" style={{padding: '1rem'}}>
-				<Badge bg="secondary" style={{minWidth: "80%", maxWidth : "80%", padding : '10px', textAlign : 'start', marginLeft : '10px'}}>{message.body}</Badge>
-				<div style={{fontSize : '0.6rem', color : "darkgray", marginLeft : "10px"}}>time</div>
+				<Badge bg="secondary" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'start', marginLeft : '10px'}}>{message.body}</Badge>
+				<div style={{fontSize : '0.6rem', color : "darkgray", marginLeft : "10px"}}>{showTime}</div>
 				<div style={{width : "20%"}}></div>
 			</div>
 		)
@@ -57,6 +61,30 @@ const Chat = ({props}) => {
 	}
 }
 
+const ChatHeader = ({user2}) => {
+	
+	const [user2Name, setUser2Name] = useState('');
+	const [userPicture, setUserPicture] = useState('');
+
+	getUser({target : user2}).then(response => {
+		setUser2Name(`${response.data.basicInfo.name} ${response.data.basicInfo.lastName}`);
+		getUserPhotos({target: user2}).then(response => {
+			setUserPicture('../' + response.data.pic_1)
+		})
+	})
+	return (
+		<div className="header" style={{marginBottom: '1rem'}}>
+			<Container fluid>
+			<Row>
+				<Col md={1} xs={2} lg={1} ><Image src={userPicture} roundedCircle style={{width : '2rem'}}/></Col>
+				<Col><h4>{user2Name}</h4></Col>
+			</Row>
+			</Container>
+		</div>
+	)
+
+}
+
 export const ChatRoom = () => {
 	const navigate = useNavigate();
 
@@ -68,7 +96,7 @@ export const ChatRoom = () => {
 	const [messages, setMessages] = useState([]);
 	const [login, setLogin] = useContext(LoginContext);
 	const [User2Name, setUser2Name] = useState('');
-	const [photos, setPhotos] = useState('');
+	const [userPicture, setUserPicture] = useState('');
 
 	useEffect(() => {
 		getMessages({room : room}).then(response => {
@@ -117,27 +145,13 @@ export const ChatRoom = () => {
 		await socket.emit('send_message', message);
 
 	}
-
-	useEffect(() => {
-		getUser({target: user2}).then(response => {
-			let temp = response.data.basicInfo.username
-			console.log(response.data.basicInfo);
-			setUser2Name(temp);
-		})
-		getUserPhotos({target: user2}).then(response => {
-			// let temp = response.data.pic_1.slice(1);
-			setPhotos(response.data.pic_1);
-			console.log('P H O T O S : ', photos)
-		})
-	},[user2])
 	
 		return (
 			<>
-				<div className="container" style={{marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550}}>
-				<div className="header" style={{marginBottom: '1rem'}}>
-				<Image src={photos} circle /><h3>{User2Name}</h3>
-				</div>
-				<div className="" style={{height: '65vh', overflowY: 'scroll', marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550, borderStyle : 'solid', borderWidth : '1px', borderColor : 'lightgray', backgroundColor : 'lightgray'}}>
+				<div className="container" style={{marginBottom: 'revert', marginTop: '1rem', padding: 25, maxWidth: 550, borderStyle : 'solid',
+													borderWidth : '1px', borderColor : 'lightgray', backgroundColor : 'white', borderRadius : 10}}>
+				<ChatHeader user2={user2}/>
+				<div className="" style={{height: '30rem' ,overflowY: 'scroll', marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550}}>
 				{messages.map((message, i) => {
 					return <Message key={i} message={message}/>
 				})}
