@@ -1,15 +1,11 @@
 import { useState, useContext, useEffect } from "react";
-import { Container, Nav } from "react-bootstrap";
-import ProfileForm from "../components/settings/ProfileForm";
-import PasswordForm from "../components/settings/PasswordForm";
-import AddPhotos from "../components/completeAccountForms/AddPhotos";
-import SettingsMenu from "../components/settingsMenu";
+import { Container} from "react-bootstrap";
 import { validator } from "../services/validator";
 import { getUser } from "../services/users";
 import { getUserPhotos } from "../services/photos";
 import { likeDislike } from "../services/match";
-import like from "../images/like.jpeg";
-import dislike from "../images/dislike.jpeg";
+import like from "../images/like1.png";
+import dislike from "../images/like2.png";
 import {Spinner} from "react-bootstrap";
 import Carousel from 'react-bootstrap/Carousel';
 import LoginContext from "../contexts/loginContext";
@@ -17,8 +13,9 @@ import SocketContext from "../contexts/socketContext";
 import { useNavigate, useParams } from "react-router-dom";
 import Badge from "react-bootstrap/badge";
 import { getLoggedInUsers } from "../services/users";
-import {Image} from "react-bootstrap";
 import { fetchMatch } from "../services/match";
+import { Col, Row, Card } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -213,6 +210,20 @@ const UserCard = ({props}) => {
 			setLiked(true)
 		})
 	}
+	const handleReportBlock = (value) => {
+		console.log(value)
+		if (value === 1) {
+			likeDislike({target : target, like : false}).then(response => {
+				setLiked(true)
+				window.location.reload();
+			})
+		} else if (value === 2) {
+			likeDislike({target : target, like : false}).then(response => {
+				setLiked(true)
+				window.location.reload();
+			})
+		}
+	}
 
 	if (pictures.length === 0) {
 		return (
@@ -229,30 +240,29 @@ const UserCard = ({props}) => {
 		)
 	} else {
 		return (
-			<div>
-				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
+			<div style={{marginBottom : '1.5rem', marginTop : '1.5rem'}}>
+				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} onDoubleClick={() => handleLike()} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
-						<div className="container">
-							<div className="row">
-								<div className="col-7">
-									<div>
-										{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> }<h5 className="ml-2 card-title">{username}, {age}</h5>
-									</div> 
-								</div>
-								<div className="col-5">
-									<StarRating rating={score / 10} />
-								</div>
-							</div>
+						<Container>
+							<Row>
+								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
+								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title>{username}, {age}</Card.Title></Col>
+								<Col className=""><StarRating rating={score / 10} /></Col>
+							</Row>
 							<div className="d-flex justify-content-around">
-									{liked === true ? null : <Image style={{cursor:'pointer'}} onClick={() => handleLike()} src={like} width="80"  />}
-									{liked === true ? null : <Image style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike} width="80"  />}
+								{liked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-regular fa-heart fa-2x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
+								{liked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-solid fa-heart-crack fa-2x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							<Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/>
+						</Container>
+						<div className='row p-2'>
+							<div className='col'>{tags}</div>
 						</div>
-					<div className='row p-2'>
-						<div className='col'>{tags}</div>
-					</div>
+						<div className="d-flex justify-content-around">
+								<small style={{ textDecoration : 'underline' , cursor : 'pointer'}} onClick={() => handleReportBlock(1)}>report</small>
+								<small style={{ textDecoration : 'underline' , cursor : 'pointer'}} onClick={() => handleReportBlock(2)}>block</small>
+						</div>
 					</div>
 				</div>
 			</div>
