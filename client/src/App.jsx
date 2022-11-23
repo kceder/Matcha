@@ -27,6 +27,7 @@ import { validator } from "./services/validator";
 import { motion } from "framer-motion";
 import {ChatRoom} from "./pages/ChatRoom"
 import { checkForUnreadMessages } from "./services/chat";
+import RestorePassword from "./components/RestorePassword";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -155,6 +156,7 @@ const App = () => {
 						<Route path="/notifications" element={<NotificationsPage />}/>
 						<Route path="/messages" element={<ChatPage />}/>
 						<Route path="/direct/:roomId" element={<ChatRoom />}/>
+						<Route path="/restore" element={<RestorePassword />} />
 					</Routes>
 			</LoginContext.Provider>
 		</SocketContext.Provider>
