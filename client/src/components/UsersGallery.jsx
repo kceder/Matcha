@@ -42,20 +42,20 @@ const UsersGallery = ({ setUsers, users, displayUsers, setDisplayUsers,setSortin
 	console.log(displayUsers)
 	
 	
-	const filteredUsers = displayUsers.map(user => {
+	const filteredUsers = displayUsers.map((user, i)=> {
 		if (show.show === true) {
 			return (
-				<>
+				<div key={i}>
 					{show.show} <PopUp show={show} setShow={setShow}/>
-					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
-				</>
+					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={i} />
+				</div>
 			)
 		}
 		else {
 			return (
-				<>
-					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={user.id} />
-				</>
+				<div key={i}>
+					<ProfileCard show={show} setShow={setShow} setDisplayUsers={setDisplayUsers} displayUsers={displayUsers} setUsers={setUsers} users={users} commontags={user.commontags} distance={user.distance} target={user.id} key={i} />
+				</div>
 			)
 		}
 	}) 

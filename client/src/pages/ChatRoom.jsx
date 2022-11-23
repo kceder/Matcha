@@ -47,7 +47,7 @@ const Chat = ({props}) => {
 		socket.on('receive_message', (data) => {
 			if (url === `/direct/${data.room}`) {
 				console.log('we are in wabbadabbawoop')
-				setMessagesToSeen({room: data.room}).then(response => {
+				setMessagesToSeen({room: data.room, receiver: props.user1}).then(response => {
 					if (response.data === 'error') {
 						window.location.reload();
 					}
@@ -166,7 +166,7 @@ export const ChatRoom = () => {
 				{messages.map((message, i) => {
 					return <Message key={i} message={message}/>
 				})}
-				<Chat props={{socket, room}} />
+				<Chat props={{socket, room, user1}} />
 				</div>
 				<div className="" style={{ marginBottom: 'revert', padding: 25, maxWidth: 550}}>
 
