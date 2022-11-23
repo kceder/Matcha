@@ -266,12 +266,12 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		)
 	} else {
 		return (
-			<div>
+			<div style={{marginBottom : '1.5rem', marginTop : '1.5rem'}}>
 				<motion.div
 				initial={{}}
 				animate={animation}
 				transition={{ duration: 0.4 }}
-				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
+				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} onDoubleClick={() => handleLike()} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<Container>
