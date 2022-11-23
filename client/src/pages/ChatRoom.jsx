@@ -8,6 +8,42 @@ import SocketContext from "../contexts/socketContext";
 import LoginContext from "../contexts/loginContext";
 import { Badge, Image, Row, Col, Container } from "react-bootstrap";
 import { getUserPhotos } from "../services/photos";
+import { getLoggedInUsers } from "../services/users";
+import { Spinner } from "react-bootstrap";
+
+const LoginStatus = ({user}) => {
+	const socket = useContext(SocketContext);
+	const [login, setLogin] = useState(false);
+	useEffect(() => {
+		getLoggedInUsers().then(response => {
+			const users = response.data;
+			if (users.length > 0) {
+				if (users.includes(user))
+					setLogin(true)
+				else
+					setLogin(false)
+			}
+		})
+	}, [])
+	useEffect(() => {
+		socket.on("logged", (data) => {
+			if (data.includes(user))
+				setLogin(true)
+			else
+				setLogin(false)
+		});
+	}, [socket])
+
+	if (login) {
+		return (
+				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="grow" role="status"></Spinner>
+		)
+	} else {
+		return (
+				<i style={{textAlign: 'center', width: "0.5rem", height: "0.5rem",  color: 'gray'}} className="fa-regular fa-circle-xmark"></i>
+		)
+	}
+}
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
@@ -75,10 +111,12 @@ const ChatHeader = ({user2}) => {
 	
 	const [user2Name, setUser2Name] = useState('');
 	const [userPicture, setUserPicture] = useState('');
+	const [userId, setUserId] = useState(0);
 	useEffect(() => {
 		if (user2 !== 0) {
 				getUser({target : user2}).then(response => {
 					const name = `${response.data.basicInfo.name} ${response.data.basicInfo.lastName}`
+					setUserId(response.data.id)
 					setUser2Name(name);
 					getUserPhotos({target: user2}).then(response => {
 						setUserPicture('../' + response.data.pic_1)
@@ -92,6 +130,7 @@ const ChatHeader = ({user2}) => {
 			<Row>
 				<Col md={1} xs={2} lg={1} ><Image src={userPicture} roundedCircle style={{width : '2rem'}}/></Col>
 				<Col><h4>{user2Name}</h4></Col>
+				<LoginStatus user={userId}/>
 			</Row>
 			</Container>
 		</div>

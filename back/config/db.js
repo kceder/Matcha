@@ -594,8 +594,10 @@ con.connect((err) => {
 			console.log(err);
 		} else if (result.length === 0) {
 
-			while (i < 30) {
-				console.log('users generated: ', i)
+			while (i < 1000) {
+				process.stdout.clearLine();
+				process.stdout.cursorTo(0);
+				process.stdout.write('users generated ' + i);
 				let profile = randomProfile.profile();
 				if (iLocation === locations.length)
 					iLocation = 0;

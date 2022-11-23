@@ -22,5 +22,6 @@ chatsRouter.route('/api/chat/send').post(tokenValidator, chatsController.sendMes
 chatsRouter.route('/api/chat/get-messages').post(tokenValidator, chatsController.getMessages);
 chatsRouter.route('/api/chat/check-read-messages').post(tokenValidator, chatsController.checkForUnreadMessages);
 chatsRouter.route('/api/chat/set-messages-to-seen').post(tokenValidator, chatsController.setMessagesToSeen);
+chatsRouter.route('/api/chat/get-last-message').post(tokenValidator, chatsController.getLastMessage);
 
 module.exports = chatsRouter;

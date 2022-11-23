@@ -25,3 +25,7 @@ export const checkForUnreadMessages = () => {
 export const setMessagesToSeen = (newObject) => {
 	return axios.post(`${baseUrl}/set-messages-to-seen`, newObject ,{withCredentials: true})
 }
+
+export const getLastMessage = (newObject) => {
+	return axios.post(`${baseUrl}/get-last-message`, newObject, {withCredentials: true})
+}

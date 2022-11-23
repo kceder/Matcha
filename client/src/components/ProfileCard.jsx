@@ -40,7 +40,6 @@ const LoginStatus = ({user}) => {
 				setLogin(false)
 		});
 	}, [socket])
-	
 
 	if (login) {
 		return (

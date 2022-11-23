@@ -111,11 +111,32 @@ const setMessagesToSeen = (request, response) => {
 	})
 }
 
+const getLastMessage = (request, response) => {
+	const room = request.body.room;
+
+	const sql = "SELECT * FROM messages WHERE chatroom_id = ? ORDER BY id DESC LIMIT 1"
+	db.query(sql, [room], (error, result) => {
+		if (error) {
+			console.log(error);
+			response.send('error');
+		} else {
+			if (result.length === 0) {
+			response.send({content : 'No messages', seen : 1});
+			} else if (result[0].sender === request.user.id || result[0].seen === 1) {
+				response.send({content : result[0].body, seen : 1});
+			} else {
+				response.send({content : result[0].body, seen : 0});
+			}
+		}
+	})
+}
+
 module.exports = {
 	getChatrooms,
 	authorizeRoomAccess,
 	getMessages,
 	sendMessage,
 	checkForUnreadMessages,
-	setMessagesToSeen
+	setMessagesToSeen,
+	getLastMessage
 };
