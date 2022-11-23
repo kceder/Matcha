@@ -18,6 +18,10 @@ export const sendMessage = (newObject) => {
 	return axios.post(`${baseUrl}/send`, newObject, {withCredentials: true})
 }
 
-export const checkForUnreadMessages = (newObject) => {
+export const checkForUnreadMessages = () => {
 	return axios.post(`${baseUrl}/check-read-messages`, {withCredentials: true})
+}
+
+export const setMessagesToSeen = (newObject) => {
+	return axios.post(`${baseUrl}/set-messages-to-seen`, newObject ,{withCredentials: true})
 }

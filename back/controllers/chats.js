@@ -1,3 +1,4 @@
+const e = require('express');
 const { request } = require('http');
 const db = require('../config/db.js');
 
@@ -41,15 +42,24 @@ const authorizeRoomAccess = (request, response) => {
 const getMessages = (request, response) => {
 	const room = request.body.room;
 
-	const sql = "SELECT * FROM messages WHERE chatroom_id = ?";
+	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ?"
 	db.query(sql, [room], (error, result) => {
 		if (error) {
-			console.log(error);
-			response.send('error');
+			console.log(error)
+			response.send('error set message to read')
 		} else {
-			response.send(result);
+			const sql = "SELECT * FROM messages WHERE chatroom_id = ?";
+			db.query(sql, [room], (error, result) => {
+				if (error) {
+					console.log(error);
+					response.send('error');
+				} else {
+					response.send(result);
+				}
+			})
 		}
 	})
+	
 }
 
 const sendMessage = (request, response) => {
@@ -89,10 +99,23 @@ const checkForUnreadMessages = (request, response) => {
 	})
 }
 
+const setMessagesToSeen = (request, response) => {
+	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ?"
+	db.query(sql, [request.body.room], (error, result) => {
+		if (error) {
+			console.log(error);
+			response.send('error');
+		} else {
+			response.send('ok')
+		}
+	})
+}
+
 module.exports = {
 	getChatrooms,
 	authorizeRoomAccess,
 	getMessages,
 	sendMessage,
-	checkForUnreadMessages
+	checkForUnreadMessages,
+	setMessagesToSeen
 };

@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { getUser } from "../services/users";
 import { validator } from "../services/validator";
 import { useNavigate, useParams } from "react-router-dom";
-import { authorizeRoomAccess, sendMessage, getMessages } from "../services/chat";
+import { authorizeRoomAccess, sendMessage, getMessages, setMessagesToSeen } from "../services/chat";
 
 import SocketContext from "../contexts/socketContext";
 import LoginContext from "../contexts/loginContext";
@@ -11,10 +11,10 @@ import { getUserPhotos } from "../services/photos";
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
-	const time = message.time.split('T');
-	const temp = time[1].split(':')
-	console.log(temp)
-	const showTime = `${temp[0]}:${temp[1]}`
+	console.log('message:', message);
+	const time = new Date(message.time).getHours() + ':' + new Date(message.time).getMinutes();
+
+	console.log(time)
 	getUser({target: 'self'}).then(response => {
 		setUser1(response.data.id)
 
@@ -23,7 +23,7 @@ const Message = ({message}) => {
 		return (
 			<div className="d-flex" style={{padding: '1rem'}}>
 				<div style={{width : "20%"}}></div>
-				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>{showTime}</div>
+				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>{time}</div>
 				<Badge bg="light" text="dark" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end', marginRight : '10px'}}>{message.body}</Badge>
 			</div>
 		)
@@ -31,7 +31,7 @@ const Message = ({message}) => {
 		return (
 			<div className="d-flex" style={{padding: '1rem'}}>
 				<Badge bg="secondary" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'start', marginLeft : '10px'}}>{message.body}</Badge>
-				<div style={{fontSize : '0.6rem', color : "darkgray", marginLeft : "10px"}}>{showTime}</div>
+				<div style={{fontSize : '0.6rem', color : "darkgray", marginLeft : "10px"}}>{time}</div>
 				<div style={{width : "20%"}}></div>
 			</div>
 		)
@@ -40,12 +40,19 @@ const Message = ({message}) => {
 
 const Chat = ({props}) => {
 	const socket = props.socket;
+	const url = window.location.pathname;
 
 	const [message, setMessage] = useState([]);
 	useEffect(() => {
 		socket.on('receive_message', (data) => {
-			console.log(data);
-			
+			if (url === `/direct/${data.room}`) {
+				console.log('we are in wabbadabbawoop')
+				setMessagesToSeen({room: data.room}).then(response => {
+					if (response.data === 'error') {
+						window.location.reload();
+					}
+				})
+			}
 			setMessage((prev) => [...prev, data]);
 			console.log('socket messages:', message.body);
 		})
@@ -65,13 +72,17 @@ const ChatHeader = ({user2}) => {
 	
 	const [user2Name, setUser2Name] = useState('');
 	const [userPicture, setUserPicture] = useState('');
-
-	getUser({target : user2}).then(response => {
-		setUser2Name(`${response.data.basicInfo.name} ${response.data.basicInfo.lastName}`);
-		getUserPhotos({target: user2}).then(response => {
-			setUserPicture('../' + response.data.pic_1)
-		})
-	})
+	useEffect(() => {
+		if (user2 !== 0) {
+				getUser({target : user2}).then(response => {
+					const name = `${response.data.basicInfo.name} ${response.data.basicInfo.lastName}`
+					setUser2Name(name);
+					getUserPhotos({target: user2}).then(response => {
+						setUserPicture('../' + response.data.pic_1)
+					})
+				})
+		}
+	}, [user2])
 	return (
 		<div className="header" style={{marginBottom: '1rem'}}>
 			<Container fluid>
@@ -137,7 +148,7 @@ export const ChatRoom = () => {
 			body: inputMessage,
 			sender: user1,
 			receiver: user2,
-			time: new Date().getHours() + ':' + new Date().getMinutes()
+			time: new Date()
 		}
 		await sendMessage(message).then(response => {
 			setInputMessage('')
