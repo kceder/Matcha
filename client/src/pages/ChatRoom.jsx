@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 import { getUser } from "../services/users";
 import { validator } from "../services/validator";
 import { useNavigate, useParams } from "react-router-dom";
@@ -24,7 +24,7 @@ const Message = ({message}) => {
 			<div className="d-flex" style={{padding: '1rem'}}>
 				<div style={{width : "20%"}}></div>
 				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>{time}</div>
-				<Badge className='text-wrap' bg="light" text="dark wrap" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end'}}>{message.body}</Badge>
+				<Badge bg="light" text="dark" className="text-wrap" style={{wordBreak : "break-word", minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end', marginRight : '10px'}}>{message.body}</Badge>
 			</div>
 		)
 	} else {
@@ -41,6 +41,7 @@ const Message = ({message}) => {
 const Chat = ({props}) => {
 	const socket = props.socket;
 	const url = window.location.pathname;
+	const bottomRef = useRef(null);
 
 	const [message, setMessage] = useState([]);
 	useEffect(() => {
@@ -51,6 +52,7 @@ const Chat = ({props}) => {
 					if (response.data === 'error') {
 						window.location.reload();
 					}
+					bottomRef.current?.scrollIntoView({behavior: 'smooth'});
 				})
 			}
 			setMessage((prev) => [...prev, data]);
@@ -63,6 +65,7 @@ const Chat = ({props}) => {
 				{message.map((message, i) => {
 					return <Message key={i} message={message}/>
 				})}
+				<div ref={bottomRef} />
 			</>
 		)
 	}
@@ -108,6 +111,7 @@ export const ChatRoom = () => {
 	const [login, setLogin] = useContext(LoginContext);
 	const [User2Name, setUser2Name] = useState('');
 	const [userPicture, setUserPicture] = useState('');
+	const bottomRef = useRef(null);
 
 	useEffect(() => {
 		getMessages({room : room}).then(response => {
@@ -154,9 +158,9 @@ export const ChatRoom = () => {
 			setInputMessage('')
 		})
 		await socket.emit('send_message', message);
-
 	}
 	
+	bottomRef.current?.scrollIntoView({behavior: 'auto'});
 		return (
 			<>
 				<div className="container" style={{marginBottom: 'revert', marginTop: '1rem', padding: 25, maxWidth: 550, borderStyle : 'solid',
@@ -167,6 +171,7 @@ export const ChatRoom = () => {
 					return <Message key={i} message={message}/>
 				})}
 				<Chat props={{socket, room, user1}} />
+				<div ref={bottomRef} />
 				</div>
 				<div className="" style={{ marginBottom: 'revert', padding: 25, maxWidth: 550}}>
 
