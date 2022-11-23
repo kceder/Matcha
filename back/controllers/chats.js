@@ -100,8 +100,8 @@ const checkForUnreadMessages = (request, response) => {
 }
 
 const setMessagesToSeen = (request, response) => {
-	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ?"
-	db.query(sql, [request.body.room], (error, result) => {
+	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ? AND sender != ?"
+	db.query(sql, [request.body.room, request.body.user1], (error, result) => {
 		if (error) {
 			console.log(error);
 			response.send('error');
