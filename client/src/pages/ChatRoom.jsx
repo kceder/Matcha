@@ -36,11 +36,13 @@ const LoginStatus = ({user}) => {
 
 	if (login) {
 		return (
-				<Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="grow" role="status"></Spinner>
+			<small>online</small>
+			// <Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="grow" role="status"></Spinner>
 		)
 	} else {
 		return (
-				<i style={{textAlign: 'center', width: "0.5rem", height: "0.5rem",  color: 'gray'}} className="fa-regular fa-circle-xmark"></i>
+			<small>offline</small>
+			// <i style={{textAlign: 'center', width: "0.5rem", height: "0.5rem",  color: 'gray'}} className="fa-regular fa-circle-xmark"></i>
 		)
 	}
 }
@@ -112,6 +114,7 @@ const ChatHeader = ({user2}) => {
 	const [user2Name, setUser2Name] = useState('');
 	const [userPicture, setUserPicture] = useState('');
 	const [userId, setUserId] = useState(0);
+	const navigate = useNavigate();
 	useEffect(() => {
 		if (user2 !== 0) {
 				getUser({target : user2}).then(response => {
@@ -127,10 +130,11 @@ const ChatHeader = ({user2}) => {
 	return (
 		<div className="header" style={{marginBottom: '1rem'}}>
 			<Container fluid>
-			<Row>
+			<Row className="align-items-center">
+				<Col md={1} xs={1} lg={1} ><p onClick={() => {navigate('/messages')}} style={{cursor : 'pointer', margin: '0'}}>{'<<'}</p></Col>
 				<Col md={1} xs={2} lg={1} ><Image src={userPicture} roundedCircle style={{width : '2rem'}}/></Col>
-				<Col><h4>{user2Name}</h4></Col>
-				<LoginStatus user={userId}/>
+				<Col><h4 style={{margin : '0'}}>{user2Name}</h4></Col>
+				<Col md={2} xs={2} lg={2}><LoginStatus user={userId}/></Col>
 			</Row>
 			</Container>
 		</div>
