@@ -24,7 +24,7 @@ const Message = ({message}) => {
 			<div className="d-flex" style={{padding: '1rem'}}>
 				<div style={{width : "20%"}}></div>
 				<div style={{fontSize : '0.6rem', color : "darkgray", marginRight : "10px"}}>{time}</div>
-				<Badge bg="light" text="dark" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end', marginRight : '10px'}}>{message.body}</Badge>
+				<Badge className='text-wrap' bg="light" text="dark wrap" style={{minWidth: "70%", maxWidth : "80%", padding : '10px', textAlign : 'end'}}>{message.body}</Badge>
 			</div>
 		)
 	} else {
