@@ -39,11 +39,19 @@ const setProfilePicture = (request, response) => {
 			});
 			const sql = "UPDATE user_pictures SET pic_1 = ? WHERE user_id = ?;";
 			db.query(sql, [path, request.user.id], function (error, result) {
-				if (error) throw (error);
-				else {
-					// console.log('result:\n', result)
-					// console.log('######### END ########')
-					response.send('good');
+				if (error) {
+					console.log(error)
+					response.send('error: setProfilePicture')
+				} else {
+					const sql = "UPDATE users SET score = 20 WHERE id = ?";
+					db.query(sql, [request.user.id], (error, result) => {
+						if (error) {
+							console.log(error)
+							response.send('error: setProfilePicture 2')
+						} else {
+							response.send('good');
+						}
+					})
 				}
 			})
 		}

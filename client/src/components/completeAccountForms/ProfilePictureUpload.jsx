@@ -44,20 +44,22 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 	setCroppedAreaPixels(croppedArePixels);
 }
 
-	return (<div>
-				<div className="backdrop"></div>
-				<div className='crop-container'>
-					<Cropper image={url} zoom={zoom} crop={crop} aspect={aspectRatio.value}
-					onCropChange={onCropChange}
-					onCropComplete={onCropComplete}
-					onZoomChange={onZoomChange} />
-				<div className='controls' style={{position:"fixed", bottom:"0px"}}>
-					<div className='button-area'>
-						<button onClick={onSubmit}>Save</button>
-					</div>
+	return (
+		<div>
+			<div className="backdrop"></div>
+			<div className='crop-container'>
+				<Cropper image={url} zoom={zoom} crop={crop} aspect={aspectRatio.value}
+				onCropChange={onCropChange}
+				onCropComplete={onCropComplete}
+				onZoomChange={onZoomChange} />
+			<div className='controls' style={{position:"fixed", bottom:"0px"}}>
+				<div className='button-area'>
+					<button onClick={onSubmit}>Save</button>
 				</div>
-				</div>
-			</div>)
+			</div>
+			</div>
+		</div>
+	)
 }
 
 

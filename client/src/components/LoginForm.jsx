@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { loginUser } from "../services/login";
 import { updateGpsLocation, updateIpLocation } from "../services/location";
 import { geoApiKey } from "../services/env";
-// import { cookieProvider, Cookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -18,7 +17,6 @@ const LoginForm = () => {
 	const [password, setPassword] = useState("Malibu11");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
-	const [location, setLocation] = useState({});
 	const [login, setLogin] = useContext(LoginContext);
 	const socket = useContext(SocketContext);
 

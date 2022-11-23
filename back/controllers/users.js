@@ -221,8 +221,6 @@ const completeAccount = (request, response) => {
 			function (error, result) { console.log(error) });
 
 		const myJSON = JSON.stringify(interests);
-		// console.log(myJSON)
-
 
 		const sql = "UPDATE users SET username = ?, gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
 
@@ -240,13 +238,14 @@ const completeAccount = (request, response) => {
 						newTags.forEach((tag) => {
 							const sql = `INSERT INTO tags (tag) VALUES (?)`;
 							db.query(sql, [tag],(err, result) => {
-								if (err) throw err;
-								// else {
-								// 	console.log('tag added')
-								// }	
+								if (err) {
+									console.log(err)
+									response.send('error :: setUpUser')
+								} else {
+									response.send('good');
+								}
 							})
 						})
-						response.send('good');
 					}
 				})
 		}

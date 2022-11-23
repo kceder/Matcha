@@ -132,8 +132,9 @@ const App = () => {
 	const [login, setLogin] = useState(false);
 	const [notificationsShown, setNotificationsShown] = useState(false);
 
-	getUser({target: 'self'}).then(response => {
-		if (response.data.length > 0)
+	validator().then(response => {
+		console.log(response.data)
+		if (response.data === 'valid')
 			setLogin(true);
 	})
 
