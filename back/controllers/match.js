@@ -34,7 +34,28 @@ const likeDislike = (request, response) => {
 	const user1 = request.user.id;
 	const user2 = request.body.target;
 	const like1 = request.body.like;
-	let sql = "SELECT * FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
+
+	let sql = "SELECT score FROM users WHERE id = ?";
+	if (like1 === true) {
+		db.query(sql, [user2], (error, result) => {
+			if (error) {
+				console.log(error)
+				response.send('error get score likedislike')
+			} else {
+				if (result[0].score <= 45) {
+					const newScore = result[0].score + 5;
+					const sql = "UPDATE users SET score = ? WHERE id = ?";
+					db.query(sql, [newScore, user2], (error) => {
+						if (error) {
+							console.log(error)
+							response.sen('error update score view')
+						}
+					})
+				}
+			}
+		})
+	}
+	sql = "SELECT * FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
 	db.query(sql, [user1, user2, user2, user1], (error, result) => {
 		if (error)  throw error;
 		else {

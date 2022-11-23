@@ -189,10 +189,13 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 	const showHideInfo = () => {
 		if (infoShow === false) {
 			const obj = {target: target, username: username};
-			view(obj).then(response => {
-				console.log(response.data)
-				socket.emit('notification', response.data);
-			})
+			if (target !== "self") {
+				view(obj).then(response => {
+					console.log(response.data)
+					socket.emit('notification', response.data);
+				})
+			}
+			
 		}
 		setInfoShow(!infoShow);
 	}

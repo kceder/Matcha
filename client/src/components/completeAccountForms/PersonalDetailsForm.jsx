@@ -142,6 +142,7 @@ const PersonalDetailsForm = () => {
 				interests,
 			};
 			setUpUser(userObject).then((response) => {
+				console.log('response:',  response.data);
 				if(response.data === 'good') {
 					Navigate('/completeaccount/photos');
 				}

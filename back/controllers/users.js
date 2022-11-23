@@ -234,18 +234,16 @@ const completeAccount = (request, response) => {
 					if (error) throw error;
 					else  {
 						const newTags = interests.filter((interest) => !result.map((tag) => tag.tag).includes(interest));
-						// console.log(newTags);
 						newTags.forEach((tag) => {
 							const sql = `INSERT INTO tags (tag) VALUES (?)`;
 							db.query(sql, [tag],(err, result) => {
 								if (err) {
 									console.log(err)
 									response.send('error :: setUpUser')
-								} else {
-									response.send('good');
 								}
 							})
 						})
+						response.send('good');
 					}
 				})
 		}
