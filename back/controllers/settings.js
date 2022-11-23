@@ -6,9 +6,16 @@ const { response } = require('express');
 
 const restorePassword = (request, response) => {
 
-	console.log('in sendRestore');
-	response.send('in restore')
+	const sql = "SELECT email FROM users WHERE email = ?;";
+	db.query(sql, [request.body.email], function(error, result) {
 
+		if (error)
+			console.log(error)
+		else if
+			(result.length > 0) response.send('ok')
+		else
+			response.send('no')
+	})
 }
 
 const changePassword = (request,  response) => {
