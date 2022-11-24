@@ -222,6 +222,25 @@ con.connect((err) => {
 				console.log('\x1b[36m%s\x1b[0m', "loggedInUsers tale created");
 		});
 
+		sql = "CREATE TABLE IF NOT EXISTS stats \
+		(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
+		user_id INT(11),\
+		views INT(11) DEFAULT 0,\
+		likes INT(11) DEFAULT 0,\
+		matches INT(11) DEFAULT 0,\
+		`block` INT(11) DEFAULT 0,\
+		view_history JSON,\
+		like_history JSON,\
+		match_history JSON);";
+
+		con.query(sql, (err, result) => {
+			if (err) throw err;
+			if (result.warningCount > 0)
+				console.log('\x1b[36m%s\x1b[0m', "stats table already exists");
+			else
+				console.log('\x1b[36m%s\x1b[0m', "stats tale created");
+		});
+
 		sql = "CREATE TABLE IF NOT EXISTS tags \
 		(id INT(11) AUTO_INCREMENT PRIMARY KEY,\
 		tag VARCHAR(30))";

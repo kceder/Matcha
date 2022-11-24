@@ -180,7 +180,7 @@ const activateUser = (request, response) => {
 		} else {
 			response.send('user not found');
 		}
-	})
+	}) 
 }
 
 const completeAccount = (request, response) => {
