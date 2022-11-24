@@ -45,4 +45,48 @@ let sendMail = (userInfo) => {
 	});
 }
 
-module.exports = {sendMail};
+let sendRecoveryMail = (userInfo) => {
+	console.log('mail ', userInfo)
+	const receiver = userInfo.email;
+
+	var transport = nodemailer.createTransport({
+		host: "smtp.mailtrap.io",
+		port: 2525,
+		auth: {
+			user: process.env.MAILTRAP_USER,
+			pass: process.env.MAILTRAP_PASS
+		}
+	});
+
+	const html = `
+				<html>
+					<head>
+						<title>
+							New Password
+						</title>
+					</head>
+					<body>
+						<h1>Reset you password</h1>
+						<p>Click this link to reset your password <a href="http://localhost:3000/activateaccount/token=${userInfo.activationToken}">link</a></p>
+					</body>
+				</html>
+				`
+
+	var mailOptions = {
+		from: '"Matcha" <activate@matcha.com>',
+		to: receiver,
+		subject: 'New Password',
+		html: html,
+		text: 'Click the link provided to set your new password :)'
+		};
+
+	transport.sendMail(mailOptions, function(error, info){
+		if (error) {
+			console.log(error);
+		} else {
+			console.log('Email sent: ' + info.response);
+		}
+	});
+}
+
+module.exports = {sendMail, sendRecoveryMail};

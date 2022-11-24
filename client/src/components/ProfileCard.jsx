@@ -40,7 +40,6 @@ const LoginStatus = ({user}) => {
 				setLogin(false)
 		});
 	}, [socket])
-	
 
 	if (login) {
 		return (
@@ -189,22 +188,26 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 	const showHideInfo = () => {
 		if (infoShow === false) {
 			const obj = {target: target, username: username};
-			view(obj).then(response => {
-				console.log(response.data)
-				socket.emit('notification', response.data);
-			})
+			if (target !== "self") {
+				view(obj).then(response => {
+					console.log(response.data)
+					socket.emit('notification', response.data);
+				})
+			}
+			
 		}
 		setInfoShow(!infoShow);
 	}
 	const handleLike = () => {
 		setAnimation({x: -1000});
-		setShow({show: true, message: 'You matched with ' + username + ' !'});
 		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
 			console.log(obj);
-			if (response.data === 'match')
+			console.log('YOYOYOYOY:',response.data);
+			if (response.data === 'match') {
 				setShow({show: true, message: 'You matched with ' + username + ' !'});
+			}
 			liked(obj).then(response => { 
 				console.log('RESPONSE', response.data)
 				console.log('RESPONSE from ID:', response.data.from_id)
@@ -265,12 +268,12 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		)
 	} else {
 		return (
-			<div>
+			<div style={{marginBottom : '1.5rem', marginTop : '1.5rem'}}>
 				<motion.div
 				initial={{}}
 				animate={animation}
 				transition={{ duration: 0.4 }}
-				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
+				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} onDoubleClick={() => handleLike()} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<Container>

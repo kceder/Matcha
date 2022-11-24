@@ -142,12 +142,11 @@ const PersonalDetailsForm = () => {
 				interests,
 			};
 			setUpUser(userObject).then((response) => {
-				if(response.status === 208) {
-					// Navigate('/completeaccount/photos');
+				console.log('response:',  response.data);
+				if(response.data === 'good') {
+					Navigate('/completeaccount/photos');
 				}
 			})
-
-
 		}
 	}
 

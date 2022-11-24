@@ -1,3 +1,4 @@
+const e = require('express');
 const { request } = require('http');
 const db = require('../config/db.js');
 
@@ -41,15 +42,24 @@ const authorizeRoomAccess = (request, response) => {
 const getMessages = (request, response) => {
 	const room = request.body.room;
 
-	const sql = "SELECT * FROM messages WHERE chatroom_id = ?";
+	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ?"
 	db.query(sql, [room], (error, result) => {
 		if (error) {
-			console.log(error);
-			response.send('error');
+			console.log(error)
+			response.send('error set message to read')
 		} else {
-			response.send(result);
+			const sql = "SELECT * FROM messages WHERE chatroom_id = ?";
+			db.query(sql, [room], (error, result) => {
+				if (error) {
+					console.log(error);
+					response.send('error');
+				} else {
+					response.send(result);
+				}
+			})
 		}
 	})
+	
 }
 
 const sendMessage = (request, response) => {
@@ -89,10 +99,44 @@ const checkForUnreadMessages = (request, response) => {
 	})
 }
 
+const setMessagesToSeen = (request, response) => {
+	const sql = "UPDATE messages SET seen = 1 WHERE chatroom_id = ? AND sender != ?"
+	db.query(sql, [request.body.room, request.body.user1], (error, result) => {
+		if (error) {
+			console.log(error);
+			response.send('error');
+		} else {
+			response.send('ok')
+		}
+	})
+}
+
+const getLastMessage = (request, response) => {
+	const room = request.body.room;
+
+	const sql = "SELECT * FROM messages WHERE chatroom_id = ? ORDER BY id DESC LIMIT 1"
+	db.query(sql, [room], (error, result) => {
+		if (error) {
+			console.log(error);
+			response.send('error');
+		} else {
+			if (result.length === 0) {
+			response.send({content : 'No messages', seen : 1});
+			} else if (result[0].sender === request.user.id || result[0].seen === 1) {
+				response.send({content : result[0].body, seen : 1});
+			} else {
+				response.send({content : result[0].body, seen : 0});
+			}
+		}
+	})
+}
+
 module.exports = {
 	getChatrooms,
 	authorizeRoomAccess,
 	getMessages,
 	sendMessage,
-	checkForUnreadMessages
+	checkForUnreadMessages,
+	setMessagesToSeen,
+	getLastMessage
 };

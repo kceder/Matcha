@@ -27,6 +27,7 @@ import { validator } from "./services/validator";
 import { motion } from "framer-motion";
 import {ChatRoom} from "./pages/ChatRoom"
 import { checkForUnreadMessages } from "./services/chat";
+import RestorePassword from "./components/RestorePassword";
 
 const Navigation = ({socket}) => {
 	const [login, setLogin] = useContext(LoginContext);
@@ -91,7 +92,7 @@ const Navigation = ({socket}) => {
 	};
 
 	return (
-		<Navbar bg="light" expand="lg">
+		<Navbar bg="light" expand="lg" position="absolute" top="0px">
 			<Container>
 				<Navbar.Brand href="/home">
 				<motion.h1
@@ -132,8 +133,9 @@ const App = () => {
 	const [login, setLogin] = useState(false);
 	const [notificationsShown, setNotificationsShown] = useState(false);
 
-	getUser({target: 'self'}).then(response => {
-		if (response.data.length > 0)
+	validator().then(response => {
+		console.log(response.data)
+		if (response.data === 'valid')
 			setLogin(true);
 	})
 
@@ -154,6 +156,7 @@ const App = () => {
 						<Route path="/notifications" element={<NotificationsPage />}/>
 						<Route path="/messages" element={<ChatPage />}/>
 						<Route path="/direct/:roomId" element={<ChatRoom />}/>
+						<Route path="/restore" element={<RestorePassword />} />
 					</Routes>
 			</LoginContext.Provider>
 		</SocketContext.Provider>

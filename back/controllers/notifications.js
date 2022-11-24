@@ -6,10 +6,27 @@ const viewNotification = (request, response) => {
 	const from_name = request.user.name;
 	const from_id = request.user.id;
 	const to = request.body.target;
-
+	let sql = "SELECT score FROM users WHERE id = ?";
+	db.query(sql, [to], (error, result) => {
+		if (error) {
+			console.log(error)
+			response.send('error get score')
+		} else {
+			if (result[0].score < 50) {
+				const newScore = result[0].score + 1;
+				const sql = "UPDATE users SET score = ? WHERE id = ?";
+				db.query(sql, [newScore, to], (error) => {
+					if (error) {
+						console.log(error)
+						response.sen('error update score view')
+					}
+				})
+			}
+		}
+	})
 	const content = `${from_name} viewed your profile!`;
 	console.log(content);
-	let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
+	sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
 	db.query(sql, [from_id, to, content], (error, result) => {
 		if (error) {
 			console.log(error);
@@ -17,7 +34,7 @@ const viewNotification = (request, response) => {
 		} else {
 			if (result.length === 0) {
 				sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
-				db.query(sql, [from_id, to, content, false], (error, result) => {
+				db.query(sql, [from_id, to, content, false], (error) => {
 					if (error) {
 						console.log(error);
 						response.send('error');
