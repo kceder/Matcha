@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import React from 'react';
 import { sendRestore } from "../services/settings";
+// import { sendRecoveryMail } from '../back/utils/sendEmail';
 
 const RestorePassword = () => {
     const [email, setEmail] = useState('');
@@ -16,8 +17,10 @@ const RestorePassword = () => {
             console.log(response);
             if (response.data === 'ok') {
                     setShowMessage(true)
+                    // sendRecoveryMail();
             }
             else if (response.data === 'no') {
+
                     setShowError(true)
             }
         })
