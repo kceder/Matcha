@@ -156,6 +156,7 @@ const App = () => {
 						<Route path="/notifications" element={<NotificationsPage />}/>
 						<Route path="/messages" element={<ChatPage />}/>
 						<Route path="/direct/:roomId" element={<ChatRoom />}/>
+						<Route path="/restore/:token" element={<RestorePassword />} />
 						<Route path="/restore" element={<RestorePassword />} />
 					</Routes>
 			</LoginContext.Provider>

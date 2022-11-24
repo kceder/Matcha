@@ -45,9 +45,9 @@ let sendMail = (userInfo) => {
 	});
 }
 
-let sendRecoveryMail = (userInfo) => {
-	console.log('mail ', userInfo)
-	const receiver = userInfo.email;
+let sendRecoveryMail = (email, token) => {
+	console.log('recovery mail: ', email)
+	const receiver = email;
 
 	var transport = nodemailer.createTransport({
 		host: "smtp.mailtrap.io",
@@ -67,7 +67,7 @@ let sendRecoveryMail = (userInfo) => {
 					</head>
 					<body>
 						<h1>Reset you password</h1>
-						<p>Click this link to reset your password <a href="http://localhost:3000/activateaccount/token=${userInfo.activationToken}">link</a></p>
+						<p>Click this link to reset your password <a href="http://localhost:3000/restore/token=${token}">link</a></p>
 					</body>
 				</html>
 				`
