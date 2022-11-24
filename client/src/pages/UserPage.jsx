@@ -16,6 +16,7 @@ import { getLoggedInUsers } from "../services/users";
 import { fetchMatch } from "../services/match";
 import { Col, Row, Card } from "react-bootstrap";
 import { motion } from "framer-motion";
+import { updateViewStats, updateLikeStats } from "../services/stats";
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -155,6 +156,10 @@ const UserCard = ({props}) => {
 		setAge(Math.floor(ageMS / 31536000000));
 	}
 	useEffect(() => {
+
+		updateViewStats({target: target}).then(response => {
+			console.log(response.data);
+		})
 		fetchMatch({target: target}).then(response => {
 			console.log(response.data)
 			if (response.data === 'blocked') {
@@ -200,6 +205,9 @@ const UserCard = ({props}) => {
 
 	const handleLike = () => {
 		likeDislike({target : target, like : true}).then(response => {
+			updateLikeStats({target : target}).then(response => {
+				console.log(response.data)
+			})
 			console.log(response)
 			setLiked(true)
 		})

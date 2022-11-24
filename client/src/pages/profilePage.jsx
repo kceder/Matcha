@@ -8,17 +8,20 @@ import SettingsMenu from "../components/settingsMenu";
 import { validator } from "../services/validator";
 import LoginContext from "../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
+import Stats from "../components/Stats";
 
 const MyForm = ({containerToShow, login}) => {
 	if (login === true) {
-		if (containerToShow === 2)
-			return (<PasswordForm />)
 		if (containerToShow === 1)
 			return (<ProfileCard target={'self'}/>)
-		if (containerToShow === 4)
-			return (<ProfileForm />)
+		if (containerToShow === 2)
+			return (<PasswordForm />)
 		if (containerToShow === 3)
 			return (<AddPhotos target={9} />)
+		if (containerToShow === 4)
+			return (<ProfileForm />)
+		if (containerToShow === 5)
+			return (<Stats target={'self'} />)
 
 	}
 

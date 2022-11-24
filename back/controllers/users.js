@@ -80,8 +80,6 @@ const register = (request, response) => {
 				db.query(sql,[ name, lastName, email, hash, activationToken ], 
 					function (error, results) {
 						if (error) throw error;
-						// else 
-						// 	console.log(1);
 					}
 				);
 				const infoForEmail = {
@@ -96,8 +94,10 @@ const register = (request, response) => {
 						const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)"
 						db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
 							if (error) throw error;
-							// else
-							// 	console.log('succes');
+						})
+						const initialize_stats_tab = "INSERT INTO stats (user_id) VALUES (?)"
+						db.query(initialize_stats_tab, [result[0].id], function (error, result) {
+							if (error) throw error;
 						})
 					}
 				})

@@ -608,6 +608,7 @@ con.connect((err) => {
 	const insertLocationArray = [];
 	const insertUsersArray = [];
 	const insertPicturesArray = [];
+	const insterStatsArray = [];
 	db.query('SELECT * FROM users', (err, result) => {
 		if (err) {
 			console.log(err);
@@ -668,7 +669,7 @@ con.connect((err) => {
 				const lon = profile.coordinates.split(" ")[1];
 				const insertLocation = `INSERT INTO locations (user_id, user_set_city, user_set_location) VALUES (${i}, '${profile.city}', POINT(${lon}, ${lat}));`;
 				insertLocationArray.push(insertLocation);
-		
+				insterStatsArray.push('INSERT INTO stats (user_id) VALUES (' + i + ');');
 				i++;
 
 			}
@@ -684,6 +685,11 @@ con.connect((err) => {
 				})
 			})
 			insertLocationArray.forEach((query) => {
+				db.query(query, (err, result) => {
+					if (err) throw err;
+				})
+			})
+			insterStatsArray.forEach((query) => {
 				db.query(query, (err, result) => {
 					if (err) throw err;
 				})

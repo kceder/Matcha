@@ -16,6 +16,7 @@ import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
 import { useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion"
+import { updateViewStats, updateLikeStats } from "../services/stats";
 
 
 const LoginStatus = ({user}) => {
@@ -193,6 +194,9 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 					console.log(response.data)
 					socket.emit('notification', response.data);
 				})
+				updateViewStats(obj).then(response => {
+					console.log(response.data)
+				})
 			}
 			
 		}
@@ -203,6 +207,9 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
+			updateLikeStats({target: target}).then(response => { 
+				console.log(response.data)
+			})
 			console.log(obj);
 			console.log('YOYOYOYOY:',response.data);
 			if (response.data === 'match') {
@@ -273,7 +280,7 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 				initial={{}}
 				animate={animation}
 				transition={{ duration: 0.4 }}
-				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} onDoubleClick={() => handleLike()} >
+				className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<Container>
