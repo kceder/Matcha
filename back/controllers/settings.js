@@ -3,18 +3,64 @@ const bcrypt = require("bcrypt");
 var validator = require("email-validator");
 const { request } = require('http');
 const { response } = require('express');
+const { sendRecoveryMail } = require('../utils/sendEmail.js');
 
 const restorePassword = (request, response) => {
 
+	const email = request.body.email;
 	const sql = "SELECT email FROM users WHERE email = ?;";
-	db.query(sql, [request.body.email], function(error, result) {
+	db.query(sql, [email], function(error, result) {
 
 		if (error)
 			console.log(error)
-		else if
-			(result.length > 0) response.send('ok')
-		else
+		else if (result.length === 0)
 			response.send('no')
+		else {
+			const token_sql = "SELECT activation_token FROM users WHERE email = ?;";
+			db.query(token_sql, [email], function(error, result) {
+				if (error)
+					console.log(error)
+				else {
+					const token = bcrypt.hashSync(email, 10).replace(/\//g,'_').replace(/\+/g,'-');
+					const token_sql = "UPDATE users SET activation_token = ? WHERE email = ?;";
+					db.query(token_sql, [token, email], function(error, result) {
+						if (error)
+							console.log(error)
+						else {
+							sendRecoveryMail(email, token);
+							response.send('ok')
+						}
+					})
+			}
+		})
+		}
+	})
+}
+
+ const passwordRestore = (request, response) => {
+	console.log(request.body);
+	const password = request.body.password;
+	const token = request.body.token;
+	console.log('token: ', token)
+	console.log('password', password)
+	const sql = "SELECT id FROM users WHERE activation_token = ?;";
+	db.query(sql, [token], function(error, result) {
+		if (error)
+			console.log(error)
+		else if (result.length === 0)
+			response.send('no')
+		else {
+			const id = result[0].id;
+			const hash = bcrypt.hashSync(password, 10);
+			const sql = "UPDATE users SET password = ?, activation_token = NULL WHERE id = ?;";
+			db.query
+			(sql, [hash, id], function(error, result) {
+				if (error)
+					console.log(error)
+				else
+					response.send('ok')
+			})
+		}
 	})
 }
 
@@ -29,18 +75,14 @@ const changePassword = (request,  response) => {
 
 			if (error) throw error
 			if (result.length > 0) {
-
-				// console.log(password)
 				bcrypt.compare(password,  result[0].password, function(err, valid) {
 					if (valid === true) {
 						const hash = bcrypt.hashSync(newPassword, 10);
 						const updatePassword = "UPDATE users SET password = ? WHERE id = ?;";
 						db.query(updatePassword, [hash, request.user.id],  function (error, resut) {
 							if (error) throw error;
-							// else	console.log(result);
 						})
 					}
-					// console.log(request.body.newPassword)
 			})
 		}
 	})
@@ -143,4 +185,5 @@ module.exports = {
 	changePassword,
 	changeUserInfo,
 	restorePassword,
+	passwordRestore,
 }

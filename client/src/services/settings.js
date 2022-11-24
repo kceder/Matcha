@@ -13,3 +13,7 @@ export const changeUserInfo = (newObject) => {
 export const sendRestore = (email) => {
 	return axios.post(`${baseUrl}restorePassword`, email);
 }
+
+export const passwordRestore = (newObject) => {
+	return axios.post(`${baseUrl}passwordRestore`, newObject);
+}

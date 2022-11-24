@@ -31,5 +31,6 @@ const upload = multer({ storage: fileStorage })
 settingsRouter.route('/api/settings/password').post(tokenValidator, settingsController.changePassword)
 settingsRouter.route('/api/settings/changeUserInfo').post(tokenValidator, settingsController.changeUserInfo)
 settingsRouter.route('/api/settings/restorePassword').post(settingsController.restorePassword)
+settingsRouter.route('/api/settings/passwordRestore').post(settingsController.passwordRestore)
 
 module.exports = settingsRouter;
