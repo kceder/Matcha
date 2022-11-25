@@ -33,12 +33,13 @@ const HomePage = () => {
 	const [login, setLogin] = useContext(LoginContext);
 	let more = true;
 
-	useEffect(() => { // get user
+	useEffect(() => {
 		validator().then((response) => {
-			console.log('lol', response.data)
-			if (response.data === 'token invalid')
+			if (response.data === 'no token' || response.data === 'invalid token') {
 				navigate('/')
+			}
 			else if (response.data === 'valid') {
+				console.log('valid')
 				setLogin(true);
 				getUser({target: "self"}).then((response) => {
 					const locations = response.data.locations;

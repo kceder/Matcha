@@ -60,14 +60,17 @@ let sendRecoveryMail = (email, token) => {
 
 	const html = `
 				<html>
-					<head>
+					<body style="background-color: f2f2f2; font-size: 22px; font-family: Arial;">
 						<title>
 							New Password
 						</title>
-					</head>
-					<body>
-						<h1>Reset you password</h1>
-						<p>Click this link to reset your password <a href="http://localhost:3000/restore/token=${token}">link</a></p>
+						<h1 style="color: #3c3c45;">Ay, no worries!</h1>
+						<p>You can press this button to set a new password</p>
+						<br>
+						<button href="http://localhost:3000/restore/token=${token}">New Password</button>
+						<br>
+						<br>
+						<p style="font-size: 14px;"> If you did not request a new password, please ignore this email</p>
 					</body>
 				</html>
 				`

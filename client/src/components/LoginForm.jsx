@@ -93,10 +93,11 @@ const LoginForm = () => {
 		setPassword(event);
 	};
 
+	// centered div with 2 inputs and a button
 	return (
-		<div className="p-5">
+		<div className="" style={{display: 'flex', justifyContent: 'center', maxWidth: '27rem'}}>
 		{message.length > 0 && <p>{message}</p>}
-		<div className="input-group flex-column m-40 text-warning">
+		<div className="input-group flex-column m-40 text-dark" >
 			<h2>Login</h2>
 			<form>
 			<label htmlFor="email">Email</label>
@@ -122,7 +123,7 @@ const LoginForm = () => {
 			<small className="text-danger">{error}</small>
 			<br></br>
 			<div className="d-flex justify-content-between">
-				<button type="button" className="btn btn-outline-warning" onClick={handleSubmit}>
+				<button type="button" className="btn btn-outline-dark" onClick={handleSubmit}>
 				Login
 				</button>
 				<button>forgot password?</button>
