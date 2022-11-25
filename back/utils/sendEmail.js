@@ -6,11 +6,10 @@ let sendMail = (userInfo) => {
 	const receiver = userInfo.email;
 
 	var transport = nodemailer.createTransport({
-		host: "smtp.mailtrap.io",
-		port: 2525,
+		service: 'Outlook365',
 		auth: {
-			user: process.env.MAILTRAP_USER,
-			pass: process.env.MAILTRAP_PASS
+			user: process.env.EMAIL_SENDER,
+			pass: process.env.EMAIL_PASSWORD
 		}
 	});
 
@@ -29,7 +28,7 @@ let sendMail = (userInfo) => {
 				`
 
 	var mailOptions = {
-		from: '"Matcha" <activate@matcha.com>',
+		from: '"Matcha" <krisuceder@hotmail.com>',
 		to: receiver,
 		subject: 'Activate Matcha account',
 		html: html,
@@ -50,11 +49,10 @@ let sendRecoveryMail = (email, token) => {
 	const receiver = email;
 
 	var transport = nodemailer.createTransport({
-		host: "smtp.mailtrap.io",
-		port: 2525,
+		service: 'Outlook365',
 		auth: {
-			user: process.env.MAILTRAP_USER,
-			pass: process.env.MAILTRAP_PASS
+			user: process.env.EMAIL_SENDER,
+			pass: process.env.EMAIL_PASSWORD
 		}
 	});
 
@@ -67,7 +65,7 @@ let sendRecoveryMail = (email, token) => {
 						<h1 style="color: #3c3c45;">Ay, no worries!</h1>
 						<p>You can press this button to set a new password</p>
 						<br>
-						<button href="http://localhost:3000/restore/token=${token}">New Password</button>
+						<a href="http://localhost:3000/restore/token=${token}">New Password</p>
 						<br>
 						<br>
 						<p style="font-size: 14px;"> If you did not request a new password, please ignore this email</p>
@@ -76,7 +74,7 @@ let sendRecoveryMail = (email, token) => {
 				`
 
 	var mailOptions = {
-		from: '"Matcha" <activate@matcha.com>',
+		from: '"Matcha" <krisuceder@hotmail.com>',
 		to: receiver,
 		subject: 'New Password',
 		html: html,
