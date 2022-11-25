@@ -95,10 +95,11 @@ const LoginForm = () => {
 
 	// centered div with 2 inputs and a button
 	return (
-		<div className="" style={{display: 'flex', justifyContent: 'center', maxWidth: '27rem'}}>
+		<div style={{display: 'block', margin: 'auto', marginTop: '5rem',maxWidth: '25rem'}}>
 		{message.length > 0 && <p>{message}</p>}
 		<div className="input-group flex-column m-40 text-dark" >
-			<h2>Login</h2>
+			<h1>Welcome to Matcha</h1>
+			<h6 style={{marginTop: '0.5rem', marginBottom: '2.5rem', color: 'gray'}}>Log in or create a new account</h6>
 			<form>
 			<label htmlFor="email">Email</label>
 			<br></br>
@@ -107,6 +108,7 @@ const LoginForm = () => {
 				className="form-control"
 				type="email"
 				value={email}
+				placeholder="Email"
 				onChange={(e) => setEmail(e.target.value)}
 			/>
 			<br></br>
@@ -117,7 +119,7 @@ const LoginForm = () => {
 				className="form-control"
 				type="text"
 				value={password}
-				placeholder="8-13ch. a-z A-Z 0-9"
+				placeholder="Password"
 				onChange={(e) => handleChangePassword(e.target.value)}
 			/>
 			<small className="text-danger">{error}</small>
@@ -126,11 +128,13 @@ const LoginForm = () => {
 				<button type="button" className="btn btn-outline-dark" onClick={handleSubmit}>
 				Login
 				</button>
-				<button>forgot password?</button>
+				<button type="button" className="btn btn-dark" onClick={handleSubmit}>
+				Forgot password?
+				</button>
 			</div>
 			</form>
 			<p className="mt-5 m-lg-5">
-			Don't Have an account? <Link to="/register">sign up now!</Link>
+			Don't Have an account? <Link to="/register">Sign up now!</Link>
 			</p>
 		</div>
 		</div>
