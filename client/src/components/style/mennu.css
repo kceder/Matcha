@@ -1,8 +1,8 @@
 .burger {
 
-    width: 100%;
+    width: 80%;
     height: 30px;
-    padding: 10px;
+
     cursor: pointer;
     z-index: 100;
     /* background-color: rgb(136, 0, 255); */

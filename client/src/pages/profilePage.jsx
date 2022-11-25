@@ -42,8 +42,9 @@ export const ProfilePage = () => {
 
 	const navigate = useNavigate();
 
-	const handleClick = (value) => {
+	const handleClick = (value,  setShowHide, showHide) => {
 		console.log(value)
+		setShowHide(!showHide)
 		setContainerToShow(value);
 	}
 
@@ -52,10 +53,10 @@ export const ProfilePage = () => {
 		return (
 
 				<Container id="nav-plus-form" style={{padding: 0}}>
-					<div className="row row justify-content-center ">
+					<div className="row justify-content-center p-0 m-0">
 						<SettingsMenu  handleClick={handleClick} />
 					</div>
-					<div className="" style={{
+					<div style={{
 						display: 'flex',
 						alignItems: 'center',
 						justifyContent: 'center',

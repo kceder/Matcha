@@ -4,32 +4,32 @@ import { Nav } from "react-bootstrap";
 import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import './style/mennu.css';
 
-const Links = ({handleClick}) => {
+const Links = ({handleClick, setShowHide, showHide}) => {
     return (
         <div id="nav" className="col-md-2 col-sm-12">
                 <Nav defaultActiveKey="/home" className="flex-column  align-items-center ">
-                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(1)}>Profile</Nav.Link>
-                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(4)}>Edit Profile</Nav.Link>
-                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(2)}>Password</Nav.Link>
-                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(3)}>Edit Photos</Nav.Link>
-                    <Nav.Link style={{color: 'black'}}onClick={() => handleClick(5)}>Scores</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(1, setShowHide, showHide)}>Profile</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(4, setShowHide, showHide)}>Edit Profile</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(2, setShowHide, showHide)}>Password</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(3, setShowHide, showHide)}>Edit Photos</Nav.Link>
+                    <Nav.Link style={{color: 'black'}} onClick={() => handleClick(5, setShowHide, showHide)}>Scores</Nav.Link>
                 </Nav>
             </ div>
     )
 }
 
 const SettingsMenu = ({ handleClick }) => {
-    const [showHide, setShowHide] = useState(false);
+	const [showHide, setShowHide] = useState(false);
 
-    const dropMenu = () => {
-        setShowHide(!showHide);
-    }
-    return (
-        <>
-            <div className="burger" onClick={() => dropMenu()}></div>
-            {showHide ? <Links handleClick={handleClick} /> : null}
-        </>
-    )
+	const dropMenu = () => {
+		setShowHide(!showHide);
+	}
+	return (
+		<>
+			<div className="burger" onClick={() => dropMenu()}></div>
+			{showHide ? <Links handleClick={handleClick} setShowHide={setShowHide} showHide={showHide} /> : null}
+		</>
+	)
 }
 
 
