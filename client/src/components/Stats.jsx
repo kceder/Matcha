@@ -3,10 +3,14 @@ import { getStats } from "../services/stats";
 import { getUserPhotos } from "../services/photos";
 
 const List = ({ list }) => {
-
+	console.log(list)
 	return (
-		<div >
-			lol
+		<div className="d-flex justify-content-center" style={{height : '100%'}}>
+			<div className="p-3" style={{border : 'solid 1px grey', borderRadius: '3%', position: 'absolute', zIndex : '99', background : 'white', width : '80%'}}>
+				<div>
+					{list.map((item) => (<p key={item.id}>{item.name}</p>))}
+				</div>
+			</div>
 		</div>
 	);
 };
@@ -24,8 +28,6 @@ const Stats = ({ target }) => {
 
 	useEffect(() => {
 		getStats({target : target}).then(response => {
-			console.log('hereghdugvkjfdvhfbdj')
-			console.log(response.data);
 			setViews(response.data.views);
 			setLikes(response.data.likes);
 			setViewHistory(JSON.parse(response.data.view_history));
@@ -34,7 +36,6 @@ const Stats = ({ target }) => {
 			setMatches(JSON.parse(response.data.matches));
 		}).then(() => {
 			getUserPhotos({target : target}).then(response => {
-				console.log(response.data);
 				setProfilePic(response.data.pic_1);
 			})
 			setDone(true);
