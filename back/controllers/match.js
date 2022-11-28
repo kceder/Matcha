@@ -1,6 +1,7 @@
 const { Certificate } = require('crypto');
 const { response } = require('express');
 const db = require('../config/db.js');
+const { sendReportMail } = require('../utils/sendEmail.js');
 
 const fetchMatch = (request,  response) => {
 	console.log('body in fm:', request.body);
@@ -35,6 +36,9 @@ const likeDislike = (request, response) => {
 	const user2 = request.body.target;
 	const like1 = request.body.like;
 
+	if (request.body.report !== undefined) {
+		sendReportMail(user2);
+	}
 	let sql = "SELECT score FROM users WHERE id = ?";
 	if (like1 === true) {
 		db.query(sql, [user2], (error, result) => {

@@ -62,7 +62,7 @@ let sendRecoveryMail = (email, token) => {
 						<title>
 							New Password
 						</title>
-						<h1 style="color: #3c3c45;">Ay, no worries!</h1>
+						<h2 style="color: #3c3c45;">Ay, no worries!</h2>
 						<p>You can press this button to set a new password</p>
 						<br>
 						<a href="http://localhost:3000/restore/token=${token}">New Password</p>
@@ -89,5 +89,45 @@ let sendRecoveryMail = (email, token) => {
 		}
 	});
 }
+let sendReportMail = (target) => {
+	console.log('report target: ', target)
+	const receiver = 'krisuceder@hotmail.com';
 
-module.exports = {sendMail, sendRecoveryMail};
+	var transport = nodemailer.createTransport({
+		service: 'Outlook365',
+		auth: {
+			user: process.env.EMAIL_SENDER,
+			pass: process.env.EMAIL_PASSWORD
+		}
+	});
+
+	const html = `
+				<html>
+					<body style="background-color: f2f2f2; font-size: 22px; font-family: Arial;">
+						<title>
+							User Reported
+						</title>
+						<h2 style="color: #3c3c45;">Here we go again!</h2>
+						<p>User with ID ${target} has been reported. Time to take action?</p>
+						<br>
+					</body>
+				</html>
+				`
+
+	var mailOptions = {
+		from: '"Matcha" <krisuceder@hotmail.com>',
+		to: receiver,
+		subject: 'User Reported',
+		html: html,
+		};
+
+	transport.sendMail(mailOptions, function(error, info){
+		if (error) {
+			console.log(error);
+		} else {
+			console.log('Email sent: ' + info.response);
+		}
+	});
+}
+
+module.exports = {sendMail, sendRecoveryMail, sendReportMail};

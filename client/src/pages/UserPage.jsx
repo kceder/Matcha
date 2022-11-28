@@ -248,7 +248,7 @@ const UserCard = ({props}) => {
 	const handleReportBlock = (value) => {
 		console.log(value)
 		if (value === 1) {
-			likeDislike({target : target, like : false}).then(response => {
+			likeDislike({target : target, like : false, report : 'report'}).then(response => {
 				setLiked(true)
 				window.location.reload();
 			})
