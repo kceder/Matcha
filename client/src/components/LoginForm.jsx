@@ -35,7 +35,7 @@ const LoginForm = () => {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const userObject = {
-		email,
+		user : email,
 		password,
 		};
 
@@ -102,7 +102,7 @@ const LoginForm = () => {
 			<h1>Welcome to Matcha</h1>
 			<h6 style={{marginTop: '0.5rem', marginBottom: '2.5rem', color: 'gray'}}>Log in or create a new account</h6>
 			<form>
-			<label htmlFor="email">Email</label>
+			<label htmlFor="email">Email or Username</label>
 			<br></br>
 			<input
 				id="email"

@@ -111,10 +111,11 @@ const register = (request, response) => {
 }
 
 const login = (request, response) => {
-	const sql = 'SELECT * FROM users WHERE email = ?';
-	const email = request.body.email;
+	const sql = 'SELECT * FROM users WHERE email = ? OR username = ?';
+	const user = request.body.user;
+
 	const password = request.body.password;
-	db.query(sql, [email],
+	db.query(sql, [user, user],
 		function (error, result) {
 			
 			if (error) throw error;
@@ -268,7 +269,6 @@ const addPhotos = (request, response) => {
 		db.query(sql, [image.path, user.id],
 			function (error, result) {
 				if (error) {
-					// console.log(error);
 					response.send('SQL error')
 				}
 			});
