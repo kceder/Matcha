@@ -6,7 +6,7 @@ import './style/mennu.css';
 
 const Links = ({handleClick, setShowHide, showHide}) => {
     return (
-        <div id="nav" className="col-md-2 col-sm-12">
+        <div id="nav" className="">
                 <Nav defaultActiveKey="/home" className="flex-column  align-items-center ">
                     <Nav.Link style={{color: 'black'}} onClick={() => handleClick(1, setShowHide, showHide)}>Profile</Nav.Link>
                     <Nav.Link style={{color: 'black'}} onClick={() => handleClick(4, setShowHide, showHide)}>Edit Profile</Nav.Link>

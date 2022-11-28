@@ -10,6 +10,7 @@ import axios from "axios";
 import { useContext } from "react";
 import LoginContext from "../contexts/loginContext";
 import SocketContext from "../contexts/socketContext";
+import RestorePassword from "./RestorePassword";
 
 const LoginForm = () => {
 	
@@ -128,7 +129,7 @@ const LoginForm = () => {
 				<button type="button" className="btn btn-outline-dark" onClick={handleSubmit}>
 				Login
 				</button>
-				<button type="button" className="btn btn-dark" onClick={handleSubmit}>
+				<button type="button" className="btn btn-dark" onClick={() => {Navigate('../restore')}}>
 				Forgot password?
 				</button>
 			</div>
