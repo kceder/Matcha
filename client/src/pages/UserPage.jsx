@@ -75,9 +75,12 @@ const LoginStatus = ({user, lastLogin}) => {
 	useEffect(() => {
 		getLoggedInUsers().then(response => {
 			const users = response.data;
+			console.log('userfvfbf vdxbfxvbcxs', typeof(user));
 			if (users.length > 0) {
-				if (users.includes(user))
+				if (users.includes(parseInt(user))){
+					console.log('user is logged in');
 					setLogin(true)
+				}
 				else {
 					setLogin(false)
 					if (days > 0) {
@@ -90,10 +93,9 @@ const LoginStatus = ({user, lastLogin}) => {
 						setString(`${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`);
 					}
 					else {
-						setString('A moment ago');
+						setString('a moment ago');
 					}
 				}
-
 			}
 		})
 	}, [])
@@ -109,9 +111,8 @@ const LoginStatus = ({user, lastLogin}) => {
 	if (login) {
 		return (
 			<div>
-				<Spinner style={{textAlign: 'center'}} animation="grow" size="sm" role="status">
-				</Spinner>
-			</div> 
+				<p style={{color : 'gray', fontSize : '0.5'}}>Online {string}</p>
+			</div>
 		)
 	} else {
 		return (
