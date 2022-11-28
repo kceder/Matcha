@@ -1,22 +1,27 @@
 import { useState } from 'react';
 import { createUser } from '../services/register.js'
 import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterForm = () => {
 	const [name, setName] = useState('');
 	const [lastName, setLastName] = useState('');
+	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [repeatPassword, setRepeatPassword] = useState('');
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [emailAlreadyInUse, setEmailAlreadyInUse] = useState('');
+	const navigate = useNavigate();
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const userObject = {
 			name,
 			lastName,
+			username,
 			email,
 			password
 		}
@@ -25,6 +30,9 @@ const RegisterForm = () => {
 			if (response.status === 201) {
 				console.log('user created');
 				setSuccess('Account created successfully, check your email to activate it and finish setting up your account');
+				setTimeout(() => {
+					navigate('/login');
+				}, 3000);
 			}
 			if (response.status === 228) {
 				setEmailAlreadyInUse('Email already in use');
@@ -52,25 +60,48 @@ const RegisterForm = () => {
 		}
 	}
 
+	const handleNameChange = (event) => {
+		// regex for letters between 1 and 20 characters// 
+		const regex = new RegExp('^[a-zA-Z]{1,20}$');
+		if (regex.test(event.target.value) === true || event.target.value === '') 
+			setName(event.target.value);
+	}
+
+	const handleLastNameChange = (event) => {
+		// regex for letters between 1 and 20 characters// 
+		const regex = new RegExp('^[a-zA-Z]{1,20}$');
+		if (regex.test(event.target.value) === true || event.target.value === '') 
+			setLastName(event.target.value);
+	}
+
+	const handleUsernameChange = (event) => {
+		// regex for letters and numbers between 1 and 20 characters// 
+		const regex = new RegExp('^[a-zA-Z0-9]{1,50}$');
+		if (regex.test(event.target.value) === true || event.target.value === '') 
+			setUsername(event.target.value);
+	}
+
 	return (
 		<div className='p-5'>
-			<div className='input-group flex-column m-40 text-warning'>
+			<div className='input-group flex-column m-40 text-secondary'>
 				<h2>Register</h2>
 				<form>
 					<label htmlFor="name" className="form-label" >Name</label><br></br>
-					<input className='form-control' type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} /><br></br>
+					<input className='form-control' type="text" id="name" value={name} onChange={(e) => handleNameChange(e)} /><br></br>
 					<label htmlFor='lastName'>Last Name</label><br></br>
-					<input id="lastName" className='form-control' type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} /><br></br>
+					<input id="lastName" className='form-control' type="text" value={lastName} onChange={(e) => handleLastNameChange(e)} /><br></br>
+					<label htmlFor='lastName'>Username</label><br></br>
+					<input id="username" className='form-control' type="text" value={username} onChange={(e) => handleUsernameChange(e)} /><br></br>
 					<label htmlFor="email">Email</label><br></br>
 					<input id="email" className='form-control' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-					<small className='text-danger'>{emailAlreadyInUse}</small><br></br>
+					<small className='text-dark'>{emailAlreadyInUse}</small><br></br>
 					<label htmlFor='password'>Password</label><br></br>
 					<input id="password" className='form-control' type="password" value={password} placeholder="8-13ch. a-z A-Z 0-9" onChange={(e) => handleChangePassword(e.target.value)} />
 					<small className='text-muted'>Min. 8 Max. 13 characters containing at least: 1 uppercase, 1 lowercase, 1 number</small><br></br><br></br>
 					<label htmlFor='passwordRepeat' >Repeat Password</label><br></br>
 					<input id="passwordRepeat" className='form-control' type="password" value={repeatPassword} onChange={(e) => handleChangeRepeatPassword(e.target.value)} />
-					<small className='text-danger'>{error}</small><br></br>
-					<button type="button" className="btn btn-outline-warning" onClick={handleSubmit}>SUBMIT</button>
+					<small className='text-dark'>{error}</small><br></br>
+					<button type="button" className="btn btn-outline-secondary" onClick={handleSubmit}>SUBMIT</button>
 				</form>
 				<p>{success}</p>
 			</div>
