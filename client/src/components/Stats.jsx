@@ -19,6 +19,27 @@ import { motion, AnimatePresence } from "framer-motion"
 import { updateViewStats, updateLikeStats } from "../services/stats";
 import { getStats } from "../services/stats";
 
+
+const StarRating = ({rating}) => {
+	
+	const stars = [];
+	for (let i = 1; i <= 5; i++) {
+		if (i <= rating) {
+			stars.push(<i key={i} className="fas fa-star"></i>);
+		} else if (i === Math.ceil(rating) && !Number.isInteger(rating)) {
+			stars.push(<i key={i} style={{width: '3'}} className="fas fa-star-half-alt"></i>);
+		} else {
+			stars.push(<i key={i} className="far fa-star"></i>);
+		}
+	}
+
+	return (
+		<div style={{width: 100}}>
+			{stars}
+		</div>
+	)
+}
+
 const CarouselImages = ({pictures}) => {
 
 	const array = Object.keys(pictures).map(key => pictures[key])
@@ -95,6 +116,24 @@ const Stats = ({ target }) => {
 	const [infoShow, setInfoShow] = useState(false);
 	const [animation, setAnimation] = useState({ x: 0, y: 0 });
 
+
+	const showHideInfo = () => {
+		if (infoShow === false) {
+			const obj = {target: target, username: username};
+			if (target !== "self") {
+				view(obj).then(response => {
+					console.log(response.data)
+					socket.emit('notification', response.data);
+				})
+				updateViewStats(obj).then(response => {
+					console.log(response.data)
+				})
+			}
+			
+		}
+		setInfoShow(!infoShow);
+	}
+
 	useEffect(() => {
 		getStats({target : target}).then(response => {
 			setViews(response.data.views);
@@ -116,21 +155,17 @@ const Stats = ({ target }) => {
 			<div style={{marginBottom : '1.5rem', marginTop : '1.5rem'}}>
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
-						<Container>
-							<Row>
-								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
+						<Container>							<Row>
 								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title>{username}, {age}</Card.Title></Col>
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-regular fa-heart fa-2x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
 									{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></motion.i>}
-									{target === "self" ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-solid fa-heart-crack fa-2x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
-							{infoShow ? <Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/> : null}
+							{infoShow ? <List /> : null}
 						</Container>
 					<div className='row p-2'>
-						<div className='col'>{tags}</div>
+						<div className='col'>fbgdjsfjkds</div>
 					</div>
 					</div>
 			</div>
