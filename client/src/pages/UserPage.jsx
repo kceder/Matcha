@@ -59,17 +59,41 @@ const StarRating = ({rating}) => {
 	)
 }
 
-const LoginStatus = ({user}) => {
+const LoginStatus = ({user, lastLogin}) => {
 	const socket = useContext(SocketContext);
 	const [login, setLogin] = useState(false);
+	const [string, setString] = useState('');
+	console.log(lastLogin);
+	const date = new Date(lastLogin);
+	const now = new Date();
+	const diff = now - date;
+	const minutes = Math.floor(diff / 1000 / 60);
+	const hours = Math.floor(minutes / 60);
+	const days = Math.floor(hours / 24);
+	console.log(minutes, hours, days);
+
 	useEffect(() => {
 		getLoggedInUsers().then(response => {
 			const users = response.data;
 			if (users.length > 0) {
 				if (users.includes(user))
 					setLogin(true)
-				else
+				else {
 					setLogin(false)
+					if (days > 0) {
+						setString(`${days} ${days === 1 ? "day" : "days"} ago`);
+					}
+					else if (hours > 0) {
+						setString(`${hours} ${hours === 1 ? "hour" : "hours"} ago`);
+					}
+					else if (minutes > 0) {
+						setString(`${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`);
+					}
+					else {
+						setString('A moment ago');
+					}
+				}
+
 			}
 		})
 	}, [])
@@ -81,8 +105,7 @@ const LoginStatus = ({user}) => {
 				setLogin(false)
 		});
 	}, [socket])
-	
-
+	console.log('USER: ',user)
 	if (login) {
 		return (
 			<div>
@@ -93,8 +116,7 @@ const LoginStatus = ({user}) => {
 	} else {
 		return (
 			<div>
-				<Spinner style={{textAlign: 'center'}} animation="border" size="sm" role="status">
-				</Spinner>
+				<p style={{color : 'gray', fontSize : '0.5'}}>Last online {string}</p>
 			</div>
 		)
 	}
@@ -146,6 +168,8 @@ const UserCard = ({props}) => {
 	const [liked, setLiked] = useState(false);
 	const [blocked, setBlocked] = useState(false);
 	const navigate =useNavigate();
+	const [lastLogin, setLastLogin] = useState('');
+
 	
 	const calculateAge = (birthday) => {
 	
@@ -175,6 +199,7 @@ const UserCard = ({props}) => {
 		})
 		const obj = { target: props.target }
 		getUser(obj).then(response => {
+			console.log('All the data:', response.data)
 			setUsername(response.data.basicInfo.username)
 			setName(response.data.basicInfo.name)
 			setLastName(response.data.basicInfo.lastName)
@@ -188,6 +213,7 @@ const UserCard = ({props}) => {
 								response.data.locations.gps_city ? response.data.locations.gps_city :
 								response.data.locations.ip_city;
 			setLocation(locationTemp)
+			setLastLogin(response.data.basicInfo.registration_date)
 		});
 		getUserPhotos(obj).then(response => {
 			console.log(response.data)
@@ -254,7 +280,9 @@ const UserCard = ({props}) => {
 					<div className="card-body">
 						<Container>
 							<Row>
-								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
+								<Col>{target === "self" ?  null :<LoginStatus className="m-2" user={target} lastLogin={lastLogin}/> } </Col>
+							</Row>
+							<Row>
 								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title>{username}, {age}</Card.Title></Col>
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>

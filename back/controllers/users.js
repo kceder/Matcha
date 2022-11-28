@@ -37,7 +37,7 @@ const getUser = (request, response) => {
 	} else {
 		target = request.body.target;
 	}
-		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score FROM users WHERE id = ?';
+		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score, registration_date FROM users WHERE id = ?';
 
 		db.query(sql, [target], 
 				function (error, result) {
@@ -148,6 +148,10 @@ const login = (request, response) => {
 									httpOnly: true
 								}).send({message: 'login', user: user.id});
 							});
+							const update_sql = "UPDATE users SET registration_date = ? WHERE id = ?";
+							db.query (update_sql, [new Date(), user.id], function (error, result) {
+								if (error) console.log(error);
+							})
 						}
 					
 					
