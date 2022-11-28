@@ -347,10 +347,15 @@ const filterUsers = (request, response) => {
 			result = result.filter(result => {
 				return !blockedUsers.includes(result.id);
 			})
-			result.forEach(user => {
-				let ret = filterByTags(user, interests);
-				ret === null ? null : array.push(ret);
-			})
+			console.log('gfdgfdsghdfs', interests.length)
+			if (interests.length > 0) {
+				result.forEach(user => {
+						let ret = filterByTags(user, interests);
+						ret === null ? null : array.push(ret);
+					})
+			} else {
+				array = result;
+			}
 			let array2 = [];
 			array.forEach(user => {
 				const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);

@@ -59,7 +59,7 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 		}
 	}
 	const options = tags.map((tag) => <option key={tag.id} value={tag.tag}>{tag.tag}</option>)
-	const selectedTags = interests.map((tag, i) => <Badge key={i} value={tag} bg="warning" className="m-1">{tag}	<Badge bg="danger" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge></Badge>)
+	const selectedTags = interests.map((tag, i) => <Badge key={i} value={tag} bg="secondary" className="m-1">{tag}	<Badge bg="danger" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge></Badge>)
 	return (
 		<div>
 			<select id='tags' className="form-select" defaultValue={''} onChange={(e) => handleInterestsChange(e.target.value)} required>
@@ -67,7 +67,7 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 				{options}
 			</select>
 			<div className='mt-1 mb-1'>
-				<Badge bg="warning" ><input value={newTag} style={{ outline: 'none', border: 'none', borderRadius: '2px'}} type='text' onChange={(e) => handleTextInput(e)}></input><Badge className="m-1" bg="success" value={newTag} onClick={(event) => submitTag(event, newTag)}>+</Badge></Badge>{selectedTags}
+				<Badge bg="secondary" ><input value={newTag} style={{ outline: 'none', border: 'none', borderRadius: '2px'}} type='text' onChange={(e) => handleTextInput(e)}></input><Badge className="m-1" bg="dark" value={newTag} onClick={(event) => submitTag(event, newTag)}>+</Badge></Badge>{selectedTags}
 			</div>
 		</div>
 	);
@@ -152,7 +152,7 @@ const PersonalDetailsForm = () => {
 
 	return (
 	<div className='p-5'>
-		<div className='input-group flex-column m-40 text-warning'>
+		<div className='input-group flex-column m-40 text-secondary'>
 			<h2>Complete your accout</h2>
 			<form className='d-flex flex-column' onSubmit={(e) => handleSubmit(e)}>
 				<label htmlFor='username'>Username</label>
@@ -178,7 +178,7 @@ const PersonalDetailsForm = () => {
 				<label>Interests</label>
 				<AutocompleteTagsSelector tags={tags} setTags={setTags} interests={interests} setInterests={setInterests} />
 				
-				<button className="btn btn-outline-warning" type='submit'>Submit</button>
+				<button className="btn btn-outline-secondary" type='submit'>Submit</button>
 			</form>
 			<small className='text-danger'>{error}</small>
 		</div>

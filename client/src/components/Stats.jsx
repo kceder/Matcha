@@ -5,6 +5,7 @@ import Carousel from 'react-bootstrap/Carousel';
 import { Container, Row, Spinner, Card } from "react-bootstrap";
 import { motion} from "framer-motion"
 import { getStats } from "../services/stats";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const CarouselImages = ({pictures}) => {
 
@@ -34,6 +35,7 @@ const CarouselImages = ({pictures}) => {
 }
 
 const List = ({ props }) => {
+	const navigate = useNavigate();
 	if (props.views === 0 && props.likes === 0 && props.matches.length === 0) {
 		return (
 			<div>
@@ -43,11 +45,9 @@ const List = ({ props }) => {
 	} else {
 		return (
 			<div className="row" style={{maxHeight : '80px', overflowY : 'scroll'}}>
-				{props.viewHistory.length > 0 ? <div className="col-4">VIEWS{props.viewHistory.map(view => <div key={view.id}><small>{view.name}</small><br></br></div>)}</div> : <>no views yet</>}
-				{props.likeHistory.length > 0 ? <div className="col-4">LIKES{props.likeHistory.map(view => <div key={view.id}><small>{view.name}</small><br></br></div>)}</div> : <>no likes yet</>}
-				{props.matches.length > 0 ? <div className="col-4">MATCHES{props.matches.map(view => <div key={view.id}><small>{view.name}</small><br></br></div>)}</div> : <>no matches yet</>}
-				{/* <div className="col-4">{.map()}</div>
-				<div className="col-4">{.map()}</div> */}
+				{props.viewHistory.length > 0 ? <div className="col-4">VIEWS{props.viewHistory.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no views yet</>}
+				{props.likeHistory.length > 0 ? <div className="col-4">LIKES{props.likeHistory.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no likes yet</>}
+				{props.matches.length > 0 ? <div className="col-4">MATCHES{props.matches.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no matches yet</>}
 			</div>
 		)
 	}
