@@ -1,6 +1,7 @@
 const e = require('express');
 const { request } = require('http');
 const db = require('../config/db.js');
+const { messageNotification } = require('./notifications.js');
 
 const getChatrooms = (request, response) => {
 	const user = request.user.id;
@@ -67,13 +68,17 @@ const sendMessage = (request, response) => {
 	const room = parseInt(request.body.room);
 	const message = request.body.body;
 	const sender = request.user.id;
-
+	console.log('CAMAMAM', request.body)
+	console.log('CAMAMAM', request.user)
 	const sql = "INSERT INTO messages (chatroom_id, sender, body) VALUES (?, ?, ?);"
 	db.query(sql, [room, sender, message], (error, result) => {
 		if (error) {
 			console.log(error);
 			response.send('error');
 		} else {
+			const noti_sql = "INSERT INTO notifications (user_id, type, chatroom_id) VALUES (?, ?, ?);"
+			console.log('CAMAMAM',request)
+			messageNotification(request.body, request.user.id);
 			response.send('ok');
 		}
 	})

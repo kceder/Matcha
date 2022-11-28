@@ -68,6 +68,9 @@ const Navigation = ({socket}) => {
 					}
 				})
 			}
+			else {
+				console.log('not logged in')
+			}
 		})
 	})
 	socket.on('message_notification', (data) => {

@@ -85,7 +85,6 @@ const Chat = ({props}) => {
 	useEffect(() => {
 		socket.on('receive_message', (data) => {
 			if (url === `/direct/${data.room}`) {
-				console.log('we are in wabbadabbawoop')
 				setMessagesToSeen({room: data.room, receiver: props.user1}).then(response => {
 					if (response.data === 'error') {
 						window.location.reload();
@@ -198,6 +197,10 @@ export const ChatRoom = () => {
 			time: new Date()
 		}
 		await sendMessage(message).then(response => {
+			if (response.data === 'error') {
+				window.location.reload();
+			}
+			socket.emit('notification', {to : user2});
 			setInputMessage('')
 		})
 		await socket.emit('send_message', message);

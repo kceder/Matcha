@@ -192,6 +192,7 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 			if (target !== "self") {
 				view(obj).then(response => {
 					console.log(response.data)
+					console.log("viewed data", response.data)
 					socket.emit('notification', response.data);
 				})
 				updateViewStats(obj).then(response => {

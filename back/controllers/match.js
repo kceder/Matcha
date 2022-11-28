@@ -106,15 +106,12 @@ const likeDislike = (request, response) => {
 					sql = "UPDATE matches SET like2 = ?, matched = false, block = true WHERE id = ?"
 					db.query(sql, [like1, matchId], function (error, result) {
 						if (error) {
-							// console.log(error)
 							response.send('error matches')
 						} else {
-							// console.log('something')
 							response.send('all gucci belushi')
 						}
 					})
 				}
-				// response.send('w4k4nd4 4 3v3r')
 			}
 		}
 	})
