@@ -17,7 +17,7 @@ export const ChatPage = () => {
 
 	useEffect(() => {
 		validator().then((response) => {
-			if (response.data === 'token invalid')
+			if (response.data === 'token invalid' || response.data === 'no token')
 				navigate('/')
 			else if (response.data === 'valid') {
 				setLogin(true);
