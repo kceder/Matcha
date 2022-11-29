@@ -4,6 +4,7 @@ import getCroppedImg from './cropImage'
 import { setProfilePicture } from '../../services/photos';
 import { useNavigate } from 'react-router-dom';
 import {validator} from '../../services/validator'
+import { checkActiStat } from '../../services/users';
 
 
 const ImageCropDialog = ({url}) => {
@@ -53,9 +54,9 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 				onCropChange={onCropChange}
 				onCropComplete={onCropComplete}
 				onZoomChange={onZoomChange} />
-			<div className='controls' style={{position:"fixed", bottom:"0px"}}>
-				<div className='button-area'>
-					<button onClick={onSubmit}>Save</button>
+			<div className='controls container' style={{position:"absolute", bottom:"5%"}} >
+				<div className='button-area row'>
+					<button type="button" class="btn btn-dark" onClick={onSubmit}>Save</button>
 				</div>
 			</div>
 			</div>
@@ -70,20 +71,20 @@ const ProfilePictureUpload = () => {
 		console.log((response.data))
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
+		} else {
+			checkActiStat().then((response) => {
+				console.log(response.data)
+				if (response.data.acti_stat === 3)
+					navigate('/profile')
+			})
 		}
 	})
 	const [url, setUrl] = useState('');
 	return (
 		<div>
-			<div>
-				<form>
-					<input
-						type="file"
-						onChange={(event) => {
-						setUrl(URL.createObjectURL(event.target.files[0]));
-						}}
-					/>
-				</form>
+			<div className='container'>
+					
+					<input type="file" className="form-control mt-5" id="customFile" onChange={(event)=>setUrl(URL.createObjectURL(event.target.files[0]))}/>
 				{url ? <> <ImageCropDialog url={url}/></> : null}
 			</div>
 		</div> 

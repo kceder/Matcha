@@ -59,7 +59,7 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 		}
 	}
 	const options = tags.map((tag) => <option key={tag.id} value={tag.tag}>{tag.tag}</option>)
-	const selectedTags = interests.map((tag, i) => <Badge key={i} value={tag} bg="secondary" className="m-1">{tag}	<Badge bg="danger" value={tag} onClick={(event) => removeInterest(event, tag)}>x</Badge></Badge>)
+	const selectedTags = interests.map((tag, i) => <Badge style={{padding: '9px', cursor : 'pointer' }} key={i} value={tag} bg="secondary" className="m-1" onClick={(event) => removeInterest(event, tag)}>{tag}</Badge>)
 	return (
 		<div>
 			<select id='tags' className="form-select" defaultValue={''} onChange={(e) => handleInterestsChange(e.target.value)} required>
@@ -134,7 +134,6 @@ const PersonalDetailsForm = () => {
 			setError('You must be 18 years old to use this website');
 		} else {
 			const userObject = {
-				username,
 				gender,
 				bio,
 				birthday,
@@ -155,8 +154,6 @@ const PersonalDetailsForm = () => {
 		<div className='input-group flex-column m-40 text-secondary'>
 			<h2>Complete your accout</h2>
 			<form className='d-flex flex-column' onSubmit={(e) => handleSubmit(e)}>
-				<label htmlFor='username'>Username</label>
-				<input id="username" className='form-control' type="text" maxLength={15} value={username} onChange={(e) => handleUsernameChange(e)} required/>
 				<label htmlFor="gender" className="form-label" >Gender</label>
 				<select id='gender' className="form-select" aria-label="Default select example" onChange={(e) => handleGenderChange(e.target.value)} defaultValue={''} required>
 					<option value="" disabled>-- select --</option>
@@ -180,7 +177,7 @@ const PersonalDetailsForm = () => {
 				
 				<button className="btn btn-outline-secondary" type='submit'>Submit</button>
 			</form>
-			<small className='text-danger'>{error}</small>
+			<small className='text-dark'>{error}</small>
 		</div>
 	</div>
 	)

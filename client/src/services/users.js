@@ -20,3 +20,7 @@ export const filterUsers = (object) => {
 export const getLoggedInUsers = () => {
 	return axios.post(`${baseUrl}/getLoggedInUsers`);
 }
+
+export const checkActiStat = (object) => {
+	return axios.post(`${baseUrl}/check-acti-stat`, object);
+}

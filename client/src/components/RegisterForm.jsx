@@ -27,6 +27,18 @@ const RegisterForm = () => {
 			setError('Password must be between 8 and 13 characters, contain at least one uppercase letter, one lowercase letter and one number');
 		} else if (!validate(email)) {
 			setError('Invalid email');
+		} else if (name.length < 2) {
+			setError('Name too short');
+		} else if (name.length > 20) {
+			setError('Name too long');
+		} else if (lastName.length < 2) {
+			setError('Last name too short');
+		} else if (lastName.length > 20) {
+			setError('Last name too long');
+		} else if (username.length > 50) {
+			setError('Username too long');
+		} else if (username.length < 5) {
+			setError('Username too short');
 		} else {
 			const userObject = {
 				name,
@@ -101,20 +113,20 @@ const RegisterForm = () => {
 				<h2>Register</h2>
 				<form>
 					<label htmlFor="name" className="form-label" >Name</label><br></br>
-					<input className='form-control' type="text" id="name" value={name} onChange={(e) => handleNameChange(e)} /><br></br>
+					<input className='form-control' type="text" id="name" value={name} onChange={(e) => handleNameChange(e)} required/><br></br>
 					<label htmlFor='lastName'>Last Name</label><br></br>
-					<input id="lastName" className='form-control' type="text" value={lastName} onChange={(e) => handleLastNameChange(e)} /><br></br>
+					<input id="lastName" className='form-control' type="text" value={lastName} onChange={(e) => handleLastNameChange(e)} required/><br></br>
 					<label htmlFor='lastName'>Username</label><br></br>
-					<input id="username" className='form-control' type="text" value={username} onChange={(e) => handleUsernameChange(e)} />
+					<input id="username" className='form-control' type="text" value={username} onChange={(e) => handleUsernameChange(e)} required/>
 					<small className='text-dark'>{usernameAlreadyInUse}</small><br></br>
 					<label htmlFor="email">Email</label><br></br>
-					<input id="email" className='form-control' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+					<input id="email" className='form-control' type="email" value={email} onChange={(e) => setEmail(e.target.value)} required/>
 					<small className='text-dark'>{emailAlreadyInUse}</small><br></br>
 					<label htmlFor='password'>Password</label><br></br>
-					<input id="password" className='form-control' type="password" value={password} placeholder="8-13ch. a-z A-Z 0-9" onChange={(e) => handleChangePassword(e.target.value)} />
+					<input id="password" className='form-control' type="password" value={password} placeholder="8-13ch. a-z A-Z 0-9" onChange={(e) => handleChangePassword(e.target.value)} required/>
 					<small className='text-muted'>Min. 8 Max. 13 characters containing at least: 1 uppercase, 1 lowercase, 1 number</small><br></br><br></br>
 					<label htmlFor='passwordRepeat' >Repeat Password</label><br></br>
-					<input id="passwordRepeat" className='form-control' type="password" value={repeatPassword} onChange={(e) => handleChangeRepeatPassword(e.target.value)} />
+					<input id="passwordRepeat" className='form-control' type="password" value={repeatPassword} onChange={(e) => handleChangeRepeatPassword(e.target.value)} required/>
 					<small className='text-dark'>{error}</small><br></br>
 					<button type="button" className="btn btn-outline-secondary" onClick={handleSubmit}>SUBMIT</button>
 				</form>
