@@ -14,7 +14,7 @@ const NotificationsPage = () => {
 	useEffect(() => {
 		validator().then((response) => {
 			console.log((response.data))
-			if (response.data === 'token invalid')
+			if (response.data === 'token invalid' || response.data === 'no token')
 				Navigate('/')
 			else
 				setLogin(true)
@@ -40,8 +40,7 @@ const NotificationsPage = () => {
 
 	return (
 		<div className="p-3">
-			<h3>Notifications</h3>
-			{notificationsElements.length === 0 ? <p>No notifications</p> : notificationsElements}
+			{notificationsElements.length === 0 ? <h6 style={{textAlign: 'center' ,color: 'gray', marginTop : '5rem'}}>No notifications yet!</h6> : notificationsElements}
 		</div>
 	);
 };

@@ -318,7 +318,7 @@ export const UserPage = () => {
 
 	validator().then((response) => {
 		console.log((response.data))
-		if (response.data === 'token invalid') {
+		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
 		}
 		else {
