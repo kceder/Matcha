@@ -102,10 +102,18 @@ export const ChatLinks = ({props}) => {
 			return (<ChatLink user={room.user1} room={room.id} key={room.id}/>)
 		}
 	})
-	return (
-		<div className="container mt-3">
+	if (chats.length > 0) {
+		return (
+			<div className="container mt-3">
 			{chats}
 		</div>
-	)
+		)
+	} else {
+		return (
+			<div className="container mt-3">
+				<h6 style={{textAlign: 'center' ,color: 'gray', marginTop : '5rem'}}>No matches to chat with yet!</h6>
+			</div>
+		)
+	}
 	
 }; 
