@@ -36,6 +36,7 @@ const Navigation = ({socket}) => {
 	const [newMessages, setNewMessages] = useState(false);
 	const [unreadMessages, setUnreadMessages] = useState(false);
 	const url = window.location.pathname;
+	const navigate = useNavigate()
 
 		useEffect(() => {
 			
@@ -69,7 +70,7 @@ const Navigation = ({socket}) => {
 				})
 			}
 			else {
-				console.log('not logged in')
+				navigate('/login')
 			}
 		})
 	})
@@ -99,7 +100,7 @@ const Navigation = ({socket}) => {
 	return (
 		<Navbar bg="light" expand="lg" position="absolute" top="0px">
 			<Container>
-				<Navbar.Brand href="/home">
+				<Navbar.Brand href={login === true ? "/home" : '/login'}>
 				<motion.h1
 					whileHover={{ scale: 1.1 }} 
 					style={{

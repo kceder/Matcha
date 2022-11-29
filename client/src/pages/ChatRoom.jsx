@@ -156,22 +156,14 @@ export const ChatRoom = () => {
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
-		getMessages({room : room}).then(response => {
-			console.log('chatroom', response.data)
-			setMessages(response.data);
-		})
-	}, [])
-	
-	useEffect(() => {
-		socket.emit('join_room', room);
-		getUser({target: 'self'}).then(response => {
-			setUser1(response.data.id)
-		})
-
 		validator().then((response) => {
-			if (response.data === 'token invalid' || response.data === 'no token')
-				navigate('/')
+			if (response.data === 'token invalid' || response.data === 'no token') {
+				console.log('navigate')
+				setLogin(false)
+				navigate('/login')
+			}
 			else if (response.data === 'valid') {
+				console.log('else if')
 				setLogin(true);
 				getUser({target: 'self'}).then(response => {
 					authorizeRoomAccess({room : room}).then(response => {
@@ -182,13 +174,25 @@ export const ChatRoom = () => {
 					})
 				})
 			}
+		}).then(() => {
+			if (login === true) {
+				console.log('.then again')
+				getUser({target: 'self'}).then(response => {
+					setUser1(response.data.id)
+				})
+			}
+			socket.emit('join_room', room);
+		}).finally(() => {
+			getMessages({room : room}).then(response => {
+				console.log('chatroom', response.data)
+				setMessages(response.data);
+			})
 		})
 	}, []);
-	
-	
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		// regex remove all white spaces /
 		const message = {
 			room: room,
 			body: inputMessage,
@@ -223,8 +227,9 @@ export const ChatRoom = () => {
 
 				<form onSubmit={(e) => handleSubmit(e)}>
 					<div className="d-flex align-items-end">
+						
 						<input className="form-control" placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)} />
-						<button className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
+						<button disabled={inputMessage.replace(/\s/g, '').length === 0} className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
 					</div>
 				</form>
 				</div>

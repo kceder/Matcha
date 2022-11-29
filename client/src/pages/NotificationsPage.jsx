@@ -16,26 +16,30 @@ const NotificationsPage = () => {
 			console.log((response.data))
 			if (response.data === 'token invalid' || response.data === 'no token')
 				Navigate('/')
-			else
+			else {
 				setLogin(true)
-		})
-		
-	}, [])
-
-	useEffect(() => {
-		getNofications().then(response => {
-			setNotificationsElements( 
-				response.data.map(element => {
-					return <Notification key={element.id} props={element} />
-				})
-			)
+			}
 		})
 	}, [])
 
 	useEffect(() => {
-		setNotificationsRead().then(response => {
-			console.log(response)
-		})
+		if (login === true) {
+			getNofications().then(response => {
+				setNotificationsElements(
+					response.data.map(element => {
+						return <Notification key={element.id} props={element} />
+					})
+				)
+			})
+		}
+	}, [login])
+
+	useEffect(() => {
+		if (login === true) {
+			setNotificationsRead().then(response => {
+				console.log(response)
+			})
+		}
 	}, [])
 
 	return (

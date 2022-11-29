@@ -3,6 +3,7 @@ import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage'
 import { setProfilePicture } from '../../services/photos';
 import { useNavigate } from 'react-router-dom';
+import {validator} from '../../services/validator'
 
 
 const ImageCropDialog = ({url}) => {
@@ -64,7 +65,13 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 
 
 const ProfilePictureUpload = () => {
-
+	const navigate = useNavigate()
+	validator().then((response) => {
+		console.log((response.data))
+		if (response.data === 'token invalid' || response.data === 'no token') {
+			navigate('/')
+		}
+	})
 	const [url, setUrl] = useState('');
 	return (
 		<div>

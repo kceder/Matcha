@@ -171,7 +171,6 @@ const UserCard = ({props}) => {
 	const navigate =useNavigate();
 	const [lastLogin, setLastLogin] = useState('');
 
-	
 	const calculateAge = (birthday) => {
 	
 		let birthDate = new Date(birthday);
@@ -199,27 +198,30 @@ const UserCard = ({props}) => {
 			}
 		})
 		const obj = { target: props.target }
-		getUser(obj).then(response => {
-			console.log('All the data:', response.data)
-			setUsername(response.data.basicInfo.username)
-			setName(response.data.basicInfo.name)
-			setLastName(response.data.basicInfo.lastName)
-			calculateAge(response.data.basicInfo.birthday)
-			setGender(response.data.basicInfo.gender)
-			setPreference(response.data.basicInfo.preference)
-			setBio(response.data.basicInfo.bio)
-			setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
-			setScore(response.data.basicInfo.score)
-			const locationTemp = response.data.locations.user_set_city ? response.data.locations.user_set_city :
-								response.data.locations.gps_city ? response.data.locations.gps_city :
-								response.data.locations.ip_city;
-			setLocation(locationTemp)
-			setLastLogin(response.data.basicInfo.registration_date)
-		});
-		getUserPhotos(obj).then(response => {
-			console.log(response.data)
-			setPictures(response.data);
-		})
+		console.log(2)
+		if (props.login === true) {
+			getUser(obj).then(response => {
+				console.log('All the data:', response.data)
+				setUsername(response.data.basicInfo.username)
+				setName(response.data.basicInfo.name)
+				setLastName(response.data.basicInfo.lastName)
+				calculateAge(response.data.basicInfo.birthday)
+				setGender(response.data.basicInfo.gender)
+				setPreference(response.data.basicInfo.preference)
+				setBio(response.data.basicInfo.bio)
+				setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
+				setScore(response.data.basicInfo.score)
+				const locationTemp = response.data.locations.user_set_city ? response.data.locations.user_set_city :
+									response.data.locations.gps_city ? response.data.locations.gps_city :
+									response.data.locations.ip_city;
+				setLocation(locationTemp)
+				setLastLogin(response.data.basicInfo.registration_date)
+			});
+			getUserPhotos(obj).then(response => {
+				console.log(response.data)
+				setPictures(response.data);
+			})
+		}
 	}, [props.target, liked])
 
 	const tags = interests ? interests.map((tag, index) => {
@@ -309,31 +311,28 @@ const UserCard = ({props}) => {
 
 export const UserPage = () => {
 
-	const props = {
-		target : useParams().id,
-	}
 	console.log('smotheng elseeeee')
 	const [login, setLogin] = useContext(LoginContext);
 	const navigate = useNavigate();
-
+	
+	const props = {
+		target : useParams().id,
+		login : login,
+	}
 	validator().then((response) => {
 		console.log((response.data))
 		if (response.data === 'token invalid' || response.data === 'no token') {
+			console.log(1)
 			navigate('/')
-		}
-		else {
+		} else {
 			setLogin(true)
+			getUser({target: 'self'}).then(response => {
+				if (response.data.id === parseInt(props.target)) {
+					navigate('/profile');
+				}
+			})
 		}
 	})
-
-	useEffect (() => {
-		getUser({target: 'self'}).then(response => {
-			if (response.data.id === parseInt(props.target)) {
-				navigate('/profile');
-			}
-		})
-	})
-
 
 	console.log('login context in pp:', login);
 	return (
