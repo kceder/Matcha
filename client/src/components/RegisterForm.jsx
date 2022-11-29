@@ -14,6 +14,7 @@ const RegisterForm = () => {
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [emailAlreadyInUse, setEmailAlreadyInUse] = useState('');
+	const [usernameAlreadyInUse, setUsernameAlreadyInUse] = useState('');
 	const navigate = useNavigate();
 
 	const handleSubmit = (event) => {
@@ -44,7 +45,10 @@ const RegisterForm = () => {
 					}, 3000);
 				}
 				if (response.status === 228) {
-					setEmailAlreadyInUse('Email already in use');
+					if (response.data === 'Username already in use')
+						setUsernameAlreadyInUse(response.data)
+					else
+						setEmailAlreadyInUse(response.data);
 				}
 			});
 		}
@@ -101,7 +105,8 @@ const RegisterForm = () => {
 					<label htmlFor='lastName'>Last Name</label><br></br>
 					<input id="lastName" className='form-control' type="text" value={lastName} onChange={(e) => handleLastNameChange(e)} /><br></br>
 					<label htmlFor='lastName'>Username</label><br></br>
-					<input id="username" className='form-control' type="text" value={username} onChange={(e) => handleUsernameChange(e)} /><br></br>
+					<input id="username" className='form-control' type="text" value={username} onChange={(e) => handleUsernameChange(e)} />
+					<small className='text-dark'>{usernameAlreadyInUse}</small><br></br>
 					<label htmlFor="email">Email</label><br></br>
 					<input id="email" className='form-control' type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 					<small className='text-dark'>{emailAlreadyInUse}</small><br></br>
