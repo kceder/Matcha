@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { createUser } from '../services/register.js'
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { validate } from 'react-email-validator'
 
 const RegisterForm = () => {
 	const [name, setName] = useState('');
@@ -18,26 +18,36 @@ const RegisterForm = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		const userObject = {
-			name,
-			lastName,
-			username,
-			email,
-			password
+		const passwordRegex = new RegExp('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,13}$')
+		if (password !== repeatPassword) {
+			setError('Passwords do not match');
+			return;
+		} else if (passwordRegex.test(password) === false) {
+			setError('Password must be between 8 and 13 characters, contain at least one uppercase letter, one lowercase letter and one number');
+		} else if (!validate(email)) {
+			setError('Invalid email');
+		} else {
+			const userObject = {
+				name,
+				lastName,
+				username,
+				email,
+				password
+			}
+			createUser(userObject).then((response) => {
+				console.log(response.status)
+				if (response.status === 201) {
+					console.log('user created');
+					setSuccess('Account created successfully, check your email to activate it and finish setting up your account');
+					setTimeout(() => {
+						navigate('/login');
+					}, 3000);
+				}
+				if (response.status === 228) {
+					setEmailAlreadyInUse('Email already in use');
+				}
+			});
 		}
-		createUser(userObject).then((response) => {
-			console.log(response.status)
-			if (response.status === 201) {
-				console.log('user created');
-				setSuccess('Account created successfully, check your email to activate it and finish setting up your account');
-				setTimeout(() => {
-					navigate('/login');
-				}, 3000);
-			}
-			if (response.status === 228) {
-				setEmailAlreadyInUse('Email already in use');
-			}
-		});
 	}
 
 	const handleChangePassword = (event) => {
