@@ -201,29 +201,24 @@ const dislikedNotification = (request, response) => {
 	});
 }
 
-const messageNotification = (request, response) => {
-	const from_name = request.sender;
+const messageNotification = (request, name, response) => {
+	const from_name = name;
 	const from_id = request.sender;
 	const to = request.receiver;
-	console.log('???????',to)
-
 	const content = `${from_name} sent you a message!`;
+	
 	console.log(content);
 
 	let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
 	db.query(sql, [from_id, to, content], (error, result) => {
 		if (error) {
 			console.log(error);
-			// response.send('error');
 		} else {
 			if (result.length === 0) {
 				sql = 'INSERT INTO notifications (`from`, `to`, content, `read`) VALUES (?, ?, ?, ?)';
 				db.query(sql, [from_id, to, content, false], (error, result) => {
 					if (error) {
 						console.log(error);
-						// response.send('error');
-					} else {
-						// response.send({to: to});
 					}
 				})
 			} else {
@@ -231,9 +226,6 @@ const messageNotification = (request, response) => {
 				db.query(sql, [result[0].id], (error, result) => {
 					if (error) {
 						console.log(error);
-						// response.send('error');
-					} else {
-						// response.send({to: to});
 					}
 				});
 			}

@@ -68,7 +68,6 @@ const sendMessage = (request, response) => {
 	const room = parseInt(request.body.room);
 	const message = request.body.body;
 	const sender = request.user.id;
-	console.log('CAMAMAM', request.body)
 	console.log('CAMAMAM', request.user)
 	const sql = "INSERT INTO messages (chatroom_id, sender, body) VALUES (?, ?, ?);"
 	db.query(sql, [room, sender, message], (error, result) => {
@@ -78,7 +77,8 @@ const sendMessage = (request, response) => {
 		} else {
 			const noti_sql = "INSERT INTO notifications (user_id, type, chatroom_id) VALUES (?, ?, ?);"
 			console.log('CAMAMAM',request)
-			messageNotification(request.body, request.user.id);
+
+			messageNotification(request.body, request.user.name);
 			response.send('ok');
 		}
 	})
