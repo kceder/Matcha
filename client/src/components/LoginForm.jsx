@@ -85,7 +85,7 @@ const LoginForm = () => {
 				if (response.data.message === "login") {
 					setLogin(true);
 					socket.emit("login");
-					Navigate('../profile')
+					Navigate('../home');
 				}
 			}}
 		)}
