@@ -49,10 +49,10 @@ const LoginStatus = ({user}) => {
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
-	console.log('message:', message);
+	// console.log('message:', message);
 	const time = new Date(message.time).getHours() + ':' + new Date(message.time).getMinutes();
 
-	console.log(time)
+	// console.log(time)
 	getUser({target: 'self'}).then(response => {
 		setUser1(response.data.id)
 
@@ -93,7 +93,7 @@ const Chat = ({props}) => {
 				})
 			}
 			setMessage((prev) => [...prev, data]);
-			console.log('socket messages:', message.body);
+			// console.log('socket messages:', message.body);
 		})
 	}, [socket])
 	if (message.length > 0) {
@@ -156,14 +156,15 @@ export const ChatRoom = () => {
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
+
 		validator().then((response) => {
 			if (response.data === 'token invalid' || response.data === 'no token') {
-				console.log('navigate')
+				// console.log('navigate')
 				setLogin(false)
 				navigate('/login')
 			}
 			else if (response.data === 'valid') {
-				console.log('else if')
+				// console.log('else if')
 				setLogin(true);
 				getUser({target: 'self'}).then(response => {
 					authorizeRoomAccess({room : room}).then(response => {
@@ -176,19 +177,19 @@ export const ChatRoom = () => {
 			}
 		}).then(() => {
 			if (login === true) {
-				console.log('.then again')
+				socket.emit('join_room', room);
+				console.log(socket)
 				getUser({target: 'self'}).then(response => {
 					setUser1(response.data.id)
 				})
 			}
-			socket.emit('join_room', room);
 		}).finally(() => {
 			getMessages({room : room}).then(response => {
-				console.log('chatroom', response.data)
+				// console.log('chatroom', response.data)
 				setMessages(response.data);
 			})
 		})
-	}, []);
+	}, [login]);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -198,7 +199,8 @@ export const ChatRoom = () => {
 			body: inputMessage,
 			sender: user1,
 			receiver: user2,
-			time: new Date()
+			time: new Date(),
+			socket : socket.id
 		}
 		await sendMessage(message).then(response => {
 			if (response.data === 'error') {
@@ -208,6 +210,8 @@ export const ChatRoom = () => {
 			setInputMessage('')
 		})
 		await socket.emit('send_message', message);
+
+
 	}
 	
 	bottomRef.current?.scrollIntoView({behavior: 'auto'});
