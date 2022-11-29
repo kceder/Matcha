@@ -23,6 +23,8 @@ const ProfileForm = () => {
 	const [lonError, setLonError] = useState('');
 	const [bio, setBio] = useState('');
 	const [bioError, setBioError] = useState('');
+	const [displayLat, setDisplayLat] = useState('');
+	const [displayLon, setDisplayLon] = useState('');
 
 
 	useEffect(() => {
@@ -122,12 +124,16 @@ const ProfileForm = () => {
 			if(latitude > 90 || latitude < -90) {
 				setLatError('Not a valid latitude');
 			}
-			else {
-				console.log(latitude)
+			else
 				setLatError('');
-			}
 		}
-		setLat(latitude)
+		if (event.target.value === '') {
+			setDisplayLat(event.target.value);
+		} else {
+			setDisplayLat(event.target.value);
+			setLat(latitude);
+		}
+		console.log('LATITUDE:', lat);
 	}
 
 	const handleLonChange = (event) => {
@@ -140,12 +146,16 @@ const ProfileForm = () => {
 			if(longitude > 180 || longitude < -180) {
 				setLonError('Not a valid longitude');
 			}
-			else {
-				console.log(longitude)
+			else
 				setLonError('');
-			}
 		}
-		setLon(longitude)
+		if (event.target.value === '') {
+			setDisplayLon(event.target.value);
+		} else {
+			setDisplayLon(event.target.value);
+			setLon(longitude)
+		}
+		console.log('LONGTUDEEE:',lon);
 	}
 
 	const handleBioChange = (event) => {
@@ -198,8 +208,8 @@ const ProfileForm = () => {
 			<Form.Group className="mb-3"  >
 				<Form.Label>Location <span className="text-danger">{latError}	{lonError}</span></Form.Label>
 				<div className="row">
-					<Form.Control type="number" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
-					<Form.Control type="number" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
+					<Form.Control type="number" min="0" className="col" placeholder="lat" value={displayLat} onChange={event => handleLatChange(event)}/>
+					<Form.Control type="number" min="0" className="col" placeholder="lon" value={displayLon} onChange={event => handleLonChange(event)}/>
 					<button className="col" onClick={() => handleLocationClick()}>lol</button>
 				</div>
 			</Form.Group>
