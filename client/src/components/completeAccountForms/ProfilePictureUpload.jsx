@@ -89,7 +89,7 @@ const ProfilePictureUpload = () => {
 			</div>
 		</div> 
 	)
-	}
+}
 
 
 export default ProfilePictureUpload;
