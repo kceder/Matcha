@@ -1,8 +1,8 @@
 
 import { useState } from "react";
 import { Nav } from "react-bootstrap";
-import DropdownMenu from "react-bootstrap/esm/DropdownMenu";
 import './style/mennu.css';
+import { motion } from "framer-motion";
 
 const Links = ({handleClick, setShowHide, showHide}) => {
 	const [hover1, setHover1] = useState(false);
@@ -33,7 +33,7 @@ const SettingsMenu = ({ handleClick }) => {
 
 	return (
 		<>
-			<div className="burger" onClick={() => dropMenu()}></div>
+			<motion.div whileHover={{ scale: 1.4}} className="burger" onClick={() => dropMenu()}></motion.div>
 			{showHide ? <Links 
 
 				handleClick={handleClick}
