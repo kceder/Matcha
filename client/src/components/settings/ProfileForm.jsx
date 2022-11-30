@@ -4,6 +4,24 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { getUser } from "../../services/users";
 import { changeUserInfo } from "../../services/settings";
+import { motion } from "framer-motion";
+
+const Updated = ({updated}) => {
+	if (updated) {
+		return (
+			<motion.div
+			initial={{ opacity: 1 }}
+			animate={{ opacity: 0 }}
+			transition={{ duration: 2.5 }}
+			style={{ fontSize : '2rem', textAlign : 'center'}}>{updated}
+			</motion.div>
+		)
+	} else {
+		return (
+			<div></div>
+		)
+	}
+}
 
 const ProfileForm = () => {
 
@@ -23,9 +41,7 @@ const ProfileForm = () => {
 	const [lonError, setLonError] = useState('');
 	const [bio, setBio] = useState('');
 	const [bioError, setBioError] = useState('');
-	const [displayLat, setDisplayLat] = useState('');
-	const [displayLon, setDisplayLon] = useState('');
-	const [locations, setLocations] = useState([]);
+	const [updated, setUpdated] = useState('');
 
 
 	useEffect(() => {
@@ -38,7 +54,6 @@ const ProfileForm = () => {
 			setGender(response.data.basicInfo.gender)
 			setPreference(response.data.basicInfo.preference)
 			setBio(response.data.basicInfo.bio)
-			setLocations(response.data.locations)
 
 			console.log(response.data.locations)
 			console.log(response.data.locations.user_set_location);
@@ -56,8 +71,6 @@ const ProfileForm = () => {
 				setLat(response.data.locations.ip_location.y)
 				setLon(response.data.locations.ip_location.x)
 			}
-			console.log(lat,'lat and ' , lon, 'lon')
-			console.log('WHOLE DATA: ', response.data);
 		})
 	}, [])
 
@@ -185,6 +198,7 @@ const ProfileForm = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		setUpdated('Profile updated');
 		const userObject = {
 			username,
 			name,
@@ -203,6 +217,7 @@ const ProfileForm = () => {
 	return (
 		<>
 			<div className="container" style={{ maxWidth : '25rem' }}>
+			<Updated updated={updated}/>
 			<Form.Group className="mb-3"  >
 				<Form.Label className="text-secondary">Username <span className="text-danger">{usernameError}</span></Form.Label>
 				<Form.Control placeholder="Username" value={username} onChange={event => handleUsernameChange (event)}/>
@@ -221,7 +236,7 @@ const ProfileForm = () => {
 			</Form.Group>
 			<Form.Group className="mb-3"  >
 				<Form.Label className="text-secondary" >Location <span className="text-danger">{latError}	{lonError}</span></Form.Label>
-				<div className="row">
+				<div className="d-flex">
 					<Form.Control type="number" min="0" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
 					<Form.Control type="number" min="0" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
 					<Button className="col" style={{width : '90%'}} variant="secondary" onClick={() => handleLocationClick()}>GPS</Button>
