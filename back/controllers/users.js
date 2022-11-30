@@ -60,6 +60,81 @@ const getUser = (request, response) => {
 				})
 }
 
+const register = (request, response) => {
+
+	const name = request.body.name;
+	const lastName = request.body.lastName;
+	const email = request.body.email;
+	const password = request.body.password;
+	const username = request.body.username;
+	const sqlEmailCheck = 'SELECT * FROM users WHERE email = ?';
+	db.query(sqlEmailCheck, [email],
+		function (error, result) {
+			if (error) {
+				console.log(error)
+			}
+			if (result.length > 0) {
+				console.log(result);
+				response.status(228).send('Email already in use');
+			} else {
+				const sqlUsernameCheck = 'SELECT * FROM users WHERE username = ?';
+				db.query(sqlUsernameCheck, [username], function (error, result) {
+					if (error) {
+						console.log(error);
+						response.send('error');
+					} else if (result.length > 0) {
+						response.status(228).send('Username already in use');
+					} else {
+						const hash = bcrypt.hashSync(password, 10);
+						const activationToken = bcrypt.hashSync(email, 10).replace(/\//g,'_').replace(/\+/g,'-');;
+						const sql = `INSERT INTO users \
+						(name, lastName, username, email, password, activation_token) \
+						VALUES \
+						(?, ?, ?, ?, ?, ?)`;
+						db.query(sql,[ name, lastName, username, email, hash, activationToken ], 
+							function (error, results) {
+								if (error) {
+									console.log(error);
+								};
+							}
+						);
+						const infoForEmail = {
+							email,
+							activationToken
+						}
+						sendMail(infoForEmail);
+						const getUserId = 'SELECT id FROM users WHERE email = ?'
+						db.query(getUserId, [infoForEmail.email], function (error, result) {
+							if (error) {
+								console.log(error)
+							}
+							else {
+								const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)"
+								db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
+									if (error) {
+										console.log(error)
+									}
+								})
+								const initialize_stats_tab = "INSERT INTO stats (user_id) VALUES (?)"
+								db.query(initialize_stats_tab, [result[0].id], function (error, result) {
+									if (error) {
+										console.log(error)
+									}
+								})
+							}
+						})
+						response.status(201).json({
+							name: name,
+							email: email,
+							password: password,
+						});
+					}
+				})
+				
+			}
+		})
+}
+
 const login = (request, response) => {
 	const sql = 'SELECT * FROM users WHERE email = ? OR username = ?';
 	const user = request.body.user;
