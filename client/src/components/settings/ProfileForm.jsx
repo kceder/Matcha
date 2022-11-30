@@ -25,6 +25,7 @@ const ProfileForm = () => {
 	const [bioError, setBioError] = useState('');
 	const [displayLat, setDisplayLat] = useState('');
 	const [displayLon, setDisplayLon] = useState('');
+	const [locations, setLocations] = useState([]);
 
 
 	useEffect(() => {
@@ -37,8 +38,26 @@ const ProfileForm = () => {
 			setGender(response.data.basicInfo.gender)
 			setPreference(response.data.basicInfo.preference)
 			setBio(response.data.basicInfo.bio)
+			setLocations(response.data.locations)
 
-			console.log(response.data);
+			console.log(response.data.locations)
+			console.log(response.data.locations.user_set_location);
+			console.log(response.data.locations.ip_location);
+			console.log(response.data.locations.gps_location);
+			if (response.data.locations.user_set_location !== null) {
+				setLat(response.data.locations.user_set_location.y)
+				setLon(response.data.locations.user_set_location.x)
+			}
+			else if (response.data.locations.gps_location !== null) {
+				setLat(response.data.locations.gps_location.y)
+				setLon(response.data.locations.gps_location.x)
+			}
+			else {
+				setLat(response.data.locations.ip_location.y)
+				setLon(response.data.locations.ip_location.x)
+			}
+			console.log(lat,'lat and ' , lon, 'lon')
+			console.log('WHOLE DATA: ', response.data);
 		})
 	}, [])
 
@@ -127,13 +146,10 @@ const ProfileForm = () => {
 			else
 				setLatError('');
 		}
-		if (event.target.value === '') {
-			setDisplayLat(event.target.value);
-		} else {
-			setDisplayLat(event.target.value);
+		if (event.target.value === '')
+			setLat(event.target.value);
+		else
 			setLat(latitude);
-		}
-		console.log('LATITUDE:', lat);
 	}
 
 	const handleLonChange = (event) => {
@@ -149,13 +165,10 @@ const ProfileForm = () => {
 			else
 				setLonError('');
 		}
-		if (event.target.value === '') {
-			setDisplayLon(event.target.value);
-		} else {
-			setDisplayLon(event.target.value);
-			setLon(longitude)
-		}
-		console.log('LONGTUDEEE:',lon);
+		if (event.target.value === '')
+			setLon(event.target.value);
+		else
+			setLon(longitude);
 	}
 
 	const handleBioChange = (event) => {
@@ -189,53 +202,55 @@ const ProfileForm = () => {
 
 	return (
 		<>
+			<div className="container" style={{ maxWidth : '25rem' }}>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Username <span className="text-danger">{usernameError}</span></Form.Label>
+				<Form.Label className="text-secondary">Username <span className="text-danger">{usernameError}</span></Form.Label>
 				<Form.Control placeholder="Username" value={username} onChange={event => handleUsernameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Name <span className="text-danger">{nameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Name <span className="text-danger">{nameError}</span></Form.Label>
 				<Form.Control placeholder="Name" value={name} onChange={event => handleNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Last Name <span className="text-danger">{lastNameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Last Name <span className="text-danger">{lastNameError}</span></Form.Label>
 				<Form.Control placeholder="Last Name" value={lastName} onChange={event => handleLastNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Email <span className="text-danger">{emailError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Email <span className="text-danger">{emailError}</span> </Form.Label>
 				<Form.Control placeholder="Email" value={email} onChange={event => handleEmailChange(event)} />
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Location <span className="text-danger">{latError}	{lonError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Location <span className="text-danger">{latError}	{lonError}</span></Form.Label>
 				<div className="row">
-					<Form.Control type="number" min="0" className="col" placeholder="lat" value={displayLat} onChange={event => handleLatChange(event)}/>
-					<Form.Control type="number" min="0" className="col" placeholder="lon" value={displayLon} onChange={event => handleLonChange(event)}/>
-					<button className="col" onClick={() => handleLocationClick()}>lol</button>
+					<Form.Control type="number" min="0" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
+					<Form.Control type="number" min="0" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
+					<Button className="col" style={{width : '90%'}} variant="secondary" onClick={() => handleLocationClick()}>GPS</Button>
 				</div>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label>Bio  <span className="text-danger">{bioError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Bio  <span className="text-danger">{bioError}</span> </Form.Label>
 				<Form.Control as="textarea" rows="3" placeholder="Bio" maxLength={500} value={bio} onChange={event => handleBioChange(event)} />
 				<small className='align-self-end'>{bio.length}/500</small>
 			</Form.Group>
 			<Form.Group className="mb-3">
-				<Form.Label>Gender</Form.Label>
+				<Form.Label className="text-secondary" >Gender</Form.Label>
 				<Form.Select value={gender} onChange={(event => handleGenderChange(event))}>
 					<option value={'female'} >Female</option>
 					<option value={'male'} >Male</option>
 				</Form.Select>
 			</Form.Group>
 			<Form.Group className="mb-3">
-				<Form.Label>Preference</Form.Label>
+				<Form.Label className="text-secondary" >Preference</Form.Label>
 				<Form.Select value={preference} onChange={event => setPreference(event.target.value)}>
 					<option value={'heterosexual'} >Heterosual</option>
 					<option value={'homosexual'}>Homosexual</option>
 					<option value={'bisexual'}>Bisexual</option>
 				</Form.Select>
 			</Form.Group>
-			<Button variant="primary" type="submit" onClick={(event) => handleSubmit(event)}>
+			<Button variant="secondary" type="submit" onClick={(event) => handleSubmit(event)}>
 				Submit
 			</Button>
+			</div>
 		</>
 	)
 }
