@@ -80,11 +80,19 @@ const ProfilePictureUpload = () => {
 		}
 	})
 	const [url, setUrl] = useState('');
+
+	const handleFileChange = (event) => {
+		if (event.target.files[0]) {
+			if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") 
+				setUrl(URL.createObjectURL(event.target.files[0]));
+			else
+				alert("file must be a picture")
+			}
+		}
 	return (
 		<div>
 			<div className='container'>
-					
-					<input type="file" className="form-control mt-5" id="customFile" onChange={(event)=>setUrl(URL.createObjectURL(event.target.files[0]))}/>
+				<input type="file" className="form-control mt-5" accept=".jpg, .jpeg, .png" id="customFile" onChange={(event)=>handleFileChange(event)}/>
 				{url ? <> <ImageCropDialog url={url}/></> : null}
 			</div>
 		</div> 

@@ -38,7 +38,7 @@ const ImageCropDialog = ({i, url, setData, picture, setReloadGallery, reloadGall
 		} else {
 			const obj = { base64 : croppedImageUrl, old : picture };
 			addPicture(obj).then(response => {
-				console.log(response.data)
+				// console.log(response.data)
 				if (response.data === 'file too big') {
 					alert('file too big!');
 				} else if (response.data === "good") {
@@ -62,10 +62,8 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 					onCropChange={onCropChange}
 					onCropComplete={onCropComplete}
 					onZoomChange={onZoomChange} />
-				<div className='controls' style={{position:"fixed", bottom:"0px"}}>
-					<div className='button-area'>
-						<button onClick={onSubmit}>Save</button>
-					</div>
+				<div className='controls d-flex' style={{position:"absolute", bottom: '5%'}} >
+						<button  style={{width: '300px'}} class="btn btn-dark" onClick={onSubmit}>Save</button>
 				</div>
 				</div>
 			</div>)
@@ -86,7 +84,11 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 	}
 	const handleChangePicture = (event)	=> {
 		console.log(event.target.files[0])
-		setData(URL.createObjectURL(event.target.files[0]));
+		// check if file is a picture //
+		if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") 
+			setData(URL.createObjectURL(event.target.files[0]));
+		else
+			alert("file must be a picture")
 	}
 
 	if ( picture !== "empty") {
@@ -95,7 +97,9 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 				<Col>
 					<button>
 							<Image onClick={() => handleClick()} src={picture} width="300" thumbnail />
-							<input hidden ref={ref} type="file" accept=".jpg, .jpeg, .png" onChange={(event) => handleChangePicture(event)}></input>
+							<input hidden ref={ref} type="file" 
+							accept=".jpg, .jpeg, .png"
+							onChange={(event) => handleChangePicture(event)}></input>
 							{data ? <ImageCropDialog i={i} url={data} setData={setData} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery} picture={picture} /> : null}
 					</button>
 				</Col>
@@ -141,14 +145,6 @@ const AddPhotos = () => {
 				<Container className="d-flex flex-column align-items-center">
 				{pictures.map((pic, i) => <ImagePreview key={i} i={i} picture={pic} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery}/>)}
 				</Container>
-				<div>
-					<input
-						type="file"
-						onChange={(event) => {
-							console.log(event.target.files[0]);
-						}}
-					/>
-				</div>
 			</div>
 		)
 }
