@@ -48,7 +48,9 @@ const getUser = (request, response) => {
 						let userInfo = { 'basicInfo': result[0], id : target };
 						const sql = "SELECT * FROM locations WHERE user_id = ?";
 						db.query(sql, [target], function (error, result) {
-							if (error) throw error;
+							if (error) {
+								console.log(error)
+							}
 							else {
 								userInfo.locations = result[0];
 								response.send(userInfo);
@@ -58,71 +60,22 @@ const getUser = (request, response) => {
 				})
 }
 
-const register = (request, response) => {
-
-	const name = request.body.name;
-	const lastName = request.body.lastName;
-	const email = request.body.email;
-	const password = request.body.password;
-	const sqlEmailCheck = 'SELECT * FROM users WHERE email = ?';
-	db.query(sqlEmailCheck, [email],
-		function (error, result) {
-			if (error) throw error;
-			if (result.length > 0) {
-				response.status(228).send('Email already in use');
-			} else {
-				const hash = bcrypt.hashSync(password, 10);
-				const activationToken = bcrypt.hashSync(email, 10).replace(/\//g,'_').replace(/\+/g,'-');;
-				const sql = `INSERT INTO users \
-				(name, lastName, email, password, activation_token) \
-				VALUES \
-				(?, ?, ?, ?, ?)`;
-				db.query(sql,[ name, lastName, email, hash, activationToken ], 
-					function (error, results) {
-						if (error) throw error;
-					}
-				);
-				const infoForEmail = {
-					email,
-					activationToken
-				}
-				sendMail(infoForEmail);
-				const getUserId = 'SELECT id FROM users WHERE email = ?'
-				db.query(getUserId, [infoForEmail.email], function (error, result) {
-					if (error) throw error;
-					else {
-						const initialize_locaion_tab = "INSERT INTO locations (user_id) VALUES (?)"
-						db.query(initialize_locaion_tab, [result[0].id], function (error, result) {
-							if (error) throw error;
-						})
-						const initialize_stats_tab = "INSERT INTO stats (user_id) VALUES (?)"
-						db.query(initialize_stats_tab, [result[0].id], function (error, result) {
-							if (error) throw error;
-						})
-					}
-				})
-				response.status(201).json({
-					name: name,
-					email: email,
-					password: password,
-				})
-			}
-		})
-}
-
 const login = (request, response) => {
 	const sql = 'SELECT * FROM users WHERE email = ? OR username = ?';
 	const user = request.body.user;
+	console.log(request.body)
 
 	const password = request.body.password;
 	db.query(sql, [user, user],
 		function (error, result) {
-			
-			if (error) throw error;
+			console.log(result)
+			if (error) {
+				console.log(error)
+			}
 			if (result.length > 0) {
 				bcrypt.compare(password,  result[0].password, function(err, compare) {
 					if (err) throw err
-					// console.log('59', compare)
+					console.log('59', compare)
 					if (compare == true) {
 						const user = { 
 							name : `${result[0].name} ${result[0].lastName}` , 
@@ -132,17 +85,19 @@ const login = (request, response) => {
 						if(result[0].acti_stat === 1) {
 							// console.log('acti_1')
 							response.status(202).cookie('token', accessToken,
-							{ 
-								path: '/',
-								httpOnly: true
-							}).send('fill profile');
+								{ 
+									path: '/',
+									httpOnly: true
+								}).send('fill profile');
 						} else if (result[0].acti_stat === 0){
 							// console.log('acti_0')
 							response.send('account not verified');
-						} else if (result[0].acti_stat === 2) {
+						} else if (result[0].acti_stat === 2 || result[0].acti_stat === 3) {
 							const logUser = "Insert into loggedInUsers (user_id) values (?)";
 							db.query(logUser, [user.id] ,function (error, result) {
-								if (error) throw error;
+								if (error) {
+									console.log(error)
+								}
 								response.status(202).cookie('token', accessToken,
 								{ 
 									path: '/',
@@ -172,12 +127,16 @@ const activateUser = (request, response) => {
 	const token = request.body.token;
 	// console.log(request.body)
 	db.query(sql, [token], function(error, result) {
-		if (error) throw error;
+		if (error) {
+			console.log(error)
+		}
 		if (result.length > 0) {
 			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
 			db.query(sql, [result[0].id], function (error, result) {
 				// console.log('result ---->', result)
-				if (error) throw error;
+				if (error) {
+					console.log(error)
+				}
 				response.status(202).send('user activated :)');
 			});
 			// console.log(result[0].id)
@@ -206,9 +165,7 @@ const completeAccount = (request, response) => {
 
 	const getAge = birthday => Math.floor((new Date() - new Date(birthday).getTime()) / 3.15576e+10);
 
-	if (username.length > 15) {
-		response.send('username too long');
-	}	else if	(gender !== 'male' && gender !== 'female') {
+	if	(gender !== 'male' && gender !== 'female') {
 		response.send('invalid gender');
 	}	else if	(bio.length > 500) {
 		response.send('bio too long');
@@ -227,16 +184,18 @@ const completeAccount = (request, response) => {
 
 		const myJSON = JSON.stringify(interests);
 
-		const sql = "UPDATE users SET username = ?, gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
+		const sql = "UPDATE users SET gender = ?, bio = ?, birthday = ?, preference = ?, interests = ?, acti_stat = ? WHERE id = ?;";
 
-		db.query(sql, [username, gender, bio, birthday, preference, myJSON, 2, userId],
+		db.query(sql, [ gender, bio, birthday, preference, myJSON, 2, userId],
 		function (error, result) {
 			if (error) 
 				console.log(error);
 			else {
 				const getTags = "SELECT tag FROM tags";
 				db.query(getTags, function (error, result) {
-					if (error) throw error;
+					if (error) {
+						console.log(error)
+					}
 					else  {
 						const newTags = interests.filter((interest) => !result.map((tag) => tag.tag).includes(interest));
 						newTags.forEach((tag) => {
@@ -315,7 +274,9 @@ const filterUsers = (request, response) => {
 	let blockedUsers = [];
 	sql = `SELECT * FROM matches WHERE user1 = ${user.id}`;
 	db.query(sql, function (error, result) {
-		if (error) throw error;
+		if (error) {
+			console.log(error)
+		}
 		else {
 			blockedUsers = result.map((match) => {
 				return match.user1 === user.id ? match.user2 : match.user1;
@@ -338,7 +299,9 @@ const filterUsers = (request, response) => {
 	}
 	db.query(sql, [user.id], function (error, result) {
 		console.log('blocked list !!!!', blockedUsers);
-		if (error) throw error;
+		if (error) {
+			console.log(error)
+		}
 		else {
 			let array = [];
 			result = result.filter(result => {
@@ -411,6 +374,19 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 	return d;
 }
 
+const checkActiStat = (request, response) => {
+	const user = request.user.id;
+	const sql = `SELECT acti_stat FROM users WHERE id = ?`;
+	db.query(sql, [user], function (error, result) {
+		if (error) {
+			console.log(error)
+		}
+		else {
+			response.send(result[0]);
+		}
+	})
+}
+
 module.exports = {
 	getUser,
 	register,
@@ -422,4 +398,5 @@ module.exports = {
 	filterUsers,
 	getLoggedInUsers,
 	logOut,
+	checkActiStat
 }

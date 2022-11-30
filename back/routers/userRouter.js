@@ -35,6 +35,7 @@ userRouter.route('/api/users/complete-account').post(tokenValidator, userControl
 // userRouter.route('/api/users/complete-account/pictures').post(upload.single('image'), userController.addPhotos);
 userRouter.route('/api/users/complete-account/pictures').post(tokenValidator, upload.array('images', 5), userController.addPhotos);
 userRouter.route('/api/users/filter').post(tokenValidator ,userController.filterUsers);
+userRouter.route('/api/users/check-acti-stat').post(tokenValidator ,userController.checkActiStat);
 
 userRouter.route('/api/users').get(userController.getAllUsers);
 userRouter.route('/api/users/getLoggedInUsers').post(tokenValidator, userController.getLoggedInUsers);

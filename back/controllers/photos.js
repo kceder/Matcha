@@ -43,7 +43,7 @@ const setProfilePicture = (request, response) => {
 					console.log(error)
 					response.send('error: setProfilePicture')
 				} else {
-					const sql = "UPDATE users SET score = 20 WHERE id = ?";
+					const sql = "UPDATE users SET score = 20, acti_stat = 3 WHERE id = ?";
 					db.query(sql, [request.user.id], (error, result) => {
 						if (error) {
 							console.log(error)

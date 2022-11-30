@@ -2615,7 +2615,7 @@ con.connect((err) => {
 			console.log(err);
 		} else if (result.length === 0) {
 
-			while (i < 1000) {
+			while (i < 500) {
 				process.stdout.clearLine();
 				process.stdout.cursorTo(0);
 				process.stdout.write('users generated ' + i);
@@ -2661,7 +2661,7 @@ con.connect((err) => {
 				const score = Math.floor(Math.random() * (50 - 10 + 1) + 10);
 
 				const insertUsers = `INSERT INTO users (name, lastName, username, email, password, gender, bio, birthday, preference, acti_stat, interests, score)
-									VALUES ('${profile.firstName}', '${profile.lastName}', '${profile.username}', '${profile.email}', '${profile.password}', '${profile.gender}', '${profile.bio}', '${profile.birthday}', '${profile.preferences}', 2, '${myJSON}', ${score});`;
+									VALUES ('${profile.firstName}', '${profile.lastName}', '${profile.username}', '${profile.email}', '${profile.password}', '${profile.gender}', '${profile.bio}', '${profile.birthday}', '${profile.preferences}', 3, '${myJSON}', ${score});`;
 				insertUsersArray.push(insertUsers);
 			
 				const insertPictures = `INSERT INTO user_pictures (user_id, pic_1, pic_2) VALUES (${i}, '${profile.profilePicture}', '${profile.picture}');`;
