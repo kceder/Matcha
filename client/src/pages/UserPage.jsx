@@ -164,7 +164,7 @@ const UserCard = ({props}) => {
 	const [interests, setinterests] = useState();
 	const [score, setScore] = useState();
 	const [userTags, setUserTags] = useState([]);
-	const socket = useContext(SocketContext);
+
 	const [matched, setMatched] = useState(false);
 	const [liked, setLiked] = useState(false);
 	const [blocked, setBlocked] = useState(false);
@@ -319,34 +319,37 @@ export const UserPage = () => {
 		target : useParams().id,
 		login : login,
 	}
-	validator().then((response) => {
-		console.log((response.data))
-		if (response.data === 'token invalid' || response.data === 'no token') {
-			console.log(1)
-			navigate('/')
-		} else {
-			setLogin(true)
-			getUser({target: 'self'}).then(response => {
-				if (response.data.id === parseInt(props.target)) {
-					navigate('/profile');
-				}
-			})
-		}
-	})
-
-	console.log('login context in pp:', login);
-	return (
-			<Container id="nav-plus-form" className="p-0">
-				<div className="row row justify-content-center ">
-				</div>
-				<div style={{
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					flexDirection: 'column',
-				}}>
-					<UserCard props={props} />
-				</div>
-			</ Container>
-	);
+	useEffect(() => {
+		validator().then((response) => {
+			console.log((response.data))
+			if (response.data === 'token invalid' || response.data === 'no token') {
+				setLogin(false)
+				navigate('/')
+			} else {
+				setLogin(true)
+				getUser({target: 'self'}).then(response => {
+					if (response.data.id === parseInt(props.target)) {
+						navigate('/profile');
+					}
+				})
+			}
+			console.log('login context in pp:', login);
+		})
+	}, [login])
+	if (login === true) {
+		return (
+				<Container id="nav-plus-form" className="p-0">
+					<div className="row row justify-content-center ">
+					</div>
+					<div style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						flexDirection: 'column',
+					}}>
+						<UserCard props={props} />
+					</div>
+				</ Container>
+		);
+	}
 };

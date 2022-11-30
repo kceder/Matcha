@@ -32,7 +32,7 @@ const LoginStatus = ({user}) => {
 					setLogin(false)
 			}
 		})
-	}, [])
+	}, [login])
 	useEffect(() => {
 		socket.on("logged", (data) => {
 			if (data.includes(user))
