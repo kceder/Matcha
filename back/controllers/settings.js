@@ -90,10 +90,7 @@ const changePassword = (request,  response) => {
 
 const changeUserInfo = (request, response) => {
 
-
-	console.log(request.body);
-	console.log(request.user);
-
+	const id = request.user.id;
 	const username  = request.body.username;
 	const name  = request.body.name;
 	const lastName  = request.body.lastName;
@@ -144,42 +141,61 @@ const changeUserInfo = (request, response) => {
 	}	else if ( validateLocation(location.lat, location.lon) === false) { 
 		response.send('invalid coordinates');
 	} else {
-		const updateUser = "UPDATE users SET \
-		name = ?, lastName = ?, username = ?, email = ?, gender = ?, bio = ?, preference = ? WHERE id = ?"
-		const updateLocation = "UPDATE locations SET user_set_location = POINT(?, ?) WHERE user_id = ?;";
-
-		
-		
-		
-		db.query(updateUser, [name, lastName, username, email, gender, bio, preference, userId], (error, result) => {
-			if (error) throw error;
-			else {
-				db.query(updateLocation, [ location.lon, location.lat, userId], function (error, result) {
-					if (error) throw error;
-					else {
-						// console.log(result);
-					}
-				})
-				// console.log(result);
+		console.log(1)
+		const checkIfEmailExists = "SELECT * FROM users WHERE email = ?;";
+		db.query(checkIfEmailExists, [email, id], function (error, result) {
+			console.log(1)
+			if (error) {
+				console.log('error: ', error);
+				response.send('error')
+			} else {
+				console.log(2)
+				console.log(result)
+				if (result.length > 0 && result[0].id !== id) {
+					console.log(result)
+					console.log(result[0].id, id);
+					response.send('email exists');
+				} else {
+					console.log(3)
+					// foksandidwe05
+					const checkIfUsernameExists = "SELECT username FROM users WHERE username = ?;";
+					db.query(checkIfUsernameExists, [username, id], function (error, result) {
+						if (error) {
+							console.log('error: ', error);
+							response.send('error')
+						} else {
+							console.log(result[0].id,id)
+							if (result.length > 0 && result[0].id !== id) {
+								response.send('username exists');
+							} else {
+								console.log(5)
+								const updateUser = "UPDATE users SET name = ?, lastName = ?, username = ?, email = ?, gender = ?, bio = ?, preference = ? WHERE id = ?"
+								db.query(updateUser, [name, lastName, username, email, gender, bio, preference, userId], (error, result) => {
+									if (error) {
+										console.log(error);
+										response.send('error');
+									} else {
+										console.log(6)
+										const updateLocation = "UPDATE locations SET user_set_location = POINT(?, ?) WHERE user_id = ?;";
+										db.query(updateLocation, [ location.lon, location.lat, userId], function (error, result) {
+											if (error) {
+												console.log(error);
+												response.send('error');
+											} else {
+												console.log('success');
+												response.send('OK')
+											}
+										})
+									}
+								})
+							}
+						}
+					});
+				}
 			}
 		})
-		response.send('lol');
 	}
-	
-
 }
-
-// {
-// 	username: 'gdjkskgkjfes',
-// 	name: 'Amedeo',
-// 	lastName: 'Majer',
-// 	email: 'amajer69@proton.me',
-// 	location: { lat: 0.43, lon: 0 },
-// 	bio: 'efasdfdxgrefad',
-// 	gender: 'male',
-// 	preference: 'bisexual'
-//   }
-//   { name: 'Amedeo Majer', id: 1, iat: 1666091580 }
 
 module.exports = {
 	changePassword,

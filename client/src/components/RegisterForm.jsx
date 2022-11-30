@@ -103,7 +103,7 @@ const RegisterForm = () => {
 	const handleUsernameChange = (event) => {
 		// regex for letters and numbers between 1 and 20 characters// 
 		const regex = new RegExp('^[a-zA-Z0-9]{1,50}$');
-		if (regex.test(event.target.value) === true || event.target.value === '') 
+		if (regex.test(event.target.value) === true || event.target.value === '')
 			setUsername(event.target.value);
 	}
 

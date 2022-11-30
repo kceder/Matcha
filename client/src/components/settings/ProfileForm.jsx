@@ -76,17 +76,21 @@ const ProfileForm = () => {
 
 	const handleUsernameChange = (event) => {
 		var re = new RegExp(/^[A-Za-z0-9]*$/);
-
-		if (event.target.value.length < 3) {
-			setUsernameError('Username is too short');
-		} else if (event.target.value.length > 15) {
-			setUsernameError('Username is too long');
-		} else if(re.test(event.target.value) === false) {
-			setUsernameError('Only letter and numbers are allowed!')
-		} else {
-			setUsernameError('');
+		const regex = new RegExp('^[a-zA-Z0-9]{0,50}$');
+		if (regex.test(event.target.value) === true) {
+			if (event.target.value.length < 6) {
+				setUsernameError('Username is too short')
+			} else if (event.target.value.length > 15) {
+				setUsernameError('Username is too long');
+				setUsernameError('');
+			} else if(re.test(event.target.value) === false) {
+				setUsernameError('Only letter and numbers are allowed!')
+			} else {
+				setUsernameError('');
+			}
+			setUsername(event.target.value);
 		}
-		setUsername(event.target.value);
+		
 	}
 
 	const handleNameChange = (event) => {
@@ -94,12 +98,15 @@ const ProfileForm = () => {
 
 		if (event.target.value.length > 20) {
 			setNameError('Name is too long');
+		} else if(re.test(event.target.value) === true) {
+			setName(event.target.value);
+			setNameError('');
 		} else if(re.test(event.target.value) === false) {
-			setNameError('Only letters allowed!')
+			setNameError('Only letters are allowed!')
 		} else {
 			setNameError('');
 		}
-		setName(event.target.value);
+		
 	}
 
 	const handleLastNameChange = (event) => {
@@ -107,12 +114,15 @@ const ProfileForm = () => {
 
 		if (event.target.value.length > 20) {
 			setLastNameError('Last Name is too long');
+		} else if(re.test(event.target.value) === true) {
+			setLastName(event.target.value);
+			setLastNameError('');
 		} else if(re.test(event.target.value) === false) {
-			setLastNameError('Only letters allowed!')
+			setLastNameError('Only letters are allowed!')
 		} else {
 			setLastNameError('');
 		}
-		setLastName(event.target.value);
+		
 	}
 
 	const handleEmailChange = (event) => {
@@ -198,20 +208,27 @@ const ProfileForm = () => {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		setUpdated('Profile updated');
-		const userObject = {
-			username,
-			name,
-			lastName,
-			email,
-			"location" : {lat, lon},
-			bio,
-			gender,
-			preference
+		if (usernameError === '' && nameError === '' && lastNameError === '' && emailError === '' && latError === '' && lonError === '' && bioError === ''){
+			if (username !== '' && name !== '' && lastName !== '' && email !== '' && lat !== '' && lon !== '' && bio !== ''){
+				setUpdated('Profile updated');
+				const userObject = {
+					username,
+					name,
+					lastName,
+					email,
+					"location" : {lat, lon},
+					bio,
+					gender,
+					preference
+				}
+				changeUserInfo(userObject).then(response => {
+					console.log(response)
+					if (response.data === 'invalid email') {
+						setEmailError('Invalid email');
+					}
+				})
+			}
 		}
-		changeUserInfo(userObject).then(response => {
-			console.log(response)
-		})
 	}
 
 	return (
