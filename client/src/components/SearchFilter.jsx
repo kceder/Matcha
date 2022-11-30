@@ -35,8 +35,8 @@ const SearchForm = ({states, dropMenu}) => {
 		states.setMaxAge(e.maxValue);
 	};
 	return (
-		<div>
-			<form >
+		<div style={{width : '95%', maxWidth : '500px'}}>
+			<form>
 				<label>Age </label> <small> {states.minAge} - {states.maxAge}</small>
 				<MultiRangeSlider
 					min={18}
@@ -58,7 +58,7 @@ const SearchForm = ({states, dropMenu}) => {
 				<label>Tags</label>
 				<TagsSelector setInterests={states.setTags} interests={states.tags} tags={states.allTags}/>
 				<div className="d-flex justify-content-between align-items-center">
-					<StarInput chosenStars={states.stars} setChosenStars={states.setStars}/>
+					<div><small>Minimum rating</small><StarInput chosenStars={states.stars} setChosenStars={states.setStars}/></div>
 					<Button variant="outline-dark" type="submit" onClick={(event) => handleSubmit(event)}>Filter</Button>
 				</div>
 			</form>

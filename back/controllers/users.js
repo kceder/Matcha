@@ -347,7 +347,7 @@ const filterUsers = (request, response) => {
 	const rating = request.body.rating;
 	let sql;
 	let blockedUsers = [];
-	sql = `SELECT * FROM matches WHERE user1 = ${user.id}`;
+	sql = `SELECT * FROM matches WHERE user1 = ${user.id} || user2 = ${user.id}`;
 	db.query(sql, function (error, result) {
 		if (error) {
 			console.log(error)
