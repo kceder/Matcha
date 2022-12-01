@@ -17,6 +17,9 @@ import { fetchMatch } from "../services/match";
 import { Col, Row, Card } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { updateViewStats, updateLikeStats } from "../services/stats";
+import { unlike } from "../services/match";
+import {liked} from "../services/notifications"
+import {disliked} from "../services/notifications"
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -164,9 +167,9 @@ const UserCard = ({props}) => {
 	const [interests, setinterests] = useState();
 	const [score, setScore] = useState();
 	const [userTags, setUserTags] = useState([]);
-
+	const socket = useContext(SocketContext);
 	const [matched, setMatched] = useState(false);
-	const [liked, setLiked] = useState(false);
+	const [userliked, setUserLiked] = useState(false);
 	const [blocked, setBlocked] = useState(false);
 	const navigate =useNavigate();
 	const [lastLogin, setLastLogin] = useState('');
@@ -194,10 +197,10 @@ const UserCard = ({props}) => {
 				navigate('/home')
 			}
 			else if (response.data === 'no show') {
-				setLiked(true);
+				setUserLiked(true);
 			}
 			else if (response.data === 'match') {
-				setLiked(true);
+				setUserLiked(true);
 				setMatched(true);
 			}
 		})
@@ -226,7 +229,7 @@ const UserCard = ({props}) => {
 				setPictures(response.data);
 			})
 		}
-	}, [props.target, liked])
+	}, [props.target, userliked])
 
 	const tags = interests ? interests.map((tag, index) => {
 		if (userTags.includes(tag)) {
@@ -241,27 +244,48 @@ const UserCard = ({props}) => {
 			updateLikeStats({target : target}).then(response => {
 				console.log(response.data)
 			})
+
+			const obj = {target : parseInt(target), username : `${name} ${lastName}`}
+			liked(obj).then(response => {
+				console.log('RESPONSE', response.data)
+				console.log('RESPONSE from ID:', response.data.from_id)
+				socket.emit('notification', response.data);
+			})
 			console.log(response)
-			setLiked(true)
+			setUserLiked(true)
 		})
 	}
 	const handleDislike = () => {
 		likeDislike({target : target, like : false}).then(response => {
+			const obj = {target : target}
+			disliked(obj).then(response => {
+				console.log(response.data)
+				socket.emit('notification', response.data);
+			})
 			console.log(response)
-			setLiked(true)
+			setUserLiked(true)
 		})
 	}
 	const handleReportBlock = (value) => {
-		console.log(value)
+		console.log('value:', value)
 		if (value === 1) {
 			likeDislike({target : target, like : false, report : 'report'}).then(response => {
-				setLiked(true)
+				setUserLiked(true)
 				window.location.reload();
 			})
 		} else if (value === 2) {
+			console.log('VALUE 2')
 			likeDislike({target : target, like : false}).then(response => {
-				setLiked(true)
+				setUserLiked(true)
 				window.location.reload();
+			})
+		}
+		else if (value === 3) {
+			unlike({target : target, like : false, unlike : 'unlike'}).then(response => {
+				console.log(response.data)
+				socket.emit('notification', response.data);
+				setUserLiked(false)
+				// window.location.reload();
 			})
 		}
 	}
@@ -294,20 +318,19 @@ const UserCard = ({props}) => {
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">
-								{liked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-regular fa-heart fa-2x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
-								{liked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-solid fa-heart-crack fa-2x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
+								{userliked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-regular fa-heart fa-2x" style={{cursor:'pointer'}} onClick={() => handleLike()} src={like}/>}
+								{userliked === true ? null : <motion.i whileHover={{ scale: 1.2, color: '#a3a3a3'}} className="fa-solid fa-heart-crack fa-2x" style={{cursor:'pointer'}} onClick={() => handleDislike()} src={dislike}/>}
 							</div>
 							<Info name={name} lastName={lastName} location={location} preference={preference} gender={gender} bio={bio}/>
 						</Container>
 						<div className='row p-2'>
 							<div className='col'>{tags}</div>
 						</div>
-						// burger menu for report, block, and unmatch
 						{target === "self" ? null : <motion.div whileHover={{ scale: 1.4}} className="burger flex-column  align-items-center" style={{width : '100%'}} onClick={() => setShow(!show)}></motion.div>}
 						{show ? <div className="">
 							<div className="burger-menu-item flex-column" onMouseEnter={() => setHover1(true)} onMouseLeave={() => setHover1(false)} style={{textAlign : 'center' ,borderTop: hover1 ? '1px solid #e6e6e6' : 'none', borderBottom: hover1 ? '1px solid #e6e6e6' : 'none' ,backgroundColor : hover1 ? 'rgb(237, 237, 237)' : 'white', color: 'black'}} onClick={() => handleReportBlock(1)}>Report</div>
 							<div className="burger-menu-item flex-column" onMouseEnter={() => setHover2(true)} onMouseLeave={() => setHover2(false)} style={{textAlign : 'center' ,borderTop: hover2 ? '1px solid #e6e6e6' : 'none', borderBottom: hover2 ? '1px solid #e6e6e6' : 'none' ,backgroundColor : hover2 ? 'rgb(237, 237, 237)' : 'white', color: 'black'}} onClick={() => handleReportBlock(2)}>Block</div>
-							{liked === true ? <div className="burger-menu-item flex-column" onMouseEnter={() => setHover3(true)} onMouseLeave={() => setHover3(false)} style={{textAlign : 'center' ,borderTop: hover3 ? '1px solid #e6e6e6' : 'none', borderBottom: hover3 ? '1px solid #e6e6e6' : 'none' ,backgroundColor : hover3 ? 'rgb(237, 237, 237)' : 'white', color: 'black'}} onClick={() => handleReportBlock(3)}>Unlike</div> : null}
+							{userliked === true ? <div className="burger-menu-item flex-column" onMouseEnter={() => setHover3(true)} onMouseLeave={() => setHover3(false)} style={{textAlign : 'center' ,borderTop: hover3 ? '1px solid #e6e6e6' : 'none', borderBottom: hover3 ? '1px solid #e6e6e6' : 'none' ,backgroundColor : hover3 ? 'rgb(237, 237, 237)' : 'white', color: 'black'}} onClick={() => handleReportBlock(3)}>Unlike</div> : null}
 						</div> : null}
 					</div>
 				</div>

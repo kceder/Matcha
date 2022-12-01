@@ -14,8 +14,8 @@ import RestorePassword from "./RestorePassword";
 
 const LoginForm = () => {
 	
-	const [email, setEmail] = useState("a@a.a");
-	const [password, setPassword] = useState("Malibu11");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
 	const [login, setLogin] = useContext(LoginContext);
@@ -94,7 +94,6 @@ const LoginForm = () => {
 		setPassword(event);
 	};
 
-	// centered div with 2 inputs and a button
 	return (
 		<div style={{display: 'block', margin: 'auto', marginTop: '5rem',maxWidth: '25rem'}}>
 		{message.length > 0 && <p>{message}</p>}
@@ -118,7 +117,7 @@ const LoginForm = () => {
 			<input
 				id="password"
 				className="form-control"
-				type="text"
+				type="password"
 				value={password}
 				placeholder="Password"
 				onChange={(e) => handleChangePassword(e.target.value)}

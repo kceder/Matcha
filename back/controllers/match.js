@@ -118,7 +118,55 @@ const likeDislike = (request, response) => {
 
 }
 
+const unlike = (request, response) => {
+	const user1 = request.user.id;
+	const user2 = request.body.target;
+	const like1 = request.body.like;
+	const content = `${request.user.name} unmatched you!`;
+	console.log('unlike', request.body.unlike);
+	if (request.body.unlike === 'unlike') {
+		const sql = "DELETE FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
+		db.query(sql, [user1, user2, user2, user1], (error, result) => {
+			if (error) console.log('ERROR in likeDislike unlike');
+			else {
+				const sql = "DELETE FROM chatrooms WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
+				db.query(sql, [user1, user2, user2, user1], (error, result) => {
+					if (error) console.log('ERROR in likeDislike unlike 2');
+					else {
+						let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
+						db.query(sql, [user1, user2, content], (error, result) => {
+							if (error) console.log('ERROR in likeDislike unlike 3')
+							else {
+								if (result.length === 0) {
+									const sql = "INSERT INTO notifications (`from`, `to`, content) VALUES (?, ?, ?)";
+									db.query(sql, [user1, user2, content], (error, result) => {
+										if (error) console.log('ERROR in likeDislike unlike 4')
+										else {
+											response.send('unlike')
+										}
+									})
+								}
+								else if (result.length > 0) {
+									const sql = "UPDATE notifications SET time = NOW(), `read` = 0 WHERE id = ?";
+									db.query(sql, [result[0].id], (error, result) => {
+										if (error) console.log('ERROR in likeDislike unlike 5')
+										else {
+											response.send('unlike')
+										}
+									})
+								}
+							}
+						})
+					}
+				})
+			}
+		})
+	}
+}
+
+
 module.exports = {
 	likeDislike,
 	fetchMatch,
+	unlike,
 }

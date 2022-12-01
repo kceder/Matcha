@@ -203,6 +203,11 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		}
 		setInfoShow(!infoShow);
 	}
+
+	const handleNavigateToProfile = () => {
+		window.location.href = `/user/${target}`
+	}
+
 	const handleLike = () => {
 		setAnimation({x: -1000});
 		setTimeout(() => {
@@ -258,7 +263,7 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 				displayUsers.filter(user => user.id !== target)
 			)
 		})
-	}, 500)
+		}, 500)
 	}
 
 	if (pictures.length === 0) {
@@ -287,7 +292,7 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 						<Container>
 							<Row>
 								<Col xs={1} sm={1} md={1} lg={1}>{target === "self" ?  null :<LoginStatus className="m-2" user={target}/> } </Col>
-								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title>{username}, {age}</Card.Title></Col>
+								<Col xs={7} sm={7} md={7} lg={7} ><Card.Title style={{cursor:'pointer'}} onClick={(e) => {handleNavigateToProfile(e)}}>{username}, {age}</Card.Title></Col>
 								<Col className=""><StarRating rating={score / 10} /></Col>
 							</Row>
 							<div className="d-flex justify-content-around">

@@ -40,7 +40,7 @@ const NotificationsPage = () => {
 				console.log(response)
 			})
 		}
-	}, [])
+	}, [login])
 
 	return (
 		<div className="p-3">

@@ -8,3 +8,7 @@ export const likeDislike = (newObject) => {
 export const fetchMatch = (newObject) => {
 	return axios.post(`${baseUrl}/fetchMatch`, newObject, { withCredentials: true});
 }
+
+export const unlike = (newObject) => {
+	return axios.post(`${baseUrl}/unlike`, newObject, { withCredentials: true});
+}

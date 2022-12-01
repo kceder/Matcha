@@ -61,7 +61,7 @@ const Navigation = ({socket}) => {
 		}, [login])
 	socket.on('receive notification', (data) => {
 		validator().then(response => {
-			if (response.data === 'valid') {
+			if (response.data === 'valid' || response.data === 'unlike') {
 				getUser({target: 'self'}).then(response => {
 					if (response.data.id === data.to || response.data.id === data.from_id) {
 						setNewNotifications(true);

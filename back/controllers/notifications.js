@@ -65,11 +65,11 @@ const likedNotification = (request, response) => {
 	let to = request.body.target;
 	let to2 = {to: 0, from_id: 0};
 	console.log('FUBARR:', to2.from_id);
-
+	console.log('BODYYYYY: ', request.body.target);
 	let content = `${from_name} liked you!`;
 	let content_1 = `You matched with ${from_name}!`;
 	let content_2 = `You matched with ${request.body.username}!`;
-	console.log('CONTENT:', content);
+	console.log('CONTENT:', request.body.username);
 	
 	const checksql = 'SELECT * FROM matches WHERE ((`user1` = ? AND `user2` = ?) OR (`user2` = ? AND `user1` = ?)) AND `matched` = 1';
 	db.query(checksql, [from_id, to, from_id, to], (error, result) => {
