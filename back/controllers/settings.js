@@ -120,7 +120,7 @@ const changeUserInfo = (request, response) => {
 		}
 	}
 
-	if (username.length > 15) {
+	if (username.length > 50) {
 		response.send('username too long');
 	}	else if (username.length < 3) {
 		response.send('username too short');
@@ -142,7 +142,7 @@ const changeUserInfo = (request, response) => {
 		response.send('invalid coordinates');
 	} else {
 		console.log(1)
-		const checkIfEmailExists = "SELECT * FROM users WHERE email = ?;";
+		const checkIfEmailExists = "SELECT * FROM users WHERE email = ? AND id NOT LIKE ?;";
 		db.query(checkIfEmailExists, [email, id], function (error, result) {
 			console.log(1)
 			if (error) {
@@ -153,18 +153,16 @@ const changeUserInfo = (request, response) => {
 				console.log(result)
 				if (result.length > 0 && result[0].id !== id) {
 					console.log(result)
-					console.log(result[0].id, id);
 					response.send('email exists');
 				} else {
 					console.log(3)
 					// foksandidwe05
-					const checkIfUsernameExists = "SELECT username FROM users WHERE username = ?;";
+					const checkIfUsernameExists = "SELECT username FROM users WHERE username = ? AND id NOT LIKE ?;";
 					db.query(checkIfUsernameExists, [username, id], function (error, result) {
 						if (error) {
 							console.log('error: ', error);
 							response.send('error')
 						} else {
-							console.log(result[0].id,id)
 							if (result.length > 0 && result[0].id !== id) {
 								response.send('username exists');
 							} else {

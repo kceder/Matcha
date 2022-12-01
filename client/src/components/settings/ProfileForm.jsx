@@ -210,7 +210,6 @@ const ProfileForm = () => {
 		event.preventDefault();
 		if (usernameError === '' && nameError === '' && lastNameError === '' && emailError === '' && latError === '' && lonError === '' && bioError === ''){
 			if (username !== '' && name !== '' && lastName !== '' && email !== '' && lat !== '' && lon !== '' && bio !== ''){
-				setUpdated('Profile updated');
 				const userObject = {
 					username,
 					name,
@@ -223,8 +222,12 @@ const ProfileForm = () => {
 				}
 				changeUserInfo(userObject).then(response => {
 					console.log(response)
-					if (response.data === 'invalid email') {
-						setEmailError('Invalid email');
+					if (response.data === 'email exists' || response.data === 'incvalid email') {
+						setEmailError('invalid email');
+					} else if (response.data === 'username exists') {
+						setUsernameError('username already taken');
+					} else if (response.data === 'OK') {
+						setUpdated('Profile updated');
 					}
 				})
 			}
