@@ -2116,9 +2116,9 @@ const con = mysql.createConnection({
 
 con.connect((err) => {
 	async function createTables() {
-		if (err) throw err;
+		if (err) console.log(err);
 		con.query("CREATE DATABASE IF NOT EXISTS matcha", function (err, result) {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "Database already exists");
 			else
@@ -2126,7 +2126,7 @@ con.connect((err) => {
 		});
 
 		con.query("USE matcha", function (err, result) {
-			if (err) throw err;
+			if (err) console.log(err);
 			console.log("\x1b[35m", "Using matcha db");
 		});
 
@@ -2148,7 +2148,7 @@ con.connect((err) => {
 		registration_date DATETIME DEFAULT NOW());";
 
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "users table already exists");
 			else
@@ -2166,7 +2166,7 @@ con.connect((err) => {
 
 		
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "user_picture table already exists");
 			else
@@ -2185,7 +2185,7 @@ con.connect((err) => {
 
 		
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "locations table already exists");
 			else
@@ -2202,11 +2202,11 @@ con.connect((err) => {
 
 		
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "notifications table already exists");
 			else
-				console.log('\x1b[36m%s\x1b[0m', "notifications tale created");
+				console.log('\x1b[36m%s\x1b[0m', "notifications table created");
 		});
 
 		sql = "CREATE TABLE IF NOT EXISTS loggedInUsers \
@@ -2216,7 +2216,7 @@ con.connect((err) => {
 
 		
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "loggedInUsers table already exists");
 			else
@@ -2228,14 +2228,11 @@ con.connect((err) => {
 		user_id INT(11),\
 		views INT(11) DEFAULT 0,\
 		likes INT(11) DEFAULT 0,\
-		matches INT(11) DEFAULT 0,\
-		`block` INT(11) DEFAULT 0,\
 		view_history JSON,\
-		like_history JSON,\
-		match_history JSON);";
+		like_history JSON);";
 
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "stats table already exists");
 			else
@@ -2247,31 +2244,31 @@ con.connect((err) => {
 		tag VARCHAR(30))";
 
 		con.query(sql, (err, result) => {
-			if (err) throw err;
+			if (err) console.log(err);
 			if (result.warningCount > 0)
 				console.log('\x1b[36m%s\x1b[0m', "tags table already exists");
 			else {
 				console.log('\x1b[36m%s\x1b[0m', "tags table created");
 				tags.forEach((tag) => {
 					db.query(`INSERT INTO tags (tag) VALUES (?)`, [tag], (err, result) => {
-						if (err) throw err;
+						if (err) console.log(err);
 						});
 					});
 				}
 		});
 		sql = "CREATE TABLE IF NOT EXISTS matches (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11), like1 BOOLEAN, like2 BOOLEAN, matched BOOLEAN, block BOOLEAN);";
 		con.query(sql, (error, resutl) => {
-			if (error) throw error;
+			if (error) console.log(error);
 			else console.log('match table')
 		})
 		sql = "CREATE TABLE IF NOT EXISTS chatrooms (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11));"
 		con.query(sql, (error, resutl) => {
-			if (error) throw error;
+			if (error) console.log(error);
 			else console.log('chatroom table')
 		})
 		sql = "CREATE TABLE IF NOT EXISTS messages (id INT(11) AUTO_INCREMENT PRIMARY KEY, chatroom_id INT(11), sender INT(11), body VARCHAR(420), seen BOOLEAN DEFAULT FALSE, time DATETIME DEFAULT NOW());";
 		con.query(sql, (error, resutl) => {
-			if (error) throw error;
+			if (error) console.log(error);
 			else console.log('messages table')
 		})
 	}
@@ -2678,22 +2675,22 @@ con.connect((err) => {
 		
 			insertUsersArray.forEach((query) => {
 				db.query(query, (err, result) => {
-					if (err) throw err;
+					if (err) console.log(err);
 				})
 			})
 			insertPicturesArray.forEach((query) => {
 				db.query(query, (err, result) => { 
-					if (err) throw err;
+					if (err) console.log(err);
 				})
 			})
 			insertLocationArray.forEach((query) => {
 				db.query(query, (err, result) => {
-					if (err) throw err;
+					if (err) console.log(err);
 				})
 			})
 			insterStatsArray.forEach((query) => {
 				db.query(query, (err, result) => {
-					if (err) throw err;
+					if (err) console.log(err);
 				})
 			})
 		}

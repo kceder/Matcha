@@ -18,7 +18,6 @@ import { useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion"
 import { updateViewStats, updateLikeStats } from "../services/stats";
 
-
 const LoginStatus = ({user}) => {
 	const socket = useContext(SocketContext);
 	const [login, setLogin] = useState(false);

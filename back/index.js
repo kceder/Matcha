@@ -22,10 +22,6 @@ const socketServer = require('./socket.js');
 require('dotenv').config();
 
 const requestLogger = (request, response, next) => {
-	// console.log('Method:', request.method)
-	// console.log('Path:  ', request.path)
-	// console.log('Body:  ', request.body)
-	// console.log('---')
 	next();
 }
 const corsOptions = {
@@ -57,5 +53,4 @@ app.use(statsRouter);
 
 socketServer.socketServer(server);
 const port = process.env.PORT || 5000;
-console.log('											')
 server.listen(port, () => console.log(`Listening on port ${port}`))

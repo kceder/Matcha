@@ -71,10 +71,10 @@ const PasswordForm = () => {
 				<Form.Control type="password" placeholder="Old Password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)}/>
 			</Form.Group>
 
-			<Button variant="primary" type="submit">
+			<Button variant="dark" type="submit">
 				Submit
 			</Button>
-			<span className="text-danger" >{error}</span>
+			<span className="text-secondary" >{error}</span>
 		</Form>
 	);
 }

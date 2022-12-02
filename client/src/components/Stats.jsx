@@ -36,7 +36,7 @@ const CarouselImages = ({pictures}) => {
 
 const List = ({ props }) => {
 	const navigate = useNavigate();
-	if (props.views === 0 && props.likes === 0 && props.matches.length === 0) {
+	if (props.views === 0 && props.likes === 0) {
 		return (
 			<div>
 				Nothings to see yet!
@@ -44,10 +44,9 @@ const List = ({ props }) => {
 		)
 	} else {
 		return (
-			<div className="row" style={{maxHeight : '80px', overflowY : 'scroll'}}>
+			<div className="d-flex justify-content-around" style={{maxHeight : '80px', overflowY : 'scroll'}}>
 				{props.viewHistory.length > 0 ? <div className="col-4">VIEWS{props.viewHistory.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no views yet</>}
 				{props.likeHistory.length > 0 ? <div className="col-4">LIKES{props.likeHistory.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no likes yet</>}
-				{props.matches.length > 0 ? <div className="col-4">MATCHES{props.matches.map(view => <div onClick={() => navigate(`/user/${view.id}`)} key={view.id}><small style={{cursor : 'pointer'}}>{view.name}</small><br></br></div>)}</div> : <>no matches yet</>}
 			</div>
 		)
 	}
@@ -57,8 +56,8 @@ const List = ({ props }) => {
 const Stats = ({ target }) => {
 	const [views, setViews] = useState(0);
 	const [likes, setLikes] = useState(0);
-	const [blocks, setBlocks] = useState(0);
-	const [matches, setMatches] = useState([]);
+
+
 	const [done, setDone] = useState(false);
 	const [pictures, setPictures] = useState([]);
 	const [infoShow, setInfoShow] = useState(false);
@@ -73,17 +72,11 @@ const Stats = ({ target }) => {
 		getStats({target : target}).then(response => {
 			setViews(response.data.views);
 			setLikes(response.data.likes);
-			setBlocks(response.data.block);
-			if (response.data.matches.length)
-				setMatches(JSON.parse(response.data.matches));
 			setProps({
 				views: response.data.views,
 				likes: response.data.likes,
-				viewHistory: JSON.parse(response.data.view_history),
-				likeHistory: JSON.parse(response.data.like_history),
-				blocks: response.data.block,
-				matches: matches
-
+				viewHistory: response.data.view_history ? JSON.parse(response.data.view_history) : [],
+				likeHistory: response.data.like_history ? JSON.parse(response.data.like_history) : [],
 			})
 		}).then(() => {
 			getUserPhotos({target : target}).then(response => {
@@ -104,11 +97,9 @@ const Stats = ({ target }) => {
 								<Card.Title>Your stats</Card.Title>
 							</Row>
 						</Container>
-						<div className='p-2 d-flex justify-content-between'>
+						<div className='p-2 d-flex justify-content-around'>
 							<div>views {views}</div>
 							<div>likes {likes}</div>
-							<div>matches {matches.length}</div>
-							<div>blocks {blocks}</div>
 						</div>
 						<div className="d-flex justify-content-around">
 							{infoShow === false ? <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-down"/> : <motion.i whileHover={{ scale: 1.2 }} style={{cursor:'pointer'}} onClick={() => showHideInfo()} className="align-self-end fa-solid fa-chevron-up"></motion.i>}

@@ -1,9 +1,13 @@
 const db = require('../config/db.js');
 const bcrypt = require("bcrypt");
-var validator = require("email-validator");
 const { request } = require('http');
 const { response } = require('express');
 const { sendRecoveryMail } = require('../utils/sendEmail.js');
+
+const validateEmail = (email) => {
+	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*\.[a-zA-Z]{2,6}$');
+	return regex.test(String(email).toLowerCase());
+}
 
 const restorePassword = (request, response) => {
 
@@ -38,11 +42,11 @@ const restorePassword = (request, response) => {
 }
 
  const passwordRestore = (request, response) => {
-	console.log(request.body);
+	// console.log(request.body);
 	const password = request.body.password;
 	const token = request.body.token;
-	console.log('token: ', token)
-	console.log('password', password)
+	// console.log('token: ', token)
+	// console.log('password', password)
 	const sql = "SELECT id FROM users WHERE activation_token = ?;";
 	db.query(sql, [token], function(error, result) {
 		if (error)
@@ -99,8 +103,11 @@ const changeUserInfo = (request, response) => {
 	const bio = request.body.bio;
 	const noWhiteSpaceBio = bio.replaceAll(' ', '');
 	const gender = request.body.gender;
-	console.log(validator.validate(email)); // true
+	const interests = request.body.interests;
+	const tags = request.body.tags;
+	console.log('tags before',tags);
 
+	const myJSON = JSON.stringify(interests);
 	const preference = request.body.preference;
 
 	const userId = request.user.id;
@@ -136,7 +143,7 @@ const changeUserInfo = (request, response) => {
 		response.send('bio empty');
 	}	else if (preference !== 'bisexual' && preference !== 'heterosexual' && preference !== 'homosexual') {
 		response.send('invalid preference');
-	}	else if (validator.validate(email) === false) {
+	}	else if (validateEmail(email) === false) {
 		response.send('invalid email');
 	}	else if ( validateLocation(location.lat, location.lon) === false) { 
 		response.send('invalid coordinates');
@@ -144,46 +151,61 @@ const changeUserInfo = (request, response) => {
 		console.log(1)
 		const checkIfEmailExists = "SELECT * FROM users WHERE email = ? AND id NOT LIKE ?;";
 		db.query(checkIfEmailExists, [email, id], function (error, result) {
-			console.log(1)
+			console.log(2)
 			if (error) {
-				console.log('error: ', error);
+				// console.log('error: ', error);
 				response.send('error')
 			} else {
-				console.log(2)
-				console.log(result)
+				console.log(3)
+				// console.log(result)
 				if (result.length > 0 && result[0].id !== id) {
-					console.log(result)
+					console.log(4)
+					// console.log(result)
 					response.send('email exists');
 				} else {
-					console.log(3)
+					console.log(5)
+					// console.log(3)
 					// foksandidwe05
 					const checkIfUsernameExists = "SELECT username FROM users WHERE username = ? AND id NOT LIKE ?;";
 					db.query(checkIfUsernameExists, [username, id], function (error, result) {
 						if (error) {
-							console.log('error: ', error);
+							// console.log('error: ', error);
 							response.send('error')
 						} else {
+							console.log(6)
 							if (result.length > 0 && result[0].id !== id) {
 								response.send('username exists');
 							} else {
-								console.log(5)
-								const updateUser = "UPDATE users SET name = ?, lastName = ?, username = ?, email = ?, gender = ?, bio = ?, preference = ? WHERE id = ?"
-								db.query(updateUser, [name, lastName, username, email, gender, bio, preference, userId], (error, result) => {
+								console.log(7)
+								// console.log(5)
+								const updateUser = "UPDATE users SET name = ?, lastName = ?, username = ?, email = ?, gender = ?, bio = ?, preference = ?, interests = ? WHERE id = ?"
+								db.query(updateUser, [name, lastName, username, email, gender, bio, preference, myJSON, userId], (error, result) => {
 									if (error) {
-										console.log(error);
+										// console.log(error);
 										response.send('error');
 									} else {
-										console.log(6)
+										// console.log(6)
 										const updateLocation = "UPDATE locations SET user_set_location = POINT(?, ?) WHERE user_id = ?;";
 										db.query(updateLocation, [ location.lon, location.lat, userId], function (error, result) {
 											if (error) {
-												console.log(error);
+												// console.log(error);
 												response.send('error');
 											} else {
-												console.log('success');
-												response.send('OK')
-											}
-										})
+													// console.log(tags)
+													const newTags = interests.filter((interest) => !tags.map((tag) => tag.tag).includes(interest));
+														newTags.forEach((tag) => {
+															const sql = `INSERT INTO tags (tag) VALUES (?)`;
+															db.query(sql, [tag],(err, result) => {
+																if (err) {
+																	// console.log(err)
+																	response.send('error :: setUpUser')
+																} else {
+																	response.send('OK');
+																}
+															})
+														})
+												}
+											})
 									}
 								})
 							}

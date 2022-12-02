@@ -19,7 +19,7 @@ const RestoreForm = ({token}) => {
         }
         const regex = new RegExp('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,13}$')
 		if(regex.test(password) === false) {
-			setError('Password too weak!')
+			setError('Password should have 8 - 13 characters including lower and upper case letters and a number!')
             return;
         }
         setLoading(true);
@@ -78,9 +78,7 @@ const RestorePassword = () => {
         setShowMessage('');
         setShowError('');
         e.preventDefault();
-        console.log('EMAIL:', email)
         sendRestore({'email' : email}).then(response => {
-            console.log(response);
             if (response.data === 'ok') {
                     setShowMessage('Your reset password email is heading your way!')
             }
@@ -101,7 +99,7 @@ const RestorePassword = () => {
                 <div className="card" style={{borderWidth : '0px'}}>
                     <div className="card-body">
                     <h3 className="card-title">Oh no, not again !</h3>
-                        <div className='d-flex align-items-center 'style={{fontSize: '1rem', color: 'gray'}}>I can send you a link to restrore you password</div>
+                        <div className='d-flex align-items-center 'style={{fontSize: '1rem', color: 'gray'}}>I can send you a link to restrore your password</div>
                         <form onSubmit={handleSubmit} style={{marginTop: '20px'}}>
                             <div className="form-group">
                                 <input type="email" placeholder='Email Addres' className="form-control" id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -120,9 +118,7 @@ const RestorePassword = () => {
     }
     else {
         if (token !== undefined) {
-            console.log('TOKEN:', token)
             parsedToken = token.split('=')[1];
-            console.log('PARSED TOKEN:', parsedToken)
         }
         return (
             <>

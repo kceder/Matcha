@@ -2,7 +2,11 @@ import { useState } from 'react';
 import { createUser } from '../services/register.js'
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { validate } from 'react-email-validator'
+
+const validateEmail = (email) => {
+	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*\.[a-zA-Z]{2,6}$');
+	return regex.test(String(email).toLowerCase());
+}
 
 const RegisterForm = () => {
 	const [name, setName] = useState('');
@@ -25,7 +29,7 @@ const RegisterForm = () => {
 			return;
 		} else if (passwordRegex.test(password) === false) {
 			setError('Password must be between 8 and 13 characters, contain at least one uppercase letter, one lowercase letter and one number');
-		} else if (!validate(email)) {
+		} else if (!validateEmail(email)) {
 			setError('Invalid email');
 		} else if (name.length < 2) {
 			setError('Name too short');

@@ -5,6 +5,8 @@ import Form from 'react-bootstrap/Form';
 import { getUser } from "../../services/users";
 import { changeUserInfo } from "../../services/settings";
 import { motion } from "framer-motion";
+import { Badge } from "react-bootstrap";
+import { getAllTags } from "../../services/tags";
 
 const Updated = ({updated}) => {
 	if (updated) {
@@ -21,6 +23,77 @@ const Updated = ({updated}) => {
 			<div></div>
 		)
 	}
+}
+
+const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) => {
+
+	const [newTag, setNewTag] = useState('');
+	
+	function containsWhitespace(str) {
+		return /\s|\t/.test(str);
+	}
+
+	const removeInterest = (event, tag) => {
+
+		setInterests(interests.filter((interest) => interest !== tag));
+	};
+
+	const handleTextInput = (event) => {
+		if (event.target.value === ' ') {
+			return;
+		} else {
+			const last = event.target.value.charAt(event.target.value.length - 1);
+			console.log(last);
+			if (containsWhitespace(last) === false) {
+				if (event.target.value.length > 30) {
+					alert('Tag must be less than 30 characters');
+				} else {
+					setNewTag(event.target.value.replace(/(<([^>]+)>)/ig, ''));
+				}
+			} else {
+				if (interests.includes(newTag) === false) {
+					setInterests([...interests, newTag.replace(/(<([^>]+)>)/ig, '')]);
+					setNewTag('');
+				} else {
+					setNewTag('')
+				}
+			}
+		}
+		
+	};
+
+	const handleInterestsChange = (event) => {
+		console.log(interests)
+		if (interests.includes(event)) {
+			return null;
+		} else {
+			setInterests(interests.concat(event));
+		}
+	}
+	const submitTag = (event, newTag) => {
+		if (newTag === '') {
+			return null;
+		} else if (interests.includes(newTag)) {
+			setNewTag('');
+			return null;
+		} else {
+			setInterests([...interests, newTag]);
+			setNewTag('');
+		}
+	}
+	const options = tags.map((tag) => <option key={tag.id} value={tag.tag}>{tag.tag}</option>)
+	const selectedTags = interests.map((tag, i) => <Badge style={{padding: '9px', cursor : 'pointer' }} key={i} value={tag} bg="secondary" className="m-1" onClick={(event) => removeInterest(event, tag)}>{tag}</Badge>)
+	return (
+		<div>
+			<select id='tags' className="form-select" defaultValue={''} onChange={(e) => handleInterestsChange(e.target.value)} required>
+				<option value="" disabled>-- select --</option>
+				{options}
+			</select>
+			<div className='mt-1 mb-1'>
+				<Badge bg="secondary" ><input value={newTag} style={{ outline: 'none', border: 'none', borderRadius: '2px'}} type='text' onChange={(e) => handleTextInput(e)}></input><Badge className="m-1" bg="dark" value={newTag} onClick={(event) => submitTag(event, newTag)}>+</Badge></Badge>{selectedTags}
+			</div>
+		</div>
+	);
 }
 
 const ProfileForm = () => {
@@ -42,7 +115,14 @@ const ProfileForm = () => {
 	const [bio, setBio] = useState('');
 	const [bioError, setBioError] = useState('');
 	const [updated, setUpdated] = useState('');
+	const [tags, setTags] = useState([]);
+	const [interests, setInterests] = useState([]);
 
+	useEffect(() => {
+		getAllTags().then((response) => {
+			setTags(response.data);
+		})
+	}, [])
 
 	useEffect(() => {
 		const obj = { target: 'self' }
@@ -53,8 +133,10 @@ const ProfileForm = () => {
 			setEmail(response.data.basicInfo.email)
 			setGender(response.data.basicInfo.gender)
 			setPreference(response.data.basicInfo.preference)
+			setInterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setBio(response.data.basicInfo.bio)
-
+			console.log('ALL MY INTEERESTS: ',response.data.basicInfo.interests)
+			console.log('tags: ', tags)
 			console.log(response.data.locations)
 			console.log(response.data.locations.user_set_location);
 			console.log(response.data.locations.ip_location);
@@ -207,6 +289,8 @@ const ProfileForm = () => {
 	}
 
 	const handleSubmit = (event) => {
+		console.log('A name was submitted: ' + username);
+
 		event.preventDefault();
 		if (usernameError === '' && nameError === '' && lastNameError === '' && emailError === '' && latError === '' && lonError === '' && bioError === ''){
 			if (username !== '' && name !== '' && lastName !== '' && email !== '' && lat !== '' && lon !== '' && bio !== ''){
@@ -218,11 +302,14 @@ const ProfileForm = () => {
 					"location" : {lat, lon},
 					bio,
 					gender,
-					preference
+					preference,
+					interests,
+					tags
 				}
+				console.log(userObject);
 				changeUserInfo(userObject).then(response => {
 					console.log(response)
-					if (response.data === 'email exists' || response.data === 'incvalid email') {
+					if (response.data === 'email exists' || response.data === 'invalid email') {
 						setEmailError('invalid email');
 					} else if (response.data === 'username exists') {
 						setUsernameError('username already taken');
@@ -239,23 +326,23 @@ const ProfileForm = () => {
 			<div className="container" style={{ maxWidth : '25rem' }}>
 			<Updated updated={updated}/>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary">Username <span className="text-danger">{usernameError}</span></Form.Label>
+				<Form.Label className="text-secondary">Username <span className="text-secondary">{usernameError}</span></Form.Label>
 				<Form.Control placeholder="Username" value={username} onChange={event => handleUsernameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Name <span className="text-danger">{nameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Name <span className="text-secondary">{nameError}</span></Form.Label>
 				<Form.Control placeholder="Name" value={name} onChange={event => handleNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Last Name <span className="text-danger">{lastNameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Last Name <span className="text-secondary">{lastNameError}</span></Form.Label>
 				<Form.Control placeholder="Last Name" value={lastName} onChange={event => handleLastNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Email <span className="text-danger">{emailError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Email <span className="text-secondary">{emailError}</span> </Form.Label>
 				<Form.Control placeholder="Email" value={email} onChange={event => handleEmailChange(event)} />
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Location <span className="text-danger">{latError}	{lonError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Location <span className="text-secondary">{latError}	{lonError}</span></Form.Label>
 				<div className="d-flex">
 					<Form.Control type="number" min="0" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
 					<Form.Control type="number" min="0" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
@@ -263,7 +350,7 @@ const ProfileForm = () => {
 				</div>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Bio  <span className="text-danger">{bioError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Bio  <span className="text-secondary">{bioError}</span> </Form.Label>
 				<Form.Control as="textarea" rows="3" placeholder="Bio" maxLength={500} value={bio} onChange={event => handleBioChange(event)} />
 				<small className='align-self-end'>{bio.length}/500</small>
 			</Form.Group>
@@ -281,6 +368,10 @@ const ProfileForm = () => {
 					<option value={'homosexual'}>Homosexual</option>
 					<option value={'bisexual'}>Bisexual</option>
 				</Form.Select>
+			</Form.Group>
+			<Form.Group className="mb-3">
+				<Form.Label className="text-secondary" >Tags</Form.Label>
+				<AutocompleteTagsSelector tags={tags} setTags={setTags} interests={interests} setInterests={setInterests} />
 			</Form.Group>
 			<Button variant="secondary" type="submit" onClick={(event) => handleSubmit(event)}>
 				Submit

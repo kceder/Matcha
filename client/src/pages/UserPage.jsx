@@ -20,6 +20,7 @@ import { updateViewStats, updateLikeStats } from "../services/stats";
 import { unlike } from "../services/match";
 import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
+import { view } from "../services/notifications";
 
 const Info = ({name, lastName, location, preference, gender, bio}) => {
 	return (
@@ -191,6 +192,18 @@ const UserCard = ({props}) => {
 		updateViewStats({target: target}).then(response => {
 			console.log(response.data);
 		})
+		const obj2 = {target: target, username: username};
+		if (target !== "self") {
+			view(obj2).then(response => {
+				console.log(response.data)
+				console.log("viewed data", response.data)
+				console.log('fdsgfdsgfds', response.data)
+				socket.emit('notification', response.data);
+			})
+			updateViewStats(obj2).then(response => {
+				console.log(response.data)
+			})
+		}
 		fetchMatch({target: target}).then(response => {
 			console.log(response.data)
 			if (response.data === 'blocked') {

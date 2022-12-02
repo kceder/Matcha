@@ -12,7 +12,6 @@ const getChatrooms = (request, response) => {
 			console.log(error)
 			response.send('error');
 		} else {
-			console.log(result)
 			response.send(result)
 		}
 	})
@@ -68,7 +67,6 @@ const sendMessage = (request, response) => {
 	const room = parseInt(request.body.room);
 	const message = request.body.body;
 	const sender = request.user.id;
-	console.log('CAMAMAM', request.user)
 	const sql = "INSERT INTO messages (chatroom_id, sender, body) VALUES (?, ?, ?);"
 	db.query(sql, [room, sender, message], (error, result) => {
 		if (error) {
@@ -76,7 +74,6 @@ const sendMessage = (request, response) => {
 			response.send('error');
 		} else {
 			const noti_sql = "INSERT INTO notifications (user_id, type, chatroom_id) VALUES (?, ?, ?);"
-			console.log('CAMAMAM',request)
 
 			messageNotification(request.body, request.user.name);
 			response.send('ok');
@@ -93,7 +90,6 @@ const checkForUnreadMessages = (request, response) => {
 			console.log(error)
 			response.send('error')
 		} else {
-			console.log(result)
 			let i = 0;
 			result.forEach(message => {
 				if (message.seen === 0 && message.sender !== user)

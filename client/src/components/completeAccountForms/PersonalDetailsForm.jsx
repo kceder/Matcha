@@ -139,6 +139,7 @@ const PersonalDetailsForm = () => {
 				birthday,
 				preference,
 				interests,
+				tags,
 			};
 			setUpUser(userObject).then((response) => {
 				console.log('response:',  response.data);

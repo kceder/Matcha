@@ -93,13 +93,7 @@ const likeDislike = (request, response) => {
 							// console.log(error)
 							response.send('error matches')
 						} else {
-							const createChatroom = "INSERT INTO chatrooms (user1, user2) VALUES (?, ?);";
-							db.query(createChatroom, [user1, user2], function(error, result) {
-								if (error) response.send(error)
-								else {
-									response.send('match')
-								}
-							})
+							response.send('match')
 						}
 					})
 				} else if (like1 !== true) {
