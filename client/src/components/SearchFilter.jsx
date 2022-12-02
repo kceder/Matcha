@@ -2,7 +2,6 @@ import { useState } from "react";
 import MultiRangeSlider from "multi-range-slider-react";
 import TagsSelector from "./TagsSelector";
 import './style/slider.css';
-import { getAllTags } from "../services/tags";
 import { filterUsers } from "../services/users";
 import StarInput from "./StarInput";
 import './style/slider.css'

@@ -6,7 +6,6 @@ export const getUserPhotos = (newObject) => {
 }
 
 export const setProfilePicture = (newObject) => {
-	console.log(newObject)
 	return axios.post(`${baseUrl}/profile`, newObject, { withCredentials: true});
 }
 

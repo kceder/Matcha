@@ -8,9 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
-import LoginContext from "../contexts/loginContext";
 import SocketContext from "../contexts/socketContext";
-import RestorePassword from "./RestorePassword";
 
 const LoginForm = () => {
 	
@@ -18,7 +16,6 @@ const LoginForm = () => {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('')
-	const [login, setLogin] = useContext(LoginContext);
 	const socket = useContext(SocketContext);
 
 	const Navigate = useNavigate();
@@ -55,27 +52,22 @@ const LoginForm = () => {
 						};
 
 						if(Object.keys(userLocation).length > 0) {
-							updateGpsLocation(userLocation).then(response => console.log(response))
+							updateGpsLocation(userLocation)
 						}
 					}
 				)}
 				
 
 				geoApiKey().then((response) => {
-					console.log('api key', response.data)
 					const locationAPI = `https://ipgeolocation.abstractapi.com/v1/?api_key=${response.data}`;
 					axios.get(locationAPI)
 						.then(response => {
-							console.log('65', response)
 							const position = {
 								lon: response.data.longitude,
 								lat: response.data.latitude,
 								city: `${response.data.city}, ${response.data.country_code}`
 							}
-							console.log(position)
-							updateIpLocation(position).then(response => {
-								console.log(response);
-							})
+							updateIpLocation(position)
 						})
 				})
 
@@ -83,7 +75,6 @@ const LoginForm = () => {
 					Navigate('../completeaccount');
 				}
 				if (response.data.message === "login") {
-					setLogin(true);
 					socket.emit("login");
 					Navigate('../home');
 				}

@@ -11,6 +11,5 @@ export const setUpUser = (newObject) => {
 }
 
 export const setUpPictures = (newObject) => {
-	console.log(newObject)
 	return axios.post(`${baseUrl}/users/complete-account/pictures`, newObject);
 }

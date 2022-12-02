@@ -2,10 +2,10 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { getUserPhotos } from "../services/photos";
 import Carousel from 'react-bootstrap/Carousel';
-import { Container, Row, Spinner, Card } from "react-bootstrap";
+import { Container, Row, Card } from "react-bootstrap";
 import { motion} from "framer-motion"
 import { getStats } from "../services/stats";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CarouselImages = ({pictures}) => {
 
@@ -84,7 +84,7 @@ const Stats = ({ target }) => {
 			})
 			setDone(true);
 		})
-	}, []);
+	});
 
 	if (done === true) {
 		return (

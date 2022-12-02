@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { getUserPhotos } from "../services/photos"
 
 const Notification = ({props}) => {
-	console.log(props)
 	const [photo, setPhoto]	= useState('')
 	const getDate = (date) => {
 		const d = new Date(date)
@@ -11,14 +10,13 @@ const Notification = ({props}) => {
 	const date = getDate(props.time)
 
 	const handleNavigateToProfile = (event) => {
-		console.log(event)
 		window.location.href = `/user/${props.from}`
 	}
 	useEffect(() => {
 		getUserPhotos({target: props.from}).then(response => {
 			setPhoto(response.data.pic_1)
 		})
-	}, [])
+	})
 
 		return (
 				<div className="notifications-box container">

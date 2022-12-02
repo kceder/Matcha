@@ -66,12 +66,10 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 const ProfilePictureUpload = () => {
 	const navigate = useNavigate()
 	validator().then((response) => {
-		console.log((response.data))
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
 		} else {
 			checkActiStat().then((response) => {
-				console.log(response.data)
 				if (response.data.acti_stat === 3)
 					navigate('/profile')
 			})

@@ -9,10 +9,8 @@ const ActivateAccount = () => {
 		token: useParams().token.split('=')[1]
 	}
 	activateUser(request).then((response) => {
-		console.log(response.data)
 		if (response.data === 'user activated :)')
 		{
-			console.log('user activated')
 			navigate('/acccount_on');
 		} else {
 			navigate('/')

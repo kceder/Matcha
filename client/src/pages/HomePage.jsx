@@ -39,7 +39,6 @@ const HomePage = () => {
 				navigate('/')
 			}
 			else if (response.data === 'valid') {
-				console.log('valid')
 				setLogin(true);
 				getUser({target: "self"}).then((response) => {
 					const locations = response.data.locations;
@@ -50,7 +49,6 @@ const HomePage = () => {
 					setTags(user.interests.replace(/\[|\]|"/g, '').split(','));
 					const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
 					setLocation(ret);
-					console.log('dfsfds', login);
 				})
 			}
 

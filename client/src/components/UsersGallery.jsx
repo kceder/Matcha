@@ -1,9 +1,7 @@
 import ProfileCard from "./ProfileCard";
 import Form from 'react-bootstrap/Form';
-import { useEffect } from "react";
 import { useState } from "react";
-import { Toast, ToastBody, ToastContainer } from 'react-bootstrap';
-import { motion } from "framer-motion";
+import { Toast } from 'react-bootstrap';
 
 
 const SortOptions = ({ setSorting }) => {
@@ -38,9 +36,6 @@ const PopUp = ({show, setShow}) => {
 const UsersGallery = ({ setUsers, users, displayUsers, setDisplayUsers,setSorting }) => {
 
 	const [show, setShow] = useState({show: false, message: null});
-
-	console.log(displayUsers)
-	
 	
 	const filteredUsers = displayUsers.map(( user )=> {
 		if (show.show === true) {

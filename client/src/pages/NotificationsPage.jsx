@@ -13,7 +13,6 @@ const NotificationsPage = () => {
 
 	useEffect(() => {
 		validator().then((response) => {
-			console.log((response.data))
 			if (response.data === 'token invalid' || response.data === 'no token')
 				Navigate('/')
 			else {
@@ -36,9 +35,7 @@ const NotificationsPage = () => {
 
 	useEffect(() => {
 		if (login === true) {
-			setNotificationsRead().then(response => {
-				console.log(response)
-			})
+			setNotificationsRead()
 		}
 	}, [login])
 

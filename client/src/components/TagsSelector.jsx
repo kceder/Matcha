@@ -20,7 +20,6 @@ const TagsSelector = ({ tags, setTags, interests, setInterests }) => {
 			return;
 		} else {
 			const last = event.target.value.charAt(event.target.value.length - 1);
-			console.log(last);
 			if (containsWhitespace(last) === false) {
 				if (event.target.value.length > 30) {
 					alert('Tag must be less than 30 characters');
@@ -36,7 +35,6 @@ const TagsSelector = ({ tags, setTags, interests, setInterests }) => {
 	};
 
 	const handleInterestsChange = (event) => {
-		console.log(interests)
 		
 		if (interests.includes(event)) {
 			return null;

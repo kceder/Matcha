@@ -1,12 +1,10 @@
 import React, { useState, useRef} from 'react';
-import {setUpPictures} from '../../services/register';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getUserPhotos } from '../../services/photos';
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage';
 import { addPicture } from '../../services/photos';
-// import ImageCropDialog from '../ImageCrop' 
 
 
 import { Col, Container } from 'react-bootstrap';
@@ -38,7 +36,6 @@ const ImageCropDialog = ({i, url, setData, picture, setReloadGallery, reloadGall
 		} else {
 			const obj = { base64 : croppedImageUrl, old : picture };
 			addPicture(obj).then(response => {
-				// console.log(response.data)
 				if (response.data === 'file too big') {
 					alert('file too big!');
 				} else if (response.data === "good") {
@@ -47,7 +44,6 @@ const ImageCropDialog = ({i, url, setData, picture, setReloadGallery, reloadGall
 				setData("");
 				setReloadGallery(reloadGallery + 1);
 			})
-		
 		}
 	};
 
@@ -72,9 +68,7 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 
 const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 	const ref = useRef();
-	const [pic, setPic] = useState();
 	const [data, setData] = useState('');
-
 
 	useEffect(() => {
 		window.scrollTo(0, 0)
@@ -84,8 +78,6 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 		ref.current.click()
 	}
 	const handleChangePicture = (event)	=> {
-		console.log(event.target.files[0])
-		// check if file is a picture //
 		if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") 
 			setData(URL.createObjectURL(event.target.files[0]));
 		else
@@ -124,7 +116,6 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 const AddPhotos = () => {
 	
 	const [pictures, setPictures] = useState([])
-	const Navigate = useNavigate();
 	const [reloadGallery, setReloadGallery] = useState(0);
 
 	useEffect(() => {

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { changePassword } from "../../services/settings";
@@ -44,10 +44,7 @@ const PasswordForm = () => {
 				newPassword,
 				oldPassword
 			}
-			console.log(passwordObject);
-			changePassword(passwordObject).then((request, response) => {
-				console.log(response);
-			})
+			changePassword(passwordObject)
 		}
 	}
 

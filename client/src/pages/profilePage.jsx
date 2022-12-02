@@ -30,7 +30,6 @@ const MyForm = ({containerToShow, login}) => {
 export const ProfilePage = () => {
 	const [login, setLogin] = useContext(LoginContext);
 	validator().then((response) => {
-		console.log((response.data))
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
 		}
@@ -43,13 +42,9 @@ export const ProfilePage = () => {
 	const navigate = useNavigate();
 
 	const handleClick = (value,  setShowHide, showHide) => {
-		console.log(value)
 		setShowHide(!showHide)
 		setContainerToShow(value);
 	}
-
-	
-		console.log('login context in pp:', login);
 		return (
 
 				<Container id="nav-plus-form" style={{padding: 0}}>

@@ -6,7 +6,6 @@ import { checkActiStat } from "../services/users";
 export const SetUpProfile = () => {
 	const navigate = useNavigate();
 	validator().then((response) => {
-		console.log((response.data))
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
 		} 

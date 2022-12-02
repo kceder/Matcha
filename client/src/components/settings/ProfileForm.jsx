@@ -43,7 +43,6 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 			return;
 		} else {
 			const last = event.target.value.charAt(event.target.value.length - 1);
-			console.log(last);
 			if (containsWhitespace(last) === false) {
 				if (event.target.value.length > 30) {
 					alert('Tag must be less than 30 characters');
@@ -63,7 +62,6 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 	};
 
 	const handleInterestsChange = (event) => {
-		console.log(interests)
 		if (interests.includes(event)) {
 			return null;
 		} else {
@@ -135,12 +133,6 @@ const ProfileForm = () => {
 			setPreference(response.data.basicInfo.preference)
 			setInterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setBio(response.data.basicInfo.bio)
-			console.log('ALL MY INTEERESTS: ',response.data.basicInfo.interests)
-			console.log('tags: ', tags)
-			console.log(response.data.locations)
-			console.log(response.data.locations.user_set_location);
-			console.log(response.data.locations.ip_location);
-			console.log(response.data.locations.gps_location);
 			if (response.data.locations.user_set_location !== null) {
 				setLat(response.data.locations.user_set_location.y)
 				setLon(response.data.locations.user_set_location.x)
@@ -217,13 +209,12 @@ const ProfileForm = () => {
 		setEmail(event.target.value);
 	}
 	const handleLocationClick = () => {
-		const userLocation = {
+		let userLocation = {
 			lat: 0,
 			lon: 0
 		};
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(( position ) => {
-				
 				userLocation = {
 					lat: position.coords.latitude,
 					lon: position.coords.longitude
@@ -289,8 +280,6 @@ const ProfileForm = () => {
 	}
 
 	const handleSubmit = (event) => {
-		console.log('A name was submitted: ' + username);
-
 		event.preventDefault();
 		if (usernameError === '' && nameError === '' && lastNameError === '' && emailError === '' && latError === '' && lonError === '' && bioError === ''){
 			if (username !== '' && name !== '' && lastName !== '' && email !== '' && lat !== '' && lon !== '' && bio !== ''){
@@ -306,9 +295,7 @@ const ProfileForm = () => {
 					interests,
 					tags
 				}
-				console.log(userObject);
 				changeUserInfo(userObject).then(response => {
-					console.log(response)
 					if (response.data === 'email exists' || response.data === 'invalid email') {
 						setEmailError('invalid email');
 					} else if (response.data === 'username exists') {

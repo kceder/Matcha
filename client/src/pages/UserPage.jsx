@@ -67,22 +67,18 @@ const LoginStatus = ({user, lastLogin}) => {
 	const socket = useContext(SocketContext);
 	const [login, setLogin] = useState(false);
 	const [string, setString] = useState('');
-	console.log(lastLogin);
 	const date = new Date(lastLogin);
 	const now = new Date();
 	const diff = now - date;
 	const minutes = Math.floor(diff / 1000 / 60);
 	const hours = Math.floor(minutes / 60);
 	const days = Math.floor(hours / 24);
-	console.log(minutes, hours, days);
 
 	useEffect(() => {
 		getLoggedInUsers().then(response => {
 			const users = response.data;
-			console.log('userfvfbf vdxbfxvbcxs', typeof(user));
 			if (users.length > 0) {
 				if (users.includes(parseInt(user))){
-					console.log('user is logged in');
 					setLogin(true)
 				}
 				else {
@@ -111,7 +107,6 @@ const LoginStatus = ({user, lastLogin}) => {
 				setLogin(false)
 		});
 	}, [socket])
-	console.log('USER: ',user)
 	if (login) {
 		return (
 			<div>
@@ -189,23 +184,15 @@ const UserCard = ({props}) => {
 	}
 	useEffect(() => {
 
-		updateViewStats({target: target}).then(response => {
-			console.log(response.data);
-		})
+		updateViewStats({target: target})
 		const obj2 = {target: target, username: username};
 		if (target !== "self") {
 			view(obj2).then(response => {
-				console.log(response.data)
-				console.log("viewed data", response.data)
-				console.log('fdsgfdsgfds', response.data)
 				socket.emit('notification', response.data);
 			})
-			updateViewStats(obj2).then(response => {
-				console.log(response.data)
-			})
+			updateViewStats(obj2)
 		}
 		fetchMatch({target: target}).then(response => {
-			console.log(response.data)
 			if (response.data === 'blocked') {
 				navigate('/home')
 			}
@@ -218,10 +205,8 @@ const UserCard = ({props}) => {
 			}
 		})
 		const obj = { target: props.target }
-		console.log(2)
 		if (props.login === true) {
 			getUser(obj).then(response => {
-				console.log('All the data:', response.data)
 				setUsername(response.data.basicInfo.username)
 				setName(response.data.basicInfo.name)
 				setLastName(response.data.basicInfo.lastName)
@@ -238,7 +223,6 @@ const UserCard = ({props}) => {
 				setLastLogin(response.data.basicInfo.registration_date)
 			});
 			getUserPhotos(obj).then(response => {
-				console.log(response.data)
 				setPictures(response.data);
 			})
 		}
@@ -254,17 +238,12 @@ const UserCard = ({props}) => {
 
 	const handleLike = () => {
 		likeDislike({target : target, like : true}).then(response => {
-			updateLikeStats({target : target}).then(response => {
-				console.log(response.data)
-			})
+			updateLikeStats({target : target})
 
 			const obj = {target : parseInt(target), username : `${name} ${lastName}`}
 			liked(obj).then(response => {
-				console.log('RESPONSE', response.data)
-				console.log('RESPONSE from ID:', response.data.from_id)
 				socket.emit('notification', response.data);
 			})
-			console.log(response)
 			setUserLiked(true)
 		})
 	}
@@ -272,22 +251,18 @@ const UserCard = ({props}) => {
 		likeDislike({target : target, like : false}).then(response => {
 			const obj = {target : target}
 			disliked(obj).then(response => {
-				console.log(response.data)
 				socket.emit('notification', response.data);
 			})
-			console.log(response)
 			setUserLiked(true)
 		})
 	}
 	const handleReportBlock = (value) => {
-		console.log('value:', value)
 		if (value === 1) {
 			likeDislike({target : target, like : false, report : 'report'}).then(response => {
 				setUserLiked(true)
 				window.location.reload();
 			})
 		} else if (value === 2) {
-			console.log('VALUE 2')
 			likeDislike({target : target, like : false}).then(response => {
 				setUserLiked(true)
 				window.location.reload();
@@ -295,10 +270,8 @@ const UserCard = ({props}) => {
 		}
 		else if (value === 3) {
 			unlike({target : target, like : false, unlike : 'unlike'}).then(response => {
-				console.log(response.data)
 				socket.emit('notification', response.data);
 				setUserLiked(false)
-				// window.location.reload();
 			})
 		}
 	}
@@ -354,7 +327,6 @@ const UserCard = ({props}) => {
 
 export const UserPage = () => {
 
-	console.log('smotheng elseeeee')
 	const [login, setLogin] = useContext(LoginContext);
 	const navigate = useNavigate();
 	
@@ -364,7 +336,6 @@ export const UserPage = () => {
 	}
 	useEffect(() => {
 		validator().then((response) => {
-			console.log((response.data))
 			if (response.data === 'token invalid' || response.data === 'no token') {
 				setLogin(false)
 				navigate('/')
@@ -376,7 +347,6 @@ export const UserPage = () => {
 					}
 				})
 			}
-			console.log('login context in pp:', login);
 		})
 	}, [login])
 	if (login === true) {

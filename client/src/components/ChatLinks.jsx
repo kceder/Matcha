@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
-import { validator } from "../services/validator";
-import LoginContext from "../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
 import {getLastMessage} from '../services/chat'
 import { getUser } from "../services/users";
@@ -23,7 +21,7 @@ const LoginStatus = ({user}) => {
 					setLogin(false)
 			}
 		})
-	}, [])
+	}, [user])
 	useEffect(() => {
 		socket.on("logged", (data) => {
 			if (data.includes(user))
@@ -31,7 +29,7 @@ const LoginStatus = ({user}) => {
 			else
 				setLogin(false)
 		});
-	}, [socket])
+	}, [socket, user])
 
 	if (login) {
 		return (
@@ -66,16 +64,15 @@ const ChatLink = ({user, room}) => {
 				setLastMessage(<small className="text-muted">{response.data.content}</small>)
 			}
 		})
-	}, [])
+	})
 
 	const handleClick = (room) => {
-		console.log(room)
 		Navigate(`/direct/${room}`)
 	}
 	return (
 		<>
 			<div style={mouseOver === true ? { background : 'rgb(247, 247, 247)' } : null} className="row" onClick={() => handleClick(room)} onMouseEnter={() => setMouseOver(true)} onMouseLeave={() => setMouseOver(false)}>
-				<img className="col-3" src={userPicture} style={{maxWidth : '100px'}} />
+				<img className="col-3" src={userPicture} style={{maxWidth : '100px'}} alt="profile"/>
 				<div className="col-9">
 					<div className="row">
 						<div className="col-1">

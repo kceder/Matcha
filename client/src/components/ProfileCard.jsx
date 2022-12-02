@@ -4,10 +4,9 @@ import { getUser } from "../services/users";
 import { getUserPhotos } from "../services/photos";
 import Badge from 'react-bootstrap/Badge';
 import Carousel from 'react-bootstrap/Carousel';
-import { Col, Container, Row, Spinner, Card, Toast } from "react-bootstrap";
+import { Col, Container, Row, Spinner, Card } from "react-bootstrap";
 import like from "../images/like2.png";
 import dislike from "../images/like1.png";
-import {Image} from "react-bootstrap";
 import {likeDislike} from "../services/match"
 import { getLoggedInUsers } from '../services/users';
 import SocketContext from "../contexts/socketContext";
@@ -15,7 +14,7 @@ import {view} from "../services/notifications"
 import {liked} from "../services/notifications"
 import {disliked} from "../services/notifications"
 import { useContext } from "react";
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { updateViewStats, updateLikeStats } from "../services/stats";
 
 const LoginStatus = ({user}) => {
@@ -31,7 +30,7 @@ const LoginStatus = ({user}) => {
 					setLogin(false)
 			}
 		})
-	}, [login])
+	}, [login, user])
 	useEffect(() => {
 		socket.on("logged", (data) => {
 			if (data.includes(user))
@@ -39,7 +38,7 @@ const LoginStatus = ({user}) => {
 			else
 				setLogin(false)
 		});
-	}, [socket])
+	}, [socket, user])
 
 	if (login) {
 		return (
@@ -190,13 +189,9 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 			const obj = {target: target, username: username};
 			if (target !== "self") {
 				view(obj).then(response => {
-					console.log(response.data)
-					console.log("viewed data", response.data)
 					socket.emit('notification', response.data);
 				})
-				updateViewStats(obj).then(response => {
-					console.log(response.data)
-				})
+				updateViewStats(obj)
 			}
 			
 		}
@@ -212,17 +207,11 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		setTimeout(() => {
 		const obj = {target: target, username: username};
 		likeDislike({target : target, like : true}).then(response => {
-			updateLikeStats({target: target}).then(response => { 
-				console.log(response.data)
-			})
-			console.log(obj);
-			console.log('YOYOYOYOY:',response.data);
+			updateLikeStats({target: target})
 			if (response.data === 'match') {
 				setShow({show: true, message: 'You matched with ' + username + ' !'});
 			}
-			liked(obj).then(response => { 
-				console.log('RESPONSE', response.data)
-				console.log('RESPONSE from ID:', response.data.from_id)
+			liked(obj).then(response => {
 				socket.emit('notification', response.data);
 			})
 			setUsers(
@@ -244,9 +233,7 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 		setAnimation({x: 1000});
 		setTimeout(() => {
 		const obj = {target: target, username: username};
-		console.log(obj);
 		disliked(obj).then(response => {
-			console.log(response.data)
 			socket.emit('notification', response.data);
 		})
 		likeDislike({target : target, like : false}).then(response => {

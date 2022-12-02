@@ -75,7 +75,6 @@ const Navigation = ({socket}) => {
 		})
 	})
 	socket.on('message_notification', (data) => {
-		console.log(data)
 		validator().then(response => {
 			if (response.data === 'valid') {
 				getUser({target: 'self'}).then(response => {
@@ -137,10 +136,8 @@ const App = () => {
 	
 	const socket = io.connect("http://localhost:5000");
 	const [login, setLogin] = useState(false);
-	const [notificationsShown, setNotificationsShown] = useState(false);
 
 	validator().then(response => {
-		console.log(response.data)
 		if (response.data === 'valid')
 			setLogin(true);
 	})

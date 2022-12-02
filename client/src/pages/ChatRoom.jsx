@@ -9,7 +9,6 @@ import LoginContext from "../contexts/loginContext";
 import { Badge, Image, Row, Col, Container } from "react-bootstrap";
 import { getUserPhotos } from "../services/photos";
 import { getLoggedInUsers } from "../services/users";
-import { Spinner } from "react-bootstrap";
 
 const LoginStatus = ({user}) => {
 	const socket = useContext(SocketContext);
@@ -24,7 +23,7 @@ const LoginStatus = ({user}) => {
 					setLogin(false)
 			}
 		})
-	}, [])
+	})
 	useEffect(() => {
 		socket.on("logged", (data) => {
 			if (data.includes(user))
@@ -32,27 +31,22 @@ const LoginStatus = ({user}) => {
 			else
 				setLogin(false)
 		});
-	}, [socket])
+	}, [socket, user])
 
 	if (login) {
 		return (
 			<small>online</small>
-			// <Spinner style={{textAlign: 'center', width: "0.8rem", height: "0.8rem" }} animation="grow" role="status"></Spinner>
 		)
 	} else {
 		return (
 			<small>offline</small>
-			// <i style={{textAlign: 'center', width: "0.5rem", height: "0.5rem",  color: 'gray'}} className="fa-regular fa-circle-xmark"></i>
 		)
 	}
 }
 
 const Message = ({message}) => {
 	const [user1, setUser1] = useState(0);
-	// console.log('message:', message);
 	const time = new Date(message.time).getHours() + ':' + new Date(message.time).getMinutes();
-
-	// console.log(time)
 	getUser({target: 'self'}).then(response => {
 		setUser1(response.data.id)
 
@@ -93,9 +87,8 @@ const Chat = ({props}) => {
 				})
 			}
 			setMessage((prev) => [...prev, data]);
-			// console.log('socket messages:', message.body);
 		})
-	}, [socket])
+	}, [socket, props.user1, url])
 	if (message.length > 0) {
 		return (
 			<>
@@ -151,20 +144,16 @@ export const ChatRoom = () => {
 	const socket = useContext(SocketContext);
 	const [messages, setMessages] = useState([]);
 	const [login, setLogin] = useContext(LoginContext);
-	const [User2Name, setUser2Name] = useState('');
-	const [userPicture, setUserPicture] = useState('');
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
 
 		validator().then((response) => {
 			if (response.data === 'token invalid' || response.data === 'no token') {
-				// console.log('navigate')
 				setLogin(false)
 				navigate('/login')
 			}
 			else if (response.data === 'valid') {
-				// console.log('else if')
 				setLogin(true);
 				getUser({target: 'self'}).then(response => {
 					authorizeRoomAccess({room : room}).then(response => {
@@ -178,14 +167,12 @@ export const ChatRoom = () => {
 		}).then(() => {
 			if (login === true) {
 				socket.emit('join_room', room);
-				console.log(socket)
 				getUser({target: 'self'}).then(response => {
 					setUser1(response.data.id)
 				})
 			}
 		}).finally(() => {
 			getMessages({room : room}).then(response => {
-				// console.log('chatroom', response.data)
 				setMessages(response.data);
 			})
 		})
@@ -193,7 +180,6 @@ export const ChatRoom = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		// regex remove all white spaces /
 		const message = {
 			room: room,
 			body: inputMessage,

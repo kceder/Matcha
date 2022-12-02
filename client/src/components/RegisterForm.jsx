@@ -4,7 +4,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const validateEmail = (email) => {
-	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:\.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*\.[a-zA-Z]{2,6}$');
+	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*.[a-zA-Z]{2,6}$');
 	return regex.test(String(email).toLowerCase());
 }
 
@@ -52,9 +52,7 @@ const RegisterForm = () => {
 				password
 			}
 			createUser(userObject).then((response) => {
-				console.log(response.status)
 				if (response.status === 201) {
-					console.log('user created');
 					setSuccess('Account created successfully, check your email to activate it and finish setting up your account');
 					setTimeout(() => {
 						navigate('/login');

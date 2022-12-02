@@ -23,7 +23,6 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 			return;
 		} else {
 			const last = event.target.value.charAt(event.target.value.length - 1);
-			console.log(last);
 			if (containsWhitespace(last) === false) {
 				if (event.target.value.length > 30) {
 					alert('Tag must be less than 30 characters');
@@ -39,8 +38,6 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 	};
 
 	const handleInterestsChange = (event) => {
-		console.log(interests)
-		
 		if (interests.includes(event)) {
 			return null;
 		} else {
@@ -75,7 +72,6 @@ const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) =>
 
 const PersonalDetailsForm = () => {
 
-	const [username, setUsername] = useState('');
 	const [bio, setBio] = useState('');
 	const [gender, setGender] = useState('');
 	const [birthday, setBirthday] = useState('');
@@ -106,15 +102,6 @@ const PersonalDetailsForm = () => {
 		setBio(event.target.value);
 	}
 
-	const handleUsernameChange = (event) => {
-		if (event.target.value.length > 15) {
-			setError('Username is too long');
-		} else {
-			setError('');
-		}
-		setUsername(event.target.value);
-	}
-
 	const handleBirthdayChange = (event) => {
 		setBirthday(event);
 		const today = new Date();
@@ -142,7 +129,6 @@ const PersonalDetailsForm = () => {
 				tags,
 			};
 			setUpUser(userObject).then((response) => {
-				console.log('response:',  response.data);
 				if(response.data === 'good') {
 					Navigate('/completeaccount/photos');
 				}
