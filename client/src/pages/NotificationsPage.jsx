@@ -19,7 +19,7 @@ const NotificationsPage = () => {
 				setLogin(true)
 			}
 		})
-	}, [])
+	})
 
 	useEffect(() => {
 		if (login === true) {

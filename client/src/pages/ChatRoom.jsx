@@ -176,7 +176,7 @@ export const ChatRoom = () => {
 				setMessages(response.data);
 			})
 		})
-	}, [login]);
+	}, [login, navigate, room, setLogin, socket]);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();

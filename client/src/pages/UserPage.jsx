@@ -98,7 +98,7 @@ const LoginStatus = ({user, lastLogin}) => {
 				}
 			}
 		})
-	}, [])
+	})
 	useEffect(() => {
 		socket.on("logged", (data) => {
 			if (data.includes(user))
@@ -106,7 +106,7 @@ const LoginStatus = ({user, lastLogin}) => {
 			else
 				setLogin(false)
 		});
-	}, [socket])
+	}, [socket, user])
 	if (login) {
 		return (
 			<div>
@@ -162,11 +162,9 @@ const UserCard = ({props}) => {
 	const [age, setAge] = useState();
 	const [interests, setinterests] = useState();
 	const [score, setScore] = useState();
-	const [userTags, setUserTags] = useState([]);
+
 	const socket = useContext(SocketContext);
-	const [matched, setMatched] = useState(false);
 	const [userliked, setUserLiked] = useState(false);
-	const [blocked, setBlocked] = useState(false);
 	const navigate =useNavigate();
 	const [lastLogin, setLastLogin] = useState('');
 	const [show, setShow] = useState(false);
@@ -201,7 +199,6 @@ const UserCard = ({props}) => {
 			}
 			else if (response.data === 'match') {
 				setUserLiked(true);
-				setMatched(true);
 			}
 		})
 		const obj = { target: props.target }
@@ -226,15 +223,9 @@ const UserCard = ({props}) => {
 				setPictures(response.data);
 			})
 		}
-	}, [props.target, userliked])
+	}, [props.target, userliked, navigate, props.login, socket, target, username])
 
-	const tags = interests ? interests.map((tag, index) => {
-		if (userTags.includes(tag)) {
-			return <Badge key={index} className='bg-dark text-light' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>
-		} else {
-			return <Badge key={index} className='bg-light text-dark' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>
-		}
-	}) : null;
+	const tags = interests ? interests.map((tag, index) => <Badge key={index} className='bg-light text-dark' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>) : null;
 
 	const handleLike = () => {
 		likeDislike({target : target, like : true}).then(response => {
@@ -348,7 +339,7 @@ export const UserPage = () => {
 				})
 			}
 		})
-	}, [login])
+	}, [login, navigate, props.target, setLogin])
 	if (login === true) {
 		return (
 				<Container id="nav-plus-form" className="p-0">

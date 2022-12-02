@@ -7,7 +7,6 @@ import { filterUsers } from "../services/users";
 import Spinner from 'react-bootstrap/Spinner';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useContext } from "react";
-import SocketContext from "../contexts/socketContext";
 import { useNavigate } from "react-router-dom";
 import { validator } from "../services/validator";
 import LoginContext from "../contexts/loginContext";
@@ -29,7 +28,6 @@ const HomePage = () => {
 	const [rating, setRating] = useState(0);
 	const [sorting, setSorting] = useState('distance')
 	const navigate = useNavigate();
-	const socket = useContext(SocketContext);
 	const [login, setLogin] = useContext(LoginContext);
 	let more = true;
 
@@ -39,6 +37,7 @@ const HomePage = () => {
 				navigate('/')
 			}
 			else if (response.data === 'valid') {
+				console.log('valid')
 				setLogin(true);
 				getUser({target: "self"}).then((response) => {
 					const locations = response.data.locations;
@@ -49,11 +48,12 @@ const HomePage = () => {
 					setTags(user.interests.replace(/\[|\]|"/g, '').split(','));
 					const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
 					setLocation(ret);
+					console.log('dfsfds', login);
 				})
 			}
 
 		})
-	}, []);
+	}, [login, navigate, setLogin]);
 
 	useEffect(() => { // get all tags
 
@@ -128,7 +128,7 @@ const HomePage = () => {
 				setDisplayUsers(temp.slice(0, 10));
 			})
 		}
-	}, [location, gender, preference, tags])
+	}, [location, gender, preference, tags, sorting])
 	
 	useEffect(() => { // filter users
 

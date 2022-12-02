@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Container, Nav } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import ProfileForm from "../components/settings/ProfileForm";
 import PasswordForm from "../components/settings/PasswordForm";
 import AddPhotos from "../components/completeAccountForms/AddPhotos";
