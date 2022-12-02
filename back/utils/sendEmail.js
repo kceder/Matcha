@@ -2,7 +2,6 @@ const nodemailer = require('nodemailer');
 require('dotenv').config();
 
 let sendMail = (userInfo) => {
-	console.log('mail ', userInfo)
 	const receiver = userInfo.email;
 
 	var transport = nodemailer.createTransport({
@@ -36,16 +35,11 @@ let sendMail = (userInfo) => {
 		};
 
 	transport.sendMail(mailOptions, function(error, info){
-		if (error) {
-			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-		}
+		if (error) console.log(error);
 	});
 }
 
 let sendRecoveryMail = (email, token) => {
-	console.log('recovery mail: ', email)
 	const receiver = email;
 
 	var transport = nodemailer.createTransport({
@@ -82,15 +76,10 @@ let sendRecoveryMail = (email, token) => {
 		};
 
 	transport.sendMail(mailOptions, function(error, info){
-		if (error) {
-			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-		}
+		if (error) console.log(error);
 	});
 }
 let sendReportMail = (target) => {
-	console.log('report target: ', target)
 	const receiver = 'krisuceder@hotmail.com';
 
 	var transport = nodemailer.createTransport({
@@ -122,11 +111,7 @@ let sendReportMail = (target) => {
 		};
 
 	transport.sendMail(mailOptions, function(error, info){
-		if (error) {
-			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-		}
+		if (error) console.log(error)
 	});
 }
 

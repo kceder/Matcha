@@ -2607,7 +2607,7 @@ con.connect((err) => {
 	const insertUsersArray = [];
 	const insertPicturesArray = [];
 	const insterStatsArray = [];
-	db.query('SELECT * FROM users', (err, result) => {
+	db.query('SELECT * FROM `users`', (err, result) => {
 		if (err) {
 			console.log(err);
 		} else if (result.length === 0) {

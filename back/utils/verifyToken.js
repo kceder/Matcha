@@ -5,10 +5,10 @@ require('dotenv').config();
 const verifyToken = (token) => {
 	let decodedToken;
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, verifiedJwt) => {
-		if(err){
-			console.log(err.message)
+		if(err) {
+			console.log(err)
 			return false;
-		}else{
+		} else {
 			decodedToken = verifiedJwt;
 		}
 	})

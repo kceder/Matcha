@@ -94,11 +94,10 @@ const tags = [
 'Theatre'
 ];
 db.connect((err) => {
-    if (err) throw err;
+    if (err) console.log( err );
 tags.forEach((tag) => {
   db.query(`INSERT INTO tags (tag) VALUES (${tag})`, (err, result) => {
-    if (err) throw err;
-    console.log(result);
+    if (err) console.log ( err );
   });
 });
 });

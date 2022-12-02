@@ -41,7 +41,7 @@ const getUser = (request, response) => {
 
 		db.query(sql, [target], 
 				function (error, result) {
-					if (error) throw error
+					if (error) console.log( error)
 					else if (result.length === 0) {
 						response.send('user not found')
 					} else {
@@ -74,7 +74,6 @@ const register = (request, response) => {
 				console.log(error)
 			}
 			if (result.length > 0) {
-				console.log(result);
 				response.status(228).send('Email already in use');
 			} else {
 				const sqlUsernameCheck = 'SELECT * FROM users WHERE username = ?';
@@ -138,19 +137,16 @@ const register = (request, response) => {
 const login = (request, response) => {
 	const sql = 'SELECT * FROM users WHERE email = ? OR username = ?';
 	const user = request.body.user;
-	console.log(request.body)
 
 	const password = request.body.password;
 	db.query(sql, [user, user],
 		function (error, result) {
-			console.log(result)
 			if (error) {
 				console.log(error)
 			}
 			if (result.length > 0) {
 				bcrypt.compare(password,  result[0].password, function(err, compare) {
-					if (err) throw err
-					console.log('59', compare)
+					if (err) console.log( err)
 					if (compare == true) {
 						const user = { 
 							name : `${result[0].name} ${result[0].lastName}` , 
@@ -158,21 +154,17 @@ const login = (request, response) => {
 						}
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
 						if(result[0].acti_stat === 1) {
-							// console.log('acti_1')
 							response.status(202).cookie('token', accessToken,
 								{ 
 									path: '/',
 									httpOnly: true
 								}).send('fill profile');
 						} else if (result[0].acti_stat === 0){
-							// console.log('acti_0')
 							response.send('account not verified');
 						} else if (result[0].acti_stat === 2 || result[0].acti_stat === 3) {
 							const logUser = "Insert into loggedInUsers (user_id) values (?)";
 							db.query(logUser, [user.id] ,function (error, result) {
-								if (error) {
-									console.log(error)
-								}
+								if (error) console.log(error)
 								response.status(202).cookie('token', accessToken,
 								{ 
 									path: '/',
@@ -200,22 +192,14 @@ const activateUser = (request, response) => {
 	const sql = 'SELECT * FROM users WHERE activation_token = ?';
 
 	const token = request.body.token;
-	// console.log(request.body)
 	db.query(sql, [token], function(error, result) {
-		if (error) {
-			console.log(error)
-		}
+		if (error) console.log(error)
 		if (result.length > 0) {
 			const sql = "UPDATE users SET acti_stat = 1 WHERE id = ?"
 			db.query(sql, [result[0].id], function (error, result) {
-				// console.log('result ---->', result)
-				if (error) {
-					console.log(error)
-				}
+				if (error) console.log(error)
 				response.status(202).send('user activated :)');
 			});
-			// console.log(result[0].id)
-			
 		} else {
 			response.send('user not found');
 		}
@@ -225,7 +209,6 @@ const activateUser = (request, response) => {
 const completeAccount = (request, response) => {
 
 	const token = request.cookies.token;
-	console.log('token in completeAccount: ', token);
 	let decodedToken = verifyToken(token);
 	
 	const username  = request.body.username
@@ -255,7 +238,9 @@ const completeAccount = (request, response) => {
 	}	else {
 		const createPicsTab = "INSERT INTO user_pictures (user_id) VALUES (?)";
 		db.query(createPicsTab, [userId],
-			function (error, result) { console.log(error) });
+			function (error, result) { 
+				if (error) console.log(error) 
+			});
 
 		const myJSON = JSON.stringify(interests);
 
@@ -263,14 +248,11 @@ const completeAccount = (request, response) => {
 
 		db.query(sql, [ gender, bio, birthday, preference, myJSON, 2, userId],
 		function (error, result) {
-			if (error) 
-				console.log(error);
+			if (error) console.log(error);
 			else {
 				const getTags = "SELECT tag FROM tags";
 				db.query(getTags, function (error, result) {
-					if (error) {
-						console.log(error)
-					}
+					if (error) console.log(error)
 					else  {
 						const newTags = interests.filter((interest) => !result.map((tag) => tag.tag).includes(interest));
 						newTags.forEach((tag) => {
@@ -294,7 +276,6 @@ const addPhotos = (request, response) => {
 
 
 	const user = verifyToken(request.cookies.token);
-	console.log('ASKPKSAKPSDAPKSADPK!!!!!');
 	let i = request.files.length;
 	
 	request.files.forEach(image => {
@@ -316,7 +297,7 @@ const  getAllUsers = (request, response) => {
 	const sql = 'SELECT * FROM users';
 	db.query(sql,
 		function (error, result) {
-			if (error) throw error
+			if (error) console.log( error)
 			response.send(result);
 		})
 }
@@ -349,9 +330,7 @@ const filterUsers = (request, response) => {
 	let blockedUsers = [];
 	sql = `SELECT * FROM matches WHERE user1 = ${user.id}`;
 	db.query(sql, function (error, result) {
-		if (error) {
-			console.log(error)
-		}
+		if (error) console.log(error)
 		else {
 			blockedUsers = result.map((match) => {
 				return match.user1 === user.id ? match.user2 : match.user1;
@@ -373,10 +352,7 @@ const filterUsers = (request, response) => {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id NOT LIKE ?`;
 	}
 	db.query(sql, [user.id], function (error, result) {
-		console.log('blocked list !!!!', blockedUsers);
-		if (error) {
-			console.log(error)
-		}
+		if (error) console.log(error)
 		else {
 			let array = [];
 			result = result.filter(result => {
@@ -385,7 +361,6 @@ const filterUsers = (request, response) => {
 			result = result.filter(result => {
 				return !blockedUsers.includes(result.id);
 			})
-			console.log('gfdgfdsghdfs', interests.length)
 			if (interests.length > 0) {
 				result.forEach(user => {
 						let ret = filterByTags(user, interests);
@@ -404,9 +379,7 @@ const filterUsers = (request, response) => {
 				}
 			})
 			let array3 = [];
-			// console.log(array2)
 			array2.forEach(user => {
-				// console.log(user)
 				const user2Loation = user.user_set_location ? user.user_set_location : (user.gps_location ? user.gps_location : user.ip_location);
 				const distanceResult = getDistance(userLocation.x , userLocation.y, user2Loation.x, user2Loation.y);
 				if (distanceResult <= distance) {
@@ -416,19 +389,15 @@ const filterUsers = (request, response) => {
 			})
 			let i = 0;
 			if (rating > 0) {
-				// console.log('rating', rating)
 				let array4 = [];
 				array3.forEach(user => {
 					if (user.score >= rating) {
-						// console.log(user.score)
 						array4.push(user);
 					}
 				})
-				// console.log('RESPONSE 1 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 				response.send(array4);
 			} else {
 				response.send(array3)
-				// console.log('RESPONSE 2 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
 			}
 		}
 	})
@@ -445,7 +414,6 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 	const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +	Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *	Math.sin(dLon / 2) * Math.sin(dLon / 2);
 	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 	const d = R * c; // Distance in km
-	// console.log(d);
 	return d;
 }
 
@@ -453,9 +421,7 @@ const checkActiStat = (request, response) => {
 	const user = request.user.id;
 	const sql = `SELECT acti_stat FROM users WHERE id = ?`;
 	db.query(sql, [user], function (error, result) {
-		if (error) {
-			console.log(error)
-		}
+		if (error) console.log(error)
 		else {
 			response.send(result[0]);
 		}

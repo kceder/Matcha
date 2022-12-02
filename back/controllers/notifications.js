@@ -1,8 +1,6 @@
 const db = require('../config/db.js');
 
 const viewNotification = (request, response) => {
-	console.log(request.body)
-	console.log(request.user)
 	const from_name = request.user.name;
 	const from_id = request.user.id;
 	const to = request.body.target;
@@ -25,7 +23,6 @@ const viewNotification = (request, response) => {
 		}
 	})
 	const content = `${from_name} viewed your profile!`;
-	console.log(content);
 	sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
 	db.query(sql, [from_id, to, content], (error, result) => {
 		if (error) {
@@ -58,18 +55,13 @@ const viewNotification = (request, response) => {
 
 }
 const likedNotification = (request, response) => {
-	console.log(request.body.username)
-	console.log(request.user)
 	const from_name = request.user.name;
 	const from_id = request.user.id;
 	let to = request.body.target;
 	let to2 = {to: 0, from_id: 0};
-	console.log('FUBARR:', to2.from_id);
-	console.log('BODYYYYY: ', request.body.target);
 	let content = `${from_name} liked you!`;
 	let content_1 = `You matched with ${from_name}!`;
 	let content_2 = `You matched with ${request.body.username}!`;
-	console.log('CONTENT:', request.body.username);
 	
 	const checksql = 'SELECT * FROM matches WHERE ((`user1` = ? AND `user2` = ?) OR (`user2` = ? AND `user1` = ?)) AND `matched` = 1';
 	db.query(checksql, [from_id, to, from_id, to], (error, result) => {
@@ -151,14 +143,11 @@ const likedNotification = (request, response) => {
 
 }
 const dislikedNotification = (request, response) => {
-	console.log(request.body)
-	console.log(request.user)
 	const from_name = request.user.name;
 	const from_id = request.user.id;
 	const to = request.body.target;
 
 	const content = `You unmatched with ${from_name}!`;
-	console.log(content);
 	
 	const checksql = 'SELECT * FROM matches WHERE (`user1` = ? AND `user2` = ?) OR (`user2` = ? AND `user1` = ?) AND `matched` = 1';
 	db.query(checksql, [from_id, to, from_id, to], (error, result) => {
@@ -206,8 +195,6 @@ const messageNotification = (request, name, response) => {
 	const from_id = request.sender;
 	const to = request.receiver;
 	const content = `${from_name} sent you a message!`;
-	
-	console.log(content);
 
 	let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
 	db.query(sql, [from_id, to, content], (error, result) => {
@@ -235,7 +222,6 @@ const messageNotification = (request, name, response) => {
 
 
 const getNofications = (request, response) => {
-	console.log(request.user.id)
 	const user = request.user.id;
 	const sql = 'SELECT * FROM notifications WHERE `to` = ? ORDER BY time DESC';
 
@@ -259,7 +245,6 @@ const readNotifications = (request, response) => {
 			console.log(error);
 			response.send('error');
 		} else {
-			console.log('reaad notif')
 			response.send(result);
 		}
 	})

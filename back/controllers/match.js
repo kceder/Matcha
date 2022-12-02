@@ -4,16 +4,12 @@ const db = require('../config/db.js');
 const { sendReportMail } = require('../utils/sendEmail.js');
 
 const fetchMatch = (request,  response) => {
-	console.log('body in fm:', request.body);
 	const user1 = request.user.id;
 	const user2 = request.body.target;
 
-	console.log('user1 id in fm:', user1);
-	console.log('user1 id in fm:', user2);
-
 	const sql = "SELECT * FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
 	db.query(sql, [user1, user2, user2, user1], (error, result) => {
-		if (error) console.log('ERROR in fetchMatch');
+		if (error) console.log('error');
 		else if (result.length === 0)
 			response.send('empty');
 		else if (result[0].block === 1)
@@ -26,8 +22,6 @@ const fetchMatch = (request,  response) => {
 			response.send('show')
 		else
 			response.send('something wrong in fetchMatch')
-		console.log(result[0]);
-		
 	})
 }
 
@@ -52,7 +46,7 @@ const likeDislike = (request, response) => {
 					db.query(sql, [newScore, user2], (error) => {
 						if (error) {
 							console.log(error)
-							response.sen('error update score view')
+							response.send('error update score view')
 						}
 					})
 				}
@@ -68,7 +62,7 @@ const likeDislike = (request, response) => {
 					sql = "INSERT INTO matches (user1, user2, block) VALUES (?, ?, 1)"
 					db.query(sql, [user1, user2], function(error, result) {
 						if (error) 
-							console.log('ERROR in matches 44')
+							console.log('error')
 						else {
 							response.send('OK');
 						}
@@ -90,7 +84,6 @@ const likeDislike = (request, response) => {
 					sql = "UPDATE matches SET like2 = ?, matched = true WHERE id = ?"
 					db.query(sql, [like1, matchId], function (error, result) {
 						if (error) {
-							// console.log(error)
 							response.send('error matches')
 						} else {
 							response.send('match')
@@ -117,7 +110,7 @@ const unlike = (request, response) => {
 	const user2 = request.body.target;
 	const like1 = request.body.like;
 	const content = `${request.user.name} unmatched you!`;
-	console.log('unlike', request.body.unlike);
+
 	if (request.body.unlike === 'unlike') {
 		const sql = "DELETE FROM matches WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
 		db.query(sql, [user1, user2, user2, user1], (error, result) => {
@@ -125,16 +118,16 @@ const unlike = (request, response) => {
 			else {
 				const sql = "DELETE FROM chatrooms WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)";
 				db.query(sql, [user1, user2, user2, user1], (error, result) => {
-					if (error) console.log('ERROR in likeDislike unlike 2');
+					if (error) console.log('ERROR in likeDislike unlike');
 					else {
 						let sql = 'SELECT * FROM notifications WHERE `from` = ? AND `to` = ? AND content = ?';
 						db.query(sql, [user1, user2, content], (error, result) => {
-							if (error) console.log('ERROR in likeDislike unlike 3')
+							if (error) console.log('ERROR in likeDislike unlike')
 							else {
 								if (result.length === 0) {
 									const sql = "INSERT INTO notifications (`from`, `to`, content) VALUES (?, ?, ?)";
 									db.query(sql, [user1, user2, content], (error, result) => {
-										if (error) console.log('ERROR in likeDislike unlike 4')
+										if (error) console.log('ERROR in likeDislike unlike')
 										else {
 											response.send('unlike')
 										}
@@ -143,7 +136,7 @@ const unlike = (request, response) => {
 								else if (result.length > 0) {
 									const sql = "UPDATE notifications SET time = NOW(), `read` = 0 WHERE id = ?";
 									db.query(sql, [result[0].id], (error, result) => {
-										if (error) console.log('ERROR in likeDislike unlike 5')
+										if (error) console.log('ERROR in likeDislike unlike')
 										else {
 											response.send('unlike')
 										}

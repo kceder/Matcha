@@ -460,13 +460,11 @@ while (i < 4) {
 		profile.picture = womenPics[iFemalePictures];
 	}
 	profile.preferences = preferences[iPreferences++];
-	console.log(profile);
 	
 	const insertsql = `INSERT INTO users (name, lastName, username, email, password, gender, bio, birthday, preferences, interests, acti_stat)
 						VALUES ('${profile.firstName}', '${profile.lastName}', '${profile.username}', '${profile.email}', '${profile.password}', '${profile.gender}', '${profile.bio}', '${profile.birthday}', '${profile.preferences}', '${profile.interests}', 2)`;
 						db.query(insertsql, (err, result) => {
-							if (err) throw err;
-							console.log(result);
+							if (err) console.log ( err );
 						})
 	i++;
 }

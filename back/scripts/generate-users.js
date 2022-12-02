@@ -63,31 +63,7 @@ while (i >= 0)	{
 	db.query(sql,[ users[i].username, users[i].email, users[i].password, users[i].gender, users[i].bio, users[i].birthday, users[i].preference, users[i].activation_token ], 
 		function (error, results) {
 			if (error) throw error;
-			else 
-				console.log('row added');
 		}
 	);
 	i--;
 }
-
-
-
-// db.connect((err) => {
-// 	if (err) throw err;
-// 	console.log('Connected to database');
-// 	const sql = "CREATE TABLE IF NOT EXISTS users (id INT(11) AUTO_INCREMENT PRIMARY KEY,\
-// 	username VARCHAR(50),\
-// 	email VARCHAR(50),\
-// 	password VARCHAR(250),\
-// 	gender VARCHAR(7),\
-// 	bio VARCHAR(500),\
-// 	birthday VARCHAR(11),\
-// 	preference VARCHAR(13),\
-// 	registration_date DATETIME DEFAULT NOW());";
-	
-// 	db.query(sql, (err, result) => {
-// 		if (err) throw err;
-// 		console.log('Connected to MySQL server');
-// 	});
-
-// });
