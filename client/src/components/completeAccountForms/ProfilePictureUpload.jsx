@@ -54,12 +54,10 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 				onCropChange={onCropChange}
 				onCropComplete={onCropComplete}
 				onZoomChange={onZoomChange} />
-			<div className='controls container' style={{position:"absolute", bottom:"5%"}} >
-				<div className='button-area row'>
-					<button type="button" class="btn btn-dark" onClick={onSubmit}>Save</button>
+			</div>
+				<div className='controls d-flex' style={{position:"absolute", bottom: '5%', width: '100%', left: '0', marginLeft : '20%'}}>
+					<button style={{width: '60%'}} className="btn btn-light" onClick={onSubmit}>Save</button>
 				</div>
-			</div>
-			</div>
 		</div>
 	)
 }
