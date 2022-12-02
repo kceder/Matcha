@@ -62,9 +62,10 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 					onCropChange={onCropChange}
 					onCropComplete={onCropComplete}
 					onZoomChange={onZoomChange} />
-				<div className='controls d-flex' style={{position:"absolute", bottom: '5%'}} >
-						<button  style={{width: '300px'}} class="btn btn-dark" onClick={onSubmit}>Save</button>
+				
 				</div>
+				<div className='controls d-flex' style={{position:"absolute", bottom: '5%', width: '100%', left: '0', marginLeft : '20%'}}>
+					<button style={{width: '60%'}} className="btn btn-light" onClick={onSubmit}>Save</button>
 				</div>
 			</div>)
 }
@@ -100,8 +101,8 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 							<input hidden ref={ref} type="file" 
 							accept=".jpg, .jpeg, .png"
 							onChange={(event) => handleChangePicture(event)}></input>
-							{data ? <ImageCropDialog i={i} url={data} setData={setData} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery} picture={picture} /> : null}
 					</button>
+							{data ? <ImageCropDialog i={i} url={data} setData={setData} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery} picture={picture} /> : null}
 				</Col>
 			</>
 		)
@@ -112,8 +113,8 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 					<button>
 							<Image onClick={() => handleClick()} src={placeholder} width="300" thumbnail />
 							<input hidden ref={ref} type="file" accept=".jpg, .jpeg, .png" onChange={(event) => handleChangePicture(event)}></input>
-							{data ? <ImageCropDialog i={i} url={data} setData={setData} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery} /> : null}
 					</button>
+							{data ? <ImageCropDialog i={i} url={data} setData={setData} setReloadGallery={setReloadGallery} reloadGallery={reloadGallery} /> : null}
 					</Col>
 				</>
 			)
