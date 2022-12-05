@@ -6,8 +6,7 @@ const socketServer = (server) => {
 			origin: "http://localhost:3000",
 		},
 	});
-
-	io.on("connection", (socket) => {
+io.on("connection", (socket) => {
 		socket.on("login", () => {
 			const sql = `SELECT user_id FROM loggedinusers`;
 			db.query(sql, (error, result) => {
@@ -20,29 +19,38 @@ const socketServer = (server) => {
 					io.emit("logged", users);
 				}
 			})
-			socket.on("disconnect", () => {
-			});
+			socket.removeListener('disconnect', () => {
+				console.log('disconnected')
+			})
 		});
 		socket.on("notification", (data) => {
 			socket.broadcast.emit('receive notification', data);
-			socket.on("disconnect", () => {
-			});
+			socket.removeListener('disconnect', () => {
+				console.log('disconnected')
+			})
 		})
 		socket.on('join_room', (room) => {
 			socket.join(room);
-			socket.on("disconnect", () => {
-			});
+			console.log('join room')
+			socket.removeListener('disconnect', () => {
+				console.log('disconnected')
+			})
 		})
 		socket.on('send_message', (data) => {
 
 			io.in(data.room).emit('receive_message', data);
 			socket.broadcast.emit('message_notification', data);
-			socket.on("disconnect", () => {
-				console.log("User Disconnected", socket.id);
-			});
+			console.log(data)
+			// socket.on("disconnect", () => {
+			// 	console.log("User Disconnected", socket.id);
+			// });
+		})
+		socket.removeListener('disconnect', () => {
+			console.log('disconnected')
 		})
 	})
 } 
+	
 
 module.exports = {
 	socketServer

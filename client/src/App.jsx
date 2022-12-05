@@ -134,7 +134,7 @@ const Navigation = ({socket}) => {
 }
 const App = () => {
 	
-	const socket = io.connect("http://localhost:5000");
+	const socket = io.connect("http://localhost:5001");
 	const [login, setLogin] = useState(false);
 
 	validator().then(response => {

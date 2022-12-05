@@ -10,6 +10,43 @@ import { Badge, Image, Row, Col, Container } from "react-bootstrap";
 import { getUserPhotos } from "../services/photos";
 import { getLoggedInUsers } from "../services/users";
 
+const ChatFooter = ({props}) => {
+	const room = useParams().roomId;
+	const [inputMessage, setInputMessage] = useState('')
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		const message = {
+			room: room,
+			body: inputMessage,
+			sender: props.user1,
+			receiver: props.user2,
+			time: new Date(),
+			// socket : props.socket.id
+		}
+		sendMessage(message).then(response => {
+			if (response.data === 'error') {
+				window.location.reload();
+			}
+			props.socket.emit('notification', {to : props.user2});
+			setInputMessage('')
+		})
+		props.socket.emit('send_message', message);
+	}
+
+	return (
+		<div className="" style={{ marginBottom: 'revert', padding: 25, maxWidth: 550}}>
+			<form onSubmit={(e) => handleSubmit(e)}>
+				<div className="d-flex align-items-end">
+					
+					<input className="form-control" placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)} />
+					<button disabled={inputMessage.replace(/\s/g, '').length === 0} className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
+				</div>
+			</form>
+		</div>
+	)
+}
+
 const LoginStatus = ({user}) => {
 	const socket = useContext(SocketContext);
 	const [login, setLogin] = useState(false);
@@ -45,11 +82,13 @@ const LoginStatus = ({user}) => {
 }
 
 const Message = ({message}) => {
+
+	console.log('HERE 2 !')
 	const [user1, setUser1] = useState(0);
 	const time = new Date(message.time).getHours() + ':' + new Date(message.time).getMinutes();
+	
 	getUser({target: 'self'}).then(response => {
 		setUser1(response.data.id)
-
 	})
 	if (message.sender === user1) {
 		return (
@@ -88,7 +127,9 @@ const Chat = ({props}) => {
 			}
 			setMessage((prev) => [...prev, data]);
 		})
-	}, [socket, props.user1, url])
+		console.log(socket)
+		// eslint-disable-next-line
+	}, [socket]) 
 	if (message.length > 0) {
 		return (
 			<>
@@ -137,7 +178,6 @@ const ChatHeader = ({user2}) => {
 export const ChatRoom = () => {
 	const navigate = useNavigate();
 
-	const [inputMessage, setInputMessage] = useState('')
 	const room = useParams().roomId;
 	const [user1, setUser1] = useState(0);
 	const [user2, setUser2] = useState(0);
@@ -147,7 +187,7 @@ export const ChatRoom = () => {
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
-
+		console.log('HERE 1 !')
 		validator().then((response) => {
 			if (response.data === 'token invalid' || response.data === 'no token') {
 				setLogin(false)
@@ -176,30 +216,9 @@ export const ChatRoom = () => {
 				setMessages(response.data);
 			})
 		})
-	}, [login, navigate, room, setLogin, socket]);
+	// eslint-disable-next-line
+	}, [login]);
 
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		const message = {
-			room: room,
-			body: inputMessage,
-			sender: user1,
-			receiver: user2,
-			time: new Date(),
-			socket : socket.id
-		}
-		await sendMessage(message).then(response => {
-			if (response.data === 'error') {
-				window.location.reload();
-			}
-			socket.emit('notification', {to : user2});
-			setInputMessage('')
-		})
-		await socket.emit('send_message', message);
-
-
-	}
-	
 	bottomRef.current?.scrollIntoView({behavior: 'auto'});
 		return (
 			<>
@@ -208,21 +227,13 @@ export const ChatRoom = () => {
 				<ChatHeader user2={user2}/>
 				<div className="" style={{height: '30rem' ,overflowY: 'scroll', marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550}}>
 				{messages.map((message, i) => {
+					console.log('i:', i)
 					return <Message key={i} message={message}/>
 				})}
 				<Chat props={{socket, room, user1}} />
 				<div ref={bottomRef} />
 				</div>
-				<div className="" style={{ marginBottom: 'revert', padding: 25, maxWidth: 550}}>
-
-				<form onSubmit={(e) => handleSubmit(e)}>
-					<div className="d-flex align-items-end">
-						
-						<input className="form-control" placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)} />
-						<button disabled={inputMessage.replace(/\s/g, '').length === 0} className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
-					</div>
-				</form>
-				</div>
+				<ChatFooter props={{user1, user2, socket}}/>
 				</div>
 			</>
 		)

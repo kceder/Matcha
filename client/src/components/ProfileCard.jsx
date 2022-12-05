@@ -199,7 +199,9 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 	}
 
 	const handleNavigateToProfile = () => {
-		window.location.href = `/user/${target}`
+		if (target !== 'self') {
+			window.location.href = `/user/${target}`
+		}
 	}
 
 	const handleLike = () => {

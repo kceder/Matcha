@@ -4,6 +4,9 @@ const randomProfile = require('random-profile-generator');
 const bcrypt = require('bcrypt');
 
 const usernames = [
+'dokeyball',
+'donkeyb00b',
+'dolly',
 'enderbit1zdmf',
 'norabluejh91e',
 'nogkeerceti7l7',
@@ -1806,6 +1809,12 @@ const usernames = [
 'spacewar518u0',
 'richeyyx93',
 'inflacijioe4gu',
+'kceder666',
+'crystalbunny69',
+'titus',
+'wakanda4ever',
+'xxdarklordxx',
+'shinyGiratina88',
 'fejzi8us1v',
 'jacijewmu7o',
 'nochalriswduz6',
@@ -2615,7 +2624,7 @@ con.connect(async (err) => {
 				console.log(err);
 			} else if (result.length === 0) {
 	
-				while (i < 500) {
+				while (i < 2008) {
 					process.stdout.clearLine();
 					process.stdout.cursorTo(0);
 					process.stdout.write('users generated ' + i);

@@ -283,7 +283,7 @@ const UserCard = ({props}) => {
 	} else {
 		return (
 			<div style={{marginBottom : '1.5rem', marginTop : '1.5rem'}}>
-				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} onDoubleClick={() => handleLike()} >
+				<div className="card mb-2" style={{ maxWidth: 500, borderRadius: '0 !important'}} >
 					<CarouselImages pictures={pictures} />
 					<div className="card-body">
 						<Container>

@@ -86,7 +86,15 @@ const likeDislike = (request, response) => {
 						if (error) {
 							response.send('error matches')
 						} else {
-							response.send('match')
+							sql = "INSERT INTO chatrooms (user1, user2) VALUES (?, ?)";
+							db.query(sql, [user1, user2], (error, result) => {
+								if (error) {
+									console.log(error)
+									response.send('error')
+								} else {
+									response.send('match')
+								}
+							})
 						}
 					})
 				} else if (like1 !== true) {
