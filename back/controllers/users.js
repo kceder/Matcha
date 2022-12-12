@@ -19,13 +19,17 @@ const getLoggedInUsers = (request, response) => {
 
 const logOut = (request, response) => {
 	const sql = 'DELETE FROM loggedinusers WHERE user_id = ?';
+	if (request.user.id === undefined) {
+		response.clearCookie('token').send('logout');
+	}
+	else {
 	db.query(sql, [request.user.id], function (error, result) {
 		if (error) console.log('Error in logout:', error);
 		else {
 			response.clearCookie('token').send('logout');
-
 		}
 	})
+	}
 }
 
 const getUser = (request, response) => {
@@ -37,7 +41,7 @@ const getUser = (request, response) => {
 	} else {
 		target = request.body.target;
 	}
-		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score, registration_date FROM users WHERE id = ?';
+		const sql = 'SELECT name, lastName, username, email, gender, bio, preference, interests, birthday, score, registration_date, acti_stat FROM users WHERE id = ?';
 
 		db.query(sql, [target], 
 				function (error, result) {
@@ -68,6 +72,7 @@ const register = (request, response) => {
 	const password = request.body.password;
 	const username = request.body.username;
 	const sqlEmailCheck = 'SELECT * FROM users WHERE email = ?';
+	
 	db.query(sqlEmailCheck, [email],
 		function (error, result) {
 			if (error) {
@@ -206,12 +211,12 @@ const activateUser = (request, response) => {
 	}) 
 }
 
-const completeAccount = (request, response) => {
+const completeAccount = async (request, response) => {
 
 	const token = request.cookies.token;
-	let decodedToken = verifyToken(token);
+	let decodedToken = await verifyToken(token); 
 	
-	const username  = request.body.username
+
 	const gender = request.body.gender;
 	const bio = request.body.bio;
 	const noWhiteSpaceBio = bio.replaceAll(' ', '');
@@ -272,10 +277,10 @@ const completeAccount = (request, response) => {
 }
 }
 
-const addPhotos = (request, response) => {
+const addPhotos = async (request, response) => {
 
 
-	const user = verifyToken(request.cookies.token);
+	const user = await verifyToken(request.cookies.token);
 	let i = request.files.length;
 	
 	request.files.forEach(image => {
@@ -301,7 +306,7 @@ const  getAllUsers = (request, response) => {
 			response.send(result);
 		})
 }
-const filterUsers = (request, response) => {
+const filterUsers = async (request, response) => {
 
 	const filterByTags = (user, interests) => {
 		let i = 0;
@@ -317,7 +322,7 @@ const filterUsers = (request, response) => {
 		return i > 0 ? user : null;
 	}
 
-	const user = verifyToken(request.cookies.token);
+	const user = await verifyToken(request.cookies.token);
 	const gender = request.body.gender; //
 	const preference = request.body.preference; //
 	const interests = request.body.tags; //
@@ -328,7 +333,14 @@ const filterUsers = (request, response) => {
 	const rating = request.body.rating;
 	let sql;
 	let blockedUsers = [];
-	sql = `SELECT * FROM matches WHERE user1 = ${user.id}`;
+	// sql = `SELECT * FROM matches WHERE (user1 = ${user.id}) OR (user2 = ${user.id} AND like2 <> NULL) OR (user2 = ${user.id} AND block = 1) OR (user1 = ${user.id} AND block = 1)`;
+	sql = `SELECT * FROM matches WHERE \
+	(user2 = ${user.id} AND like2 <> NULL)\
+	OR (user1 = ${user.id}) \
+	OR (user2 = ${user.id} AND block = 1)\
+	OR (user1 = ${user.id} AND block = 1) \
+	OR (user2 = ${user.id} AND matched = 1) \
+	OR (user1 = ${user.id} AND matched = 1);`;
 	db.query(sql, function (error, result) {
 		if (error) console.log(error)
 		else {
@@ -349,7 +361,7 @@ const filterUsers = (request, response) => {
 	} else if (gender === 'male' && preference === 'bisexual') {
 		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'male' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'female' AND (preference = 'bisexual' OR preference = 'heterosexual')`;
 	} else if (gender === 'female' && preference === 'bisexual') {
-		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id NOT LIKE ?`;
+		sql = `SELECT * FROM users JOIN locations ON users.id = locations.user_id WHERE gender = 'female' AND (preference = 'bisexual' OR preference = 'homosexual') OR gender = 'male' AND (preference = 'bisexual' OR preference = 'heterosexual') AND users.id != ?`;
 	}
 	db.query(sql, [user.id], function (error, result) {
 		if (error) console.log(error)

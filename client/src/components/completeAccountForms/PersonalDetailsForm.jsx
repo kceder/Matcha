@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { setUpUser } from '../../services/register';
 import { useNavigate } from "react-router-dom";
 import { getAllTags } from '../../services/tags';
 import Badge from 'react-bootstrap/Badge';
-
+import { logOut } from '../../services/login';
+import SocketContext from '../../contexts/socketContext';
+import LoginContext from '../../contexts/loginContext';
 
 const AutocompleteTagsSelector = ({ tags, setTags, interests, setInterests }) => {
 
@@ -81,6 +83,8 @@ const PersonalDetailsForm = () => {
 	const [interests, setInterests] = useState([]);
 	const [error, setError] = useState('');
 	const Navigate = useNavigate();
+	const { socket } = useContext(SocketContext);
+	const [login, setLogin] = useContext(LoginContext);
 
 	
 	useEffect(() => {

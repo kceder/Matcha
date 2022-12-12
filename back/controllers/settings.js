@@ -90,7 +90,6 @@ const changePassword = (request,  response) => {
 }
 
 const changeUserInfo = (request, response) => {
-
 	const id = request.user.id;
 	const username  = request.body.username;
 	const name  = request.body.name;
@@ -171,16 +170,15 @@ const changeUserInfo = (request, response) => {
 												response.send('error');
 											} else {
 													const newTags = interests.filter((interest) => !tags.map((tag) => tag.tag).includes(interest));
-														newTags.forEach((tag) => {
+														newTags.forEach(async (tag) => {
 															const sql = `INSERT INTO tags (tag) VALUES (?)`;
 															db.query(sql, [tag],(err, result) => {
 																if (err) {
-																	response.send('error :: setUpUser')
-																} else {
-																	response.send('OK');
+																	console.log('error')
 																}
 															})
 														})
+														response.send('OK')
 												}
 											})
 									}

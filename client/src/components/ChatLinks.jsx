@@ -64,7 +64,7 @@ const ChatLink = ({user, room}) => {
 				setLastMessage(<small className="text-muted">{response.data.content}</small>)
 			}
 		})
-	})
+	}, [ user, room])
 
 	const handleClick = (room) => {
 		Navigate(`/direct/${room}`)

@@ -39,13 +39,13 @@ const LoginForm = () => {
 		loginUser(userObject).then((response) => {
 			if (response.data === "user not found") setError("User not found");
 			else if (response.data === "wrong password") setError("Wrong password");
+			else if (response.data === "account not verified") setError("Account not activated! Please check your email");
 			else if (response.status === 202) {
 
 				if (navigator.geolocation) {
 					
 					navigator.geolocation.getCurrentPosition((position, error) => {
 
-						if (error) console.log(error);
 						const userLocation = {
 							lat: position.coords.latitude,
 							lon: position.coords.longitude,
@@ -113,9 +113,9 @@ const LoginForm = () => {
 				placeholder="Password"
 				onChange={(e) => handleChangePassword(e.target.value)}
 			/>
-			<small className="text-danger">{error}</small>
+			<small className="text-danger" style={{marginBottom : '3px'}}>{error}</small>
 			<br></br>
-			<div className="d-flex justify-content-between">
+			<div className="d-flex justify-content-between" style={{marginTop : '1rem'}}>
 				<button type="button" className="btn btn-outline-dark" onClick={handleSubmit}>
 				Login
 				</button>

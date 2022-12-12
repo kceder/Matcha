@@ -18,7 +18,6 @@
 		"cors": "^2.8.5",
 		"depcheck": "^1.4.3",
 		"dotenv": "^16.0.2",
-		"email-validator": "^2.0.4",
 		"express": "^4.18.1",
 		"express-limit": "^0.1.0",
 		"jsonwebtoken": "^8.5.1",

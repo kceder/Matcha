@@ -3,6 +3,7 @@ import React from 'react';
 import { sendRestore } from "../services/settings";
 import { useParams } from 'react-router-dom';
 import { passwordRestore } from '../services/settings';
+import { useNavigate } from 'react-router-dom';
 
 const RestoreForm = ({token}) => {
     const [password, setPassword] = useState('');
@@ -10,6 +11,7 @@ const RestoreForm = ({token}) => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -28,6 +30,9 @@ const RestoreForm = ({token}) => {
                 setSuccess('Password changed successfully !');
                 setLoading(false);
                 setError('');
+                setTimeout(() => {
+                    navigate('/login');
+                }, 3000);
             }
             else {
                 setError('Something went wrong !');
@@ -84,7 +89,7 @@ const RestorePassword = () => {
             }
             else if (response.data === 'no') {
 
-                    setShowError('Are you fucking kidding me?')
+                    setShowError('Email not found !')
             }
         })
     }

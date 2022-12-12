@@ -103,7 +103,14 @@ const likeDislike = (request, response) => {
 						if (error) {
 							response.send('error matches')
 						} else {
-							response.send('all gucci belushi')
+							sql = "DELETE FROM chatrooms WHERE (user1 = ? AND user2 = ?) OR (user1 = ? AND user2 = ?)"
+							db.query(sql, [user1, user2, user2, user1], (error) => {
+								if (error) {
+									response.send('error')
+								} else {
+									response.send('OK');
+								}
+							})
 						}
 					})
 				}

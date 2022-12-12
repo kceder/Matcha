@@ -4,7 +4,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const validateEmail = (email) => {
-	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*.[a-zA-Z]{2,6}$');
+	// eslint-disable-next-line
+	const regex = new RegExp('^(?!.{51})[a-z0-9]+(?:.[a-z0-9]+)*@[a-z0-9]+(?:[.-][a-z0-9-]+)*\\.[a-zA-Z]{2,6}$');
 	return regex.test(String(email).toLowerCase());
 }
 
@@ -29,7 +30,7 @@ const RegisterForm = () => {
 			return;
 		} else if (passwordRegex.test(password) === false) {
 			setError('Password must be between 8 and 13 characters, contain at least one uppercase letter, one lowercase letter and one number');
-		} else if (!validateEmail(email)) {
+		} else if (validateEmail(email) === false) {
 			setError('Invalid email');
 		} else if (name.length < 2) {
 			setError('Name too short');
@@ -129,7 +130,7 @@ const RegisterForm = () => {
 					<small className='text-muted'>Min. 8 Max. 13 characters containing at least: 1 uppercase, 1 lowercase, 1 number</small><br></br><br></br>
 					<label htmlFor='passwordRepeat' >Repeat Password</label><br></br>
 					<input id="passwordRepeat" className='form-control' type="password" value={repeatPassword} onChange={(e) => handleChangeRepeatPassword(e.target.value)} required/>
-					<small className='text-dark'>{error}</small><br></br>
+					<div className='text-dark'>{error}</div><br></br>
 					<button type="button" className="btn btn-outline-secondary" onClick={handleSubmit}>SUBMIT</button>
 				</form>
 				<p>{success}</p>

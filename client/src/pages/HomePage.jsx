@@ -37,9 +37,13 @@ const HomePage = () => {
 				navigate('/')
 			}
 			else if (response.data === 'valid') {
-				console.log('valid')
 				setLogin(true);
 				getUser({target: "self"}).then((response) => {
+					if (response.data.basicInfo.acti_stat === 2)
+						navigate('/completeaccount/photos');
+					else if (response.data.basicInfo.acti_stat === 1)
+						navigate('/completeaccount');
+					else {
 					const locations = response.data.locations;
 					const user = response.data.basicInfo;
 					calculateAge(user.birthday);
@@ -48,7 +52,7 @@ const HomePage = () => {
 					setTags(user.interests.replace(/\[|\]|"/g, '').split(','));
 					const ret = locations.user_set_location ? locations.user_set_location : (locations.gps_location ? locations.gps_location : locations.ip_location);
 					setLocation(ret);
-					console.log('dfsfds', login);
+					}
 				})
 			}
 

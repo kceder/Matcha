@@ -2,9 +2,9 @@ const express = require('express');
 const matchController = require('../controllers/match.js')
 const verifyToken = require('../utils/verifyToken.js')
 
-const tokenValidator = (request, response, next) => {
+const tokenValidator = async (request, response, next) => {
 	const token = request.cookies.token;
-	const user = verifyToken(token)
+	const user = await verifyToken(token)
 	request.user = user;
 	if (user) {
 		next();

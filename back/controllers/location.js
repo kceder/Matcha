@@ -1,10 +1,10 @@
 const db = require('../config/db.js');
 const verifyToken = require('../utils/verifyToken.js');
 
-const updateGpsLocation = (request, response) => {
+const updateGpsLocation = async (request, response) => {
 	const token = request.cookies.token;
 	
-	let decodedToken = verifyToken(token);
+	let decodedToken = await verifyToken(token);
 	
 	const sql = "UPDATE locations SET gps_location = POINT(?, ?) WHERE id = ?";
 	db.query(sql, [request.body.lon, request.body.lat, decodedToken.id],
@@ -17,10 +17,10 @@ const updateGpsLocation = (request, response) => {
 		})
 }
 
-const updateIpLocation = (request, response) => {
+const updateIpLocation = async (request, response) => {
 	const token = request.cookies.token;
 	
-	let decodedToken = verifyToken(token);
+	let decodedToken = await verifyToken(token);
 
 	const sql = "UPDATE locations SET ip_location = POINT(?, ?), ip_city = ? WHERE id = ?";
 	db.query(sql, [request.body.lon, request.body.lat, request.body.city, decodedToken.id],

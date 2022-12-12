@@ -26,7 +26,7 @@ export const ChatPage = () => {
 				})
 			}
 		})
-	});
+	}, [navigate]);
 	
 	if (currentUser === 0 && chatRooms.length === 0) {
 		return <>loading</>

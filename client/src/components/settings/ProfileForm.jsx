@@ -115,6 +115,7 @@ const ProfileForm = () => {
 	const [updated, setUpdated] = useState('');
 	const [tags, setTags] = useState([]);
 	const [interests, setInterests] = useState([]);
+	const [successfull, setSuccesfull] = useState('')
 
 	useEffect(() => {
 		getAllTags().then((response) => {
@@ -153,9 +154,9 @@ const ProfileForm = () => {
 		const regex = new RegExp('^[a-zA-Z0-9]{0,50}$');
 		if (regex.test(event.target.value) === true) {
 			if (event.target.value.length < 6) {
-				setUsernameError('Username is too short')
+				setUsernameError(' is too short')
 			} else if (event.target.value.length > 15) {
-				setUsernameError('Username is too long');
+				setUsernameError(' is too long');
 				setUsernameError('');
 			} else if(re.test(event.target.value) === false) {
 				setUsernameError('Only letter and numbers are allowed!')
@@ -171,7 +172,7 @@ const ProfileForm = () => {
 		var re = new RegExp(/^[A-Za-z]*$/);
 
 		if (event.target.value.length > 20) {
-			setNameError('Name is too long');
+			setNameError(' is too long');
 		} else if(re.test(event.target.value) === true) {
 			setName(event.target.value);
 			setNameError('');
@@ -187,7 +188,7 @@ const ProfileForm = () => {
 		var re = new RegExp(/^[A-Za-z]*$/);
 
 		if (event.target.value.length > 20) {
-			setLastNameError('Last Name is too long');
+			setLastNameError(' is too long');
 		} else if(re.test(event.target.value) === true) {
 			setLastName(event.target.value);
 			setLastNameError('');
@@ -202,7 +203,7 @@ const ProfileForm = () => {
 	const handleEmailChange = (event) => {
 
 		if (event.target.value.length > 200) {
-			setEmailError('Email is too long');
+			setEmailError(' is too long');
 		} else {
 			setEmailError('');
 		}
@@ -296,12 +297,18 @@ const ProfileForm = () => {
 					tags
 				}
 				changeUserInfo(userObject).then(response => {
+					console.log(response.data)
 					if (response.data === 'email exists' || response.data === 'invalid email') {
-						setEmailError('invalid email');
+						setEmailError('is invalid');
 					} else if (response.data === 'username exists') {
 						setUsernameError('username already taken');
 					} else if (response.data === 'OK') {
 						setUpdated('Profile updated');
+						setSuccesfull('Profile Updated')
+						setTimeout(() => {
+
+							setSuccesfull('')
+						}, 1000)
 					}
 				})
 			}
@@ -313,23 +320,23 @@ const ProfileForm = () => {
 			<div className="container" style={{ maxWidth : '25rem' }}>
 			<Updated updated={updated}/>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary">Username <span className="text-secondary">{usernameError}</span></Form.Label>
+				<Form.Label className="text-secondary">Username <span className="text-dark">{usernameError}</span></Form.Label>
 				<Form.Control placeholder="Username" value={username} onChange={event => handleUsernameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Name <span className="text-secondary">{nameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Name <span className="text-dark">{nameError}</span></Form.Label>
 				<Form.Control placeholder="Name" value={name} onChange={event => handleNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Last Name <span className="text-secondary">{lastNameError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Last Name <span className="text-dark">{lastNameError}</span></Form.Label>
 				<Form.Control placeholder="Last Name" value={lastName} onChange={event => handleLastNameChange (event)}/>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Email <span className="text-secondary">{emailError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Email <span className="text-dark">{emailError}</span> </Form.Label>
 				<Form.Control placeholder="Email" value={email} onChange={event => handleEmailChange(event)} />
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Location <span className="text-secondary">{latError}	{lonError}</span></Form.Label>
+				<Form.Label className="text-secondary" >Location <span className="text-dark">{latError}	{lonError}</span></Form.Label>
 				<div className="d-flex">
 					<Form.Control type="number" min="0" className="col" placeholder="lat" value={lat} onChange={event => handleLatChange(event)}/>
 					<Form.Control type="number" min="0" className="col" placeholder="lon" value={lon} onChange={event => handleLonChange(event)}/>
@@ -337,7 +344,7 @@ const ProfileForm = () => {
 				</div>
 			</Form.Group>
 			<Form.Group className="mb-3"  >
-				<Form.Label className="text-secondary" >Bio  <span className="text-secondary">{bioError}</span> </Form.Label>
+				<Form.Label className="text-secondary" >Bio  <span className="text-dark">{bioError}</span> </Form.Label>
 				<Form.Control as="textarea" rows="3" placeholder="Bio" maxLength={500} value={bio} onChange={event => handleBioChange(event)} />
 				<small className='align-self-end'>{bio.length}/500</small>
 			</Form.Group>
@@ -351,7 +358,7 @@ const ProfileForm = () => {
 			<Form.Group className="mb-3">
 				<Form.Label className="text-secondary" >Preference</Form.Label>
 				<Form.Select value={preference} onChange={event => setPreference(event.target.value)}>
-					<option value={'heterosexual'} >Heterosual</option>
+					<option value={'heterosexual'} >Heterosexual</option>
 					<option value={'homosexual'}>Homosexual</option>
 					<option value={'bisexual'}>Bisexual</option>
 				</Form.Select>
@@ -363,6 +370,7 @@ const ProfileForm = () => {
 			<Button variant="secondary" type="submit" onClick={(event) => handleSubmit(event)}>
 				Submit
 			</Button>
+			<span className="text-secondary m-3">{successfull}</span>
 			</div>
 		</>
 	)

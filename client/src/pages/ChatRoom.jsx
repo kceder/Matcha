@@ -16,22 +16,26 @@ const ChatFooter = ({props}) => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
-		const message = {
-			room: room,
-			body: inputMessage,
-			sender: props.user1,
-			receiver: props.user2,
-			time: new Date(),
-			// socket : props.socket.id
-		}
-		sendMessage(message).then(response => {
-			if (response.data === 'error') {
-				window.location.reload();
+		if (inputMessage.replace(/\s/g, '').length !== 0 && inputMessage.length < 420) {
+			const message = {
+				room: room,
+				body: inputMessage,
+				sender: props.user1,
+				receiver: props.user2,
+				time: new Date(),
+				// socket : props.socket.id
 			}
-			props.socket.emit('notification', {to : props.user2});
-			setInputMessage('')
-		})
-		props.socket.emit('send_message', message);
+			sendMessage(message).then(response => {
+				if (response.data === 'error') {
+					window.location.reload();
+				}
+				props.socket.emit('notification', {to : props.user2});
+				setInputMessage('')
+			})
+			props.socket.emit('send_message', message);
+		} else {
+			props.setMessages((prev) => [...prev, {room: room, body: 'nope', sender: props.user1, receiver: props.user2, time: new Date()}]);
+		}
 	}
 
 	return (
@@ -40,7 +44,7 @@ const ChatFooter = ({props}) => {
 				<div className="d-flex align-items-end">
 					
 					<input className="form-control" placeholder="Message..." type="text" value={inputMessage} onChange={e => setInputMessage(e.target.value)} />
-					<button disabled={inputMessage.replace(/\s/g, '').length === 0} className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
+					<button disabled={inputMessage.replace(/\s/g, '').length === 0 || inputMessage.length > 420} className="btn btn-secondary" type="submit" ><i className="fa-regular fa-paper-plane"></i></button>
 				</div>
 			</form>
 		</div>
@@ -83,7 +87,6 @@ const LoginStatus = ({user}) => {
 
 const Message = ({message}) => {
 
-	console.log('HERE 2 !')
 	const [user1, setUser1] = useState(0);
 	const time = new Date(message.time).getHours() + ':' + new Date(message.time).getMinutes();
 	
@@ -127,7 +130,6 @@ const Chat = ({props}) => {
 			}
 			setMessage((prev) => [...prev, data]);
 		})
-		console.log(socket)
 		// eslint-disable-next-line
 	}, [socket]) 
 	if (message.length > 0) {
@@ -187,7 +189,6 @@ export const ChatRoom = () => {
 	const bottomRef = useRef(null);
 
 	useEffect(() => {
-		console.log('HERE 1 !')
 		validator().then((response) => {
 			if (response.data === 'token invalid' || response.data === 'no token') {
 				setLogin(false)
@@ -227,13 +228,12 @@ export const ChatRoom = () => {
 				<ChatHeader user2={user2}/>
 				<div className="" style={{height: '30rem' ,overflowY: 'scroll', marginBottom: 'revert', marginTop: 'revert', padding: 25, maxWidth: 550}}>
 				{messages.map((message, i) => {
-					console.log('i:', i)
 					return <Message key={i} message={message}/>
 				})}
 				<Chat props={{socket, room, user1}} />
 				<div ref={bottomRef} />
 				</div>
-				<ChatFooter props={{user1, user2, socket}}/>
+				<ChatFooter props={{user1, user2, socket, setMessages, messages}}/>
 				</div>
 			</>
 		)

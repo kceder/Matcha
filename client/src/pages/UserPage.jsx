@@ -181,24 +181,24 @@ const UserCard = ({props}) => {
 		setAge(Math.floor(ageMS / 31536000000));
 	}
 	useEffect(() => {
-
-		updateViewStats({target: target})
-		const obj2 = {target: target, username: username};
-		if (target !== "self") {
-			view(obj2).then(response => {
-				socket.emit('notification', response.data);
-			})
-			updateViewStats(obj2)
-		}
 		fetchMatch({target: target}).then(response => {
 			if (response.data === 'blocked') {
 				navigate('/home')
+				return;
 			}
 			else if (response.data === 'no show') {
 				setUserLiked(true);
 			}
 			else if (response.data === 'match') {
 				setUserLiked(true);
+			}
+			updateViewStats({target: target})
+			const obj2 = {target: target, username: username};
+			if (target !== "self") {
+				view(obj2).then(response => {
+					socket.emit('notification', response.data);
+				})
+				updateViewStats(obj2)
 			}
 		})
 		const obj = { target: props.target }

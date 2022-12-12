@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage'
 import { setProfilePicture } from '../../services/photos';
 import { useNavigate } from 'react-router-dom';
 import {validator} from '../../services/validator'
 import { checkActiStat } from '../../services/users';
+import { logOut } from '../../services/login';
+import SocketContext from '../../contexts/socketContext';
+import LoginContext from '../../contexts/loginContext';
 
 
-const ImageCropDialog = ({url}) => {
+const ImageCropDialog = ({setUrl, url}) => {
 	const Navigate = useNavigate();
 	const [zoom, setZoom] = useState(1);
 	const [crop, setCrop] = useState({x:0, y:0});
-	// const [aspectRatio, setAspectRatio] = useState({value:3/4, text: "3/4"});
 	const aspectRatio = {value:4/4, text: "3/4"}
 	const [croppedArePixels, setCroppedAreaPixels] = useState(null);
 	const onCropChange = (crop) => {
@@ -55,8 +57,11 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 				onCropComplete={onCropComplete}
 				onZoomChange={onZoomChange} />
 			</div>
-				<div className='controls d-flex' style={{position:"absolute", bottom: '5%', width: '100%', left: '0', marginLeft : '20%'}}>
+				<div className='controls d-flex' style={{position:"absolute", width: '100%', bottom: '5%', left: '0', marginLeft : '20%'}}>
 					<button style={{width: '60%'}} className="btn btn-light" onClick={onSubmit}>Save</button>
+				</div>
+				<div className='controls d-flex' style={{position:"absolute",  width: '100%', top: '5%', left: '0', marginLeft : '20%'}}>
+					<button style={{width: '60%'}} className="btn btn-light" onClick={() => setUrl('')}>Cancel</button>
 				</div>
 		</div>
 	)
@@ -65,6 +70,9 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 
 const ProfilePictureUpload = () => {
 	const navigate = useNavigate()
+	const { socket } = useContext(SocketContext);
+	const [login, setLogin] = useContext(LoginContext);
+	const Navigate = useNavigate();
 	validator().then((response) => {
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
@@ -85,11 +93,22 @@ const ProfilePictureUpload = () => {
 				alert("file must be a picture")
 			}
 		}
+
+	const handleLogout = (e) => {
+		e.preventDefault()
+		logOut().then(response => {
+			setLogin(false);
+			Navigate('/');
+			socket.emit('login');
+		})
+	};
+
 	return (
 		<div>
 			<div className='container'>
+				<h3 style={{color : 'GrayText', marginTop : '2rem'}} className="text-center">Upload Profile Picture</h3>
 				<input type="file" className="form-control mt-5" accept=".jpg, .jpeg, .png" id="customFile" onChange={(event)=>handleFileChange(event)}/>
-				{url ? <> <ImageCropDialog url={url}/></> : null}
+				{url ? <> <ImageCropDialog setUrl={setUrl} url={url}/></> : null}
 			</div>
 		</div> 
 	)

@@ -9,6 +9,7 @@ import { validator } from "../services/validator";
 import LoginContext from "../contexts/loginContext";
 import { useNavigate } from "react-router-dom";
 import Stats from "../components/Stats";
+import { useEffect } from "react";
 
 const MyForm = ({containerToShow, login}) => {
 	if (login === true) {
@@ -29,17 +30,19 @@ const MyForm = ({containerToShow, login}) => {
 
 export const ProfilePage = () => {
 	const [login, setLogin] = useContext(LoginContext);
-	validator().then((response) => {
-		if (response.data === 'token invalid' || response.data === 'no token') {
-			navigate('/')
-		}
-		else {
-			setLogin(true)
-		}
-	})
+	const navigate = useNavigate();
+	useEffect(() => {
+		validator().then((response) => {
+			if (response.data === 'token invalid' || response.data === 'no token') {
+				navigate('/')
+			}
+			else {
+				setLogin(true)
+			}
+		})
+	}, [])
 	const [containerToShow, setContainerToShow] = useState(1)
 
-	const navigate = useNavigate();
 
 	const handleClick = (value,  setShowHide, showHide) => {
 		setShowHide(!showHide)

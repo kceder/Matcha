@@ -2114,7 +2114,7 @@ const tags = [
 	'Tuning',
 	'K-Pop',
 	'Kungfu'
-	];
+];
 
 const con = mysql.createConnection({
 	host: process.env.DB_HOST,
@@ -2126,7 +2126,6 @@ const con = mysql.createConnection({
 con.connect(async (err) => {
 	async function createTables() {
 		if (err) console.log(err);
-		let result = false;
 		con.query("CREATE DATABASE IF NOT EXISTS matcha", function (err, result) {
 			if (err) console.log(err);
 			if (result.warningCount > 0)
@@ -2267,21 +2266,29 @@ con.connect(async (err) => {
 				}
 		});
 		sql = "CREATE TABLE IF NOT EXISTS matches (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11), like1 BOOLEAN, like2 BOOLEAN, matched BOOLEAN, block BOOLEAN);";
-		con.query (sql, (error, resutl) => {
+		con.query (sql, (error, result) => {
 			if (error) console.log(error);
-			else console.log('match table')
+			if (result.warningCount > 0)
+				console.log('\x1b[36m%s\x1b[0m', "match table already exists");
+			else 
+				console.log('\x1b[36m%s\x1b[0m', "match table created");
 		})
 		sql = "CREATE TABLE IF NOT EXISTS chatrooms (id INT(11) AUTO_INCREMENT PRIMARY KEY, user1 INT(11), user2 INT(11));"
-		con.query(sql, (error, resutl) => {
+		con.query(sql, (error, result) => {
 			if (error) console.log(error);
-			else console.log('chatroom table')
+			if (result.warningCount > 0)
+				console.log('\x1b[36m%s\x1b[0m', "chatrooms table already exists");
+			else 
+				console.log('\x1b[36m%s\x1b[0m', "chatrooms table created");
 		})
 		sql = "CREATE TABLE IF NOT EXISTS messages (id INT(11) AUTO_INCREMENT PRIMARY KEY, chatroom_id INT(11), sender INT(11), body VARCHAR(420), seen BOOLEAN DEFAULT FALSE, time DATETIME DEFAULT NOW());";
-		con.query(sql, (error, resutl) => {
+		con.query(sql, (error, result) => {
 			if (error) console.log(error);
-			else console.log('messages table')
+			if (result.warningCount > 0)
+				console.log('\x1b[36m%s\x1b[0m', "messages table already exists");
+			else 
+				console.log('\x1b[36m%s\x1b[0m', "messages table created");
 		})
-		return result;
 	}
 	function populate (result) {
 
