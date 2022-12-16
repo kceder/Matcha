@@ -1,14 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import Cropper from 'react-easy-crop';
 import getCroppedImg from './cropImage'
 import { setProfilePicture } from '../../services/photos';
 import { useNavigate } from 'react-router-dom';
 import {validator} from '../../services/validator'
 import { checkActiStat } from '../../services/users';
-import { logOut } from '../../services/login';
-import SocketContext from '../../contexts/socketContext';
-import LoginContext from '../../contexts/loginContext';
-
 
 const ImageCropDialog = ({setUrl, url}) => {
 	const Navigate = useNavigate();
@@ -26,9 +22,18 @@ const ImageCropDialog = ({setUrl, url}) => {
 	}
 	
 	const onSubmit = async() => {
-		const croppedImageUrl = await getCroppedImg(url, croppedArePixels);
-	
-		const size = croppedImageUrl.length;
+		let croppedImageUrl;
+		try {
+			croppedImageUrl = await getCroppedImg(url, croppedArePixels);
+		} catch (e) {
+			alert('image invalid')
+		}
+
+		if (croppedImageUrl === undefined || croppedImageUrl === null || croppedImageUrl === "invalid") {
+			alert('image invalid')
+			window.location.reload(false);
+		} else {
+			const size = croppedImageUrl.length;
 		if (size * (3/4) > 52428800 / 5){
 			alert('file too big')
 		} else {
@@ -42,6 +47,8 @@ const ImageCropDialog = ({setUrl, url}) => {
 			})
 		
 		}
+		}
+		
 	};
 
 const onCropComplete = (croppedArea, croppedArePixels) => {
@@ -70,9 +77,6 @@ const onCropComplete = (croppedArea, croppedArePixels) => {
 
 const ProfilePictureUpload = () => {
 	const navigate = useNavigate()
-	const { socket } = useContext(SocketContext);
-	const [login, setLogin] = useContext(LoginContext);
-	const Navigate = useNavigate();
 	validator().then((response) => {
 		if (response.data === 'token invalid' || response.data === 'no token') {
 			navigate('/')
@@ -86,22 +90,41 @@ const ProfilePictureUpload = () => {
 	const [url, setUrl] = useState('');
 
 	const handleFileChange = (event) => {
-		if (event.target.files[0]) {
-			if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") 
-				setUrl(URL.createObjectURL(event.target.files[0]));
-			else
-				alert("file must be a picture")
-			}
-		}
 
-	const handleLogout = (e) => {
-		e.preventDefault()
-		logOut().then(response => {
-			setLogin(false);
-			Navigate('/');
-			socket.emit('login');
-		})
-	};
+		let allowed_file_types = {
+			"iVBORw0KGgo": "image/png",
+			"/9j/": "image/jpg",
+		  };
+
+		const getBase64 = (file) => {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = () => resolve(reader.result);
+				reader.onerror = error => reject(error);
+			});
+		}
+		getBase64(event.target.files[0]).then(base64 => {
+			let valid = false;
+			base64 = base64.split(',')[1];
+			for (let i in allowed_file_types) {
+				if (base64.indexOf(i) === 0) {
+					if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") {
+
+						setUrl(URL.createObjectURL(event.target.files[0]));
+						valid = true;
+					}
+				}
+			}
+			if (valid === false) {
+				alert('File not allowed. Only png, jpg and jpeg are allowed')
+			}
+
+
+		}).catch(err => {
+			alert('Spend more time with the family')
+		});
+	}
 
 	return (
 		<div>

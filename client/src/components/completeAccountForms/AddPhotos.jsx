@@ -27,23 +27,33 @@ const ImageCropDialog = ({i, url, setData, picture, setReloadGallery, reloadGall
 		setZoom(zoom);
 	}
 	
-	const onSubmit = async() => {
-		const croppedImageUrl = await getCroppedImg(url, croppedArePixels);
+	const onSubmit = async () => {
+		let croppedImageUrl;
 	
-		const size = croppedImageUrl.length;
-		if (size * (3/4) > 52428800 / 5){
-			alert('file too big')
+		try {
+			croppedImageUrl = await getCroppedImg(url, croppedArePixels);
+		} catch (e) {
+		}
+	
+		if (croppedImageUrl !== undefined && croppedImageUrl !== null && croppedImageUrl !== "invalid") {
+			const size = croppedImageUrl.length;
+			if (size * (3/4) > 52428800 / 5){
+				alert('file too big')
+			} else {
+				const obj = { base64 : croppedImageUrl, old : picture };
+				addPicture(obj).then(response => {
+					if (response.data === 'file too big') {
+						alert('file too big!');
+					} else if (response.data === "good") {
+						Navigate('../profile')
+					}
+					setData("");
+					setReloadGallery(reloadGallery + 1);
+				})
+			}
 		} else {
-			const obj = { base64 : croppedImageUrl, old : picture };
-			addPicture(obj).then(response => {
-				if (response.data === 'file too big') {
-					alert('file too big!');
-				} else if (response.data === "good") {
-					Navigate('../profile')
-				}
-				setData("");
-				setReloadGallery(reloadGallery + 1);
-			})
+			alert('image invalid')
+			window.location.reload(false);
 		}
 	};
 
@@ -78,10 +88,40 @@ const ImagePreview = ({picture, i, setReloadGallery, reloadGallery}) => {
 		ref.current.click()
 	}
 	const handleChangePicture = (event)	=> {
-		if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") 
-			setData(URL.createObjectURL(event.target.files[0]));
-		else
-			alert("file must be a picture")
+
+		let allowed_file_types = {
+			"iVBORw0KGgo": "image/png",
+			"/9j/": "image/jpg",
+		  };
+
+		const getBase64 = (file) => {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = () => resolve(reader.result);
+				reader.onerror = error => reject(error);
+			});
+		}
+		getBase64(event.target.files[0]).then(base64 => {
+			let valid = false;
+			base64 = base64.split(',')[1];
+			for (let i in allowed_file_types) {
+				if (base64.indexOf(i) === 0) {
+					if (event.target.files[0].type === "image/jpeg" || event.target.files[0].type === "image/png" || event.target.files[0].type === "image/jpg") {
+
+						setData(URL.createObjectURL(event.target.files[0]));
+						valid = true;
+					}
+				}
+			}
+			if (valid === false) {
+				alert('File not allowed. Only png, jpg and jpeg are allowed')
+			}
+
+
+		}).catch(err => {
+			alert('Spend more time with the family')
+		});
 	}
 
 	if ( picture !== "empty") {

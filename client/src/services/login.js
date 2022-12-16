@@ -6,5 +6,5 @@ export const loginUser = (newObject) => {
 }
 
 export const logOut = () => {
-	return axios.post('/api/logout', {withCredentials: true});
+	return axios.post('/api/logout');
 }

@@ -70,10 +70,6 @@ const LoginForm = () => {
 							updateIpLocation(position)
 						})
 				})
-
-				if (response.data === "fill profile") {
-					Navigate('../completeaccount');
-				}
 				if (response.data.message === "login") {
 					socket.emit("login");
 					Navigate('../home');

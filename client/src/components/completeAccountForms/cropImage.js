@@ -18,9 +18,18 @@
 	 * @param {number} rotation - optional rotation parameter
 	 */
 	export default async function getCroppedImg(imageSrc, pixelCrop, rotation = 0) {
-	const image = await createImage(imageSrc);
-	const canvas = document.createElement("canvas");
-	const ctx = canvas.getContext("2d");
+		let image;
+		let valid = true;
+		try {
+			image = await createImage(imageSrc);
+		} catch (error) {
+			valid = false;
+		}
+		if (!valid) {
+			return ('invalid');
+		}
+		const canvas = document.createElement("canvas");
+		const ctx = canvas.getContext("2d");
 
 	const maxSize = Math.max(image.width, image.height);
 	const safeArea = 2 * ((maxSize / 2) * Math.sqrt(2));

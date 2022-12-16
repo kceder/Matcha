@@ -158,22 +158,19 @@ const login = (request, response) => {
 							id : result[0].id
 						}
 						const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-						if(result[0].acti_stat === 1) {
-							response.status(202).cookie('token', accessToken,
-								{ 
-									path: '/',
-									httpOnly: true
-								}).send('fill profile');
-						} else if (result[0].acti_stat === 0){
+						if (result[0].acti_stat === 0){
 							response.send('account not verified');
-						} else if (result[0].acti_stat === 2 || result[0].acti_stat === 3) {
+						} else if (result[0].acti_stat === 2 || result[0].acti_stat === 3 || result[0].acti_stat === 1) {
 							const logUser = "Insert into loggedInUsers (user_id) values (?)";
 							db.query(logUser, [user.id] ,function (error, result) {
 								if (error) console.log(error)
 								response.status(202).cookie('token', accessToken,
 								{ 
 									path: '/',
-									httpOnly: true
+									httpOnly: true,
+									sameSite: 'None',
+									secure: true,
+									maxAge: 24 * 60 * 60 * 1000,
 								}).send({message: 'login', user: user.id});
 							});
 							const update_sql = "UPDATE users SET registration_date = ? WHERE id = ?";

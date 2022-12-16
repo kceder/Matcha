@@ -172,6 +172,8 @@ const UserCard = ({props}) => {
 	const [hover2, setHover2] = useState(false);
 	const [hover3, setHover3] = useState(false);
 
+	const Navigate = useNavigate();
+
 	const calculateAge = (birthday) => {
 	
 		let birthDate = new Date(birthday);
@@ -204,6 +206,10 @@ const UserCard = ({props}) => {
 		const obj = { target: props.target }
 		if (props.login === true) {
 			getUser(obj).then(response => {
+				if (response.data.basicInfo.acti_stat !== 3) {
+					Navigate('/home')
+					return;
+				}
 				setUsername(response.data.basicInfo.username)
 				setName(response.data.basicInfo.name)
 				setLastName(response.data.basicInfo.lastName)
@@ -223,6 +229,7 @@ const UserCard = ({props}) => {
 				setPictures(response.data);
 			})
 		}
+	// eslint-disable-next-line
 	}, [props.target, userliked, navigate, props.login, socket, target, username])
 
 	const tags = interests ? interests.map((tag, index) => <Badge key={index} className='bg-light text-dark' style={{border : "solid 1px black", marginLeft: "3px"}} variant="primary">{tag}</Badge>) : null;

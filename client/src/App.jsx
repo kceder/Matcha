@@ -113,7 +113,7 @@ const Navigation = ({socket}) => {
 		logOut().then(response => {
 			setLogin(false);
 			socket.emit('login');
-			Navigate('/');	
+			Navigate('/');
 		})
 	};
 

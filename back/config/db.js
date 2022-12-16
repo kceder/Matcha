@@ -2631,7 +2631,7 @@ con.connect(async (err) => {
 				console.log(err);
 			} else if (result.length === 0) {
 	
-				while (i < 2008) {
+				while (i < 1500) {
 					process.stdout.clearLine();
 					process.stdout.cursorTo(0);
 					process.stdout.write('users generated ' + i);
@@ -2664,7 +2664,8 @@ con.connect(async (err) => {
 					profile.preferences = preferences[iPreferences++];
 			
 					let array = []; 
-					let t = Math.floor(Math.random() * tags.length - 12);
+					let t = Math.floor(Math.random() * (tags.length - 12));
+
 					array.push(tags[t + 1]);
 					array.push(tags[t + 3]);
 					array.push(tags[t + 2]);
@@ -2672,6 +2673,11 @@ con.connect(async (err) => {
 					array.push(tags[t + 8]);
 					array.push(tags[t + 9]);
 					array.push(tags[t + 12]);
+					if (array.includes(undefined) === true) {
+						array = array.filter(function (tag) {
+							return tag != undefined;
+						});
+					}
 					const myJSON = JSON.stringify(array);
 			
 					const score = Math.floor(Math.random() * (50 - 10 + 1) + 10);

@@ -165,8 +165,8 @@ const ProfileCard = ({setShow, setUsers, users, target, setDisplayUsers, display
 			setinterests(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
 			setScore(response.data.basicInfo.score)
 			getUser({target : "self"}).then(response => {
-			setUserTags(response.data.basicInfo.interests.replace(/\[|\]|"/g, '').split(','));
-		})
+				setUserTags(JSON.parse(response.data.basicInfo.interests));
+			})
 
 			getUserPhotos(obj).then(response => {
 				setPictures(response.data);
