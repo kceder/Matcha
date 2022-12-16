@@ -30,3 +30,16 @@ These are all things that I am certainly going to be focusing on my next (and th
 - Axios for API requests
 - Websockets (socket.io) for real-time notifications/messages
 - IP Geolocation
+
+###### Home page with infinite scroll
+
+![cclick_clip](https://user-images.githubusercontent.com/98973785/208129066-57fa2c36-74a9-4f29-9256-4ac401e7e507.gif)
+
+###### Image upload and editing
+
+![clip_cropper](https://user-images.githubusercontent.com/98973785/208130621-dd4f93e6-a9ab-4320-8940-fa6c54472c95.gif)
+
+###### Chat with matched users
+
+![clip_chat](https://user-images.githubusercontent.com/98973785/208133396-8becfecb-651d-4f63-bf44-05f08922005a.gif)
+
